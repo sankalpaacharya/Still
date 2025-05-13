@@ -8,6 +8,7 @@ import {
   House,
   DollarSign,
   User,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -25,24 +26,20 @@ const navItems: NavItem[] = [
     label: "Dashboard",
     href: "/dashboard",
   },
-  {
-    icon: CreditCard,
-    label: "Expenses",
-    href: "/expenses",
-  },
+
   {
     icon: DollarSign,
     label: "Finance",
     href: "/finance",
   },
   {
-    icon: House,
-    label: "House",
+    icon: Sparkles,
+    label: "Sanku",
     href: "/house",
   },
   {
     icon: User,
-    label: "Profile",
+    label: "Friends",
     href: "/profile/settings",
   },
 ];
