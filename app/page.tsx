@@ -1,103 +1,101 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
-export default function Home() {
+const Landing = () => {
+  const [isHovering, setIsHovering] = useState(false);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <header className="relative overflow-hidden border-white/10">
+        <div className="container mx-auto px-4 py-6 relative z-10">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-full bg-gradient-to-r from-purple-600 to-blue-500"></div>
+              <h1 className="text-xl font-bold text-gradient">fixyourspend</h1>
+            </div>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/signin"
+                className="text-sm text-white/70 hover:text-white transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link href="/register">
+                <Button
+                  variant="secondary"
+                  className="bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+                >
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className="container mx-auto px-4 py-16 md:py-24 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
+          <div className="space-y-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              <span className="text-gradient">Control</span> your spending,
+              <span className="block">
+                build better <span className="text-gradient">habits</span>
+              </span>
+            </h1>
+            <p className="text-lg text-white/70">
+              Track expenses, build saving streaks, and challenge friends to
+              spend wisely together.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Link href="/register">
+                <Button
+                  className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
+                  size="lg"
+                  onMouseEnter={() => setIsHovering(true)}
+                  onMouseLeave={() => setIsHovering(false)}
+                >
+                  Start saving now
+                  <ArrowRight
+                    className={`ml-2 transition-transform duration-300 ${
+                      isHovering ? "translate-x-1" : ""
+                    }`}
+                    size={18}
+                  />
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full sm:w-auto border-white/20 hover:bg-white/10"
+                >
+                  Explore dashboard
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          <div className="glass-card p-1 relative">
+            <div className="absolute -top-6 -right-6 h-32 w-32 bg-purple-500/20 blur-3xl rounded-full"></div>
+            <div className="absolute -bottom-6 -left-6 h-32 w-32 bg-blue-500/20 blur-3xl rounded-full"></div>
+            <AspectRatio
+              ratio={16 / 9}
+              className="bg-black/40 rounded-lg overflow-hidden"
+            >
+              <img
+                src="https://placehold.co/1280x720/1a1a1a/6c47ff?text=SaveSmart+Dashboard"
+                alt="SaveSmart Dashboard Preview"
+                className="w-full h-full object-cover"
+              />
+            </AspectRatio>
+          </div>
+        </div>
+      </header>
     </div>
   );
-}
+};
+
+export default Landing;
