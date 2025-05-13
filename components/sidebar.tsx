@@ -40,7 +40,7 @@ const navItems: NavItem[] = [
   {
     icon: User,
     label: "Friends",
-    href: "/profile/settings",
+    href: "/friends",
   },
 ];
 
