@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Home as HomeIcon,
   Menu,
   DollarSign,
   User,
   Sparkles,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -26,7 +28,6 @@ const navItems: NavItem[] = [
     label: "Dashboard",
     href: "/dashboard",
   },
-
   {
     icon: DollarSign,
     label: "Finance",
@@ -53,8 +54,8 @@ export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const location = usePathname();
   const [user, setUser] = useState<User>();
+  const router = useRouter();
 
-  //  this is the shit way of doing it, use swr, reactquery
   useEffect(() => {
     const getUser = async () => {
       const supabase = await createClient();
@@ -66,13 +67,19 @@ export default function Sidebar() {
         profile: data.user?.user_metadata.avatar_url,
         name: data.user?.user_metadata.full_name,
       });
-      console.log({
-        profile: data.user?.user_metadata.avatar_url,
-        name: data.user?.user_metadata.full_name,
-      });
     };
     getUser();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      const supabase = await createClient();
+      await supabase.auth.signOut();
+      router.push("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <aside
@@ -140,6 +147,25 @@ export default function Sidebar() {
           );
         })}
       </div>
+
+      <Button
+        onClick={handleLogout}
+        variant="ghost"
+        className={cn(
+          "w-full mt-3 flex items-center justify-start text-muted-foreground hover:text-white hover:bg-white/5",
+          !expanded && "justify-center"
+        )}
+      >
+        <LogOut size={18} />
+        <span
+          className={cn(
+            "ml-2 text-sm whitespace-nowrap transition-all duration-300 overflow-hidden",
+            expanded ? "w-24" : "w-0 ml-0"
+          )}
+        >
+          Logout
+        </span>
+      </Button>
       <div className="p-4 border-t border-white/10">
         <div
           className={cn(

@@ -1,9 +1,27 @@
 import { type NextRequest } from 'next/server'
 import { updateSession } from '@/utils/supabase/middleware'
+import { NextResponse } from 'next/server'
+import { createClient } from "@/utils/supabase/server";
+
+const publicRoutes = ["/", "/login","/auth/callback"]
 
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+  
+  const isPublicRoute = publicRoutes.includes(pathname)
+  
+  // Only check authentication for non-public routes
+  if (!isPublicRoute) {
+    const supabase = await createClient()
+    const { data } = await supabase.auth.getUser()
+    
+    // Redirect to login if user is not authenticated
+    if (!data.user) {
+      return NextResponse.redirect(new URL("/login", request.url))
+    }
+  }
+  
   return await updateSession(request)
-
 }
 
 export const config = {
