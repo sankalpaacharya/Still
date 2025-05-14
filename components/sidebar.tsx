@@ -2,7 +2,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  CreditCard,
   Home as HomeIcon,
   Menu,
   House,

@@ -4,10 +4,14 @@ import RecentExpenses from "@/features/dashboard/recentexpense";
 import FriendsActivity from "@/features/dashboard/components/friendsactivity";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { createClient } from "@/utils/supabase/server";
 
 type Props = {};
 
-export default function page({}: Props) {
+export default async function page({}: Props) {
+  const supabase = await createClient();
+  const { data: user } = await supabase.auth.getUser();
+  console.log(user);
   return (
     <div className="">
       {/* header section */}
