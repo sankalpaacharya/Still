@@ -11,7 +11,6 @@ type Props = {};
 export default async function page({}: Props) {
   const supabase = await createClient();
   const { data: user } = await supabase.auth.getUser();
-  console.log(user);
   return (
     <div className="">
       {/* header section */}

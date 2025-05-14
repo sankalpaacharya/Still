@@ -1,10 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Home as HomeIcon,
   Menu,
-  House,
   DollarSign,
   User,
   Sparkles,
@@ -12,6 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface NavItem {
   icon: React.ElementType;
@@ -43,9 +44,35 @@ const navItems: NavItem[] = [
   },
 ];
 
+interface User {
+  profile: string;
+  name: string;
+}
+
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const location = usePathname();
+  const [user, setUser] = useState<User>();
+
+  //  this is the shit way of doing it, use swr, reactquery
+  useEffect(() => {
+    const getUser = async () => {
+      const supabase = await createClient();
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.log(error);
+      }
+      setUser({
+        profile: data.user?.user_metadata.avatar_url,
+        name: data.user?.user_metadata.full_name,
+      });
+      console.log({
+        profile: data.user?.user_metadata.avatar_url,
+        name: data.user?.user_metadata.full_name,
+      });
+    };
+    getUser();
+  }, []);
 
   return (
     <aside
@@ -120,16 +147,19 @@ export default function Sidebar() {
             !expanded && "justify-center"
           )}
         >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center">
-            <span className="font-bold text-sm">JS</span>
-          </div>
+          <Avatar>
+            <AvatarImage src={user?.profile} alt="@shadcn" />
+            <AvatarFallback>fYS</AvatarFallback>
+          </Avatar>
           <div
             className={cn(
               "overflow-hidden transition-all duration-300",
               expanded ? "w-36" : "w-0"
             )}
           >
-            <p className="text-sm font-medium whitespace-nowrap">John Smith</p>
+            <p className="text-sm font-medium whitespace-nowrap">
+              {user?.name}
+            </p>
             <p className="text-xs text-muted-foreground whitespace-nowrap">
               8 day streak
             </p>
