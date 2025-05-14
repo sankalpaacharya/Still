@@ -20,12 +20,12 @@ const Landing = () => {
             </div>
             <div className="flex items-center gap-4">
               <Link
-                href="/signin"
+                href="/login"
                 className="text-sm text-white/70 hover:text-white transition-colors"
               >
                 Sign In
               </Link>
-              <Link href="/register">
+              <Link href="/login">
                 <Button
                   variant="secondary"
                   className="bg-white/10 hover:bg-white/20 backdrop-blur-sm"
@@ -86,14 +86,26 @@ const Landing = () => {
               className="bg-black/40 rounded-lg overflow-hidden"
             >
               <img
-                src="https://placehold.co/1280x720/1a1a1a/6c47ff?text=SaveSmart+Dashboard"
-                alt="SaveSmart Dashboard Preview"
+                src="https://placehold.co/1280x720/1a1a1a/6c47ff?text=FixYourSpend"
+                alt="Credit Card"
                 className="w-full h-full object-cover"
               />
             </AspectRatio>
           </div>
         </div>
       </header>
+      <footer className="flex justify-center text-muted-foreground">
+        <p>
+          Made By{" "}
+          <Link
+            href={"https://x.com/sankalpa_02"}
+            className="underline text-gradient"
+          >
+            @Sanku
+          </Link>{" "}
+          with ❤
+        </p>
+      </footer>
     </div>
   );
 };
