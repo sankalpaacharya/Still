@@ -5,22 +5,23 @@ import { createClient } from "@/utils/supabase/server";
 
 const publicRoutes = ["/", "/login","/auth/callback"]
 
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
-  
+  const supabase = await createClient()
+  const { data } = await supabase.auth.getUser()
+
   const isPublicRoute = publicRoutes.includes(pathname)
   
   // Only check authentication for non-public routes
   if (!isPublicRoute) {
-    const supabase = await createClient()
-    const { data } = await supabase.auth.getUser()
     
     // Redirect to login if user is not authenticated
-    if (!data.user) {
+    if (data.user===null) {
+      console.log("is this called?")
       return NextResponse.redirect(new URL("/login", request.url))
     }
   }
-  
   return await updateSession(request)
 }
 

@@ -63,7 +63,7 @@ const StatCard = ({
   className,
 }: StatCardProps) => {
   return (
-    <Card className={cn("glass-card p-4", className, "backdrop-blur-2xl")}>
+    <Card className={cn("p-4", className, "backdrop-blur-2xl")}>
       <div className="flex justify-between items-start">
         <div>
           <p className="text-sm font-medium text-gray-400">{title}</p>

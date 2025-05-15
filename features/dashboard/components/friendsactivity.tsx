@@ -69,7 +69,7 @@ export default function FriendsActivity() {
   };
 
   return (
-    <Card className="glass-card animate-fade-in">
+    <Card className="animate-fade-in">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-md font-medium">
           👥 Friends Activity
