@@ -9,6 +9,7 @@ import {
   User,
   Sparkles,
   LogOut,
+  CreditCard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -36,12 +37,17 @@ const navItems: NavItem[] = [
   {
     icon: Sparkles,
     label: "Sanku",
-    href: "/house",
+    href: "/sanku",
   },
   {
     icon: User,
     label: "Friends",
     href: "/friends",
+  },
+  {
+    icon: CreditCard,
+    label: "Account",
+    href: "/account",
   },
 ];
 
