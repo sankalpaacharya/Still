@@ -36,8 +36,8 @@ const navItems: NavItem[] = [
   },
   {
     icon: Sparkles,
-    label: "Sanku",
-    href: "/sanku",
+    label: "Chat",
+    href: "/chat",
   },
   {
     icon: User,

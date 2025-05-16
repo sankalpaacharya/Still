@@ -1,9 +1,7 @@
 import React from "react";
 import ExpenseStats from "@/features/dashboard/components/expensestats";
-import RecentExpenses from "@/features/dashboard/recentexpense";
+import RecentExpenses from "@/features/dashboard/components/recentexpense";
 import FriendsActivity from "@/features/dashboard/components/friendsactivity";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import AddExpenseModalButton from "@/features/dashboard/components/addexpensebutton";
 
@@ -16,7 +14,7 @@ export default async function page({}: Props) {
   } = await supabase.auth.getUser();
 
   return (
-    <div className="">
+    <div>
       {/* header section */}
       <div className="mb-6 flex justify-between items-center">
         <div>
@@ -32,7 +30,6 @@ export default async function page({}: Props) {
         </div>
         <AddExpenseModalButton />
       </div>
-      {/* dashbaord stats */}
       <ExpenseStats />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

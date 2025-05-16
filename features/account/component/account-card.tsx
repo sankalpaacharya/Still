@@ -12,23 +12,22 @@ export function AccountCard({
   name,
   balance,
   accountType,
-  cardColor,
+  cardColor = "from-purple-500 to-indigo-800",
 }: AccountProps) {
-  // Different background gradients based on account type
   const getCardBackground = () => {
     switch (accountType.toLowerCase()) {
       case "savings":
-        return "from-blue-500 to-blue-700";
+        return "from-blue-500 via-blue-800 to-blue-900";
       case "credit":
-        return "from-purple-500 to-purple-700";
+        return "from-purple-600 via-purple-800 to-indigo-900";
       case "checking":
-        return "from-green-500 to-green-700";
+        return "from-green-600 via-green-800 to-green-900";
       case "investment":
-        return "from-amber-500 to-amber-700";
+        return "from-amber-600 via-amber-800 to-orange-900";
       case "loan":
-        return "from-red-500 to-red-700";
+        return "from-red-600 via-red-800 to-red-900";
       default:
-        return cardColor || "from-gray-600 to-gray-800";
+        return cardColor;
     }
   };
 
@@ -52,59 +51,39 @@ export function AccountCard({
   return (
     <Card
       className={cn(
-        "w-full max-w-md rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl",
-        "bg-gradient-to-br backdrop-filter backdrop-blur-sm",
+        "relative overflow-hidden w-full max-w-md rounded-xl backdrop-blur-sm border border-white/20 shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer group",
+        "bg-gradient-to-br",
         getCardBackground()
       )}
     >
-      <div className="relative h-44 p-5 flex flex-col justify-between overflow-hidden">
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 bg-white/5 opacity-40" />
+      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-        {/* Glass-like shine effect */}
-        <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/20 to-transparent" />
-
-        {/* Content container with z-index to appear above effects */}
-        <div className="relative z-10 flex flex-col h-full justify-between">
-          {/* Top section */}
-          <div className="flex justify-between items-start">
-            <div className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1.5">
-              <p className="text-xs font-medium text-white">FixYourSpend</p>
-            </div>
-            <div className="flex items-center">
-              <div className="bg-white/10 backdrop-blur-md rounded-full p-1.5">
-                <span className="text-sm">{getAccountTypeIcon()}</span>
-              </div>
+      <div className="flex flex-col h-56 p-6 justify-between">
+        <div className="flex justify-between items-start">
+          <div>
+            <p className="text-xs font-medium text-white/70">ACCOUNT TYPE</p>
+            <div className="flex items-center mt-1">
+              <span className="mr-2 text-xl">{getAccountTypeIcon()}</span>
+              <h3 className="font-semibold text-white">{accountType}</h3>
             </div>
           </div>
 
-          {/* Middle section */}
-          <div className="mt-2">
-            <p className="text-xs font-medium uppercase tracking-wide text-white/70">
-              Balance
-            </p>
-            <p className="font-bold text-white text-2xl mt-1">{balance}</p>
+          <div className="flex flex-col items-end">
+            <div className="bg-white/20 backdrop-blur-md rounded-full px-3 py-1">
+              <p className="text-xs font-semibold text-white">FixYourSpend</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-auto">
+          <div className="mb-6">
+            <p className="text-xs font-medium text-white/70">ACCOUNT NAME</p>
+            <p className="font-semibold text-white text-lg">{name}</p>
           </div>
 
-          {/* Bottom section */}
-          <div className="flex justify-between items-end">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-white/70">
-                Name
-              </p>
-              <p className="font-medium text-white">{name}</p>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="bg-white/10 backdrop-blur-md rounded-full p-2">
-                <span className="text-lg">{getAccountTypeIcon()}</span>
-              </div>
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-white/70">
-                  Type
-                </p>
-                <p className="font-medium text-white">{accountType}</p>
-              </div>
-            </div>
+          <div>
+            <p className="text-xs font-medium text-white/70">BALANCE</p>
+            <p className="font-bold text-white text-xl">₹{balance}</p>
           </div>
         </div>
       </div>
