@@ -116,7 +116,7 @@ export default function AddExpenseModalButton() {
             <Button variant="outline" type="button">
               Cancel
             </Button>
-            <Button type="submit" className="bg-purple-400 hover:bg-purple-500">
+            <Button type="submit" className="">
               Add Expense
             </Button>
           </DialogFooter>
