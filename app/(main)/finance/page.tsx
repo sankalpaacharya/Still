@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import { CirclePlus } from "lucide-react";
 import {
   Popover,
@@ -7,45 +7,30 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
+import {
+  Table,
+  TableHeader,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
+import { Blinds } from "lucide-react";
+import { Plus } from "lucide-react";
 type Props = {};
 
 export default function Page({}: Props) {
   return (
     <div>
       <TotalAmountStatus amount={2889} />
-      <div className="flex justify-between mb-6">
-        <Popover>
-          <PopoverTrigger>
-            <div className="flex gap-2 items-center text-blue-300 p-2 px-3 hover:bg-blue-500/10 rounded-md cursor-pointer">
-              <CirclePlus size={18} className="" />
-              Add Category
-            </div>
-          </PopoverTrigger>
-          <PopoverContent>
-            <Input
-              type="text"
-              className="mb-5"
-              placeholder="Add new Category"
-            />
-            <div className="flex gap-2">
-              <Button
-                variant={"secondary"}
-                className="bg-indigo-400/20 hover:bg-indigo-400/15"
-              >
-                Cancel
-              </Button>
-              <Button className="bg-indigo-400 hover:bg-indigo-500">Ok</Button>
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
       <BudgetTable />
     </div>
   );
@@ -53,7 +38,7 @@ export default function Page({}: Props) {
 
 function TotalAmountStatus({ amount }: { amount: number }) {
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center mb-6">
       <div className="p-4 bg-green-700 rounded-md shadow-2xl flex w-72 justify-between">
         <div>
           <h2 className="text-3xl font-bold">₹{amount}</h2>
@@ -67,15 +52,7 @@ function TotalAmountStatus({ amount }: { amount: number }) {
 
 function BudgetTable() {
   return (
-    <div className="space-y-3">
-      <div className="flex justify-between bg-white/10 p-3 pr-5 rounded-md">
-        <span>Category</span>
-        <div className="flex">
-          <span className="w-26">Assigned</span>
-          <span className="w-26">Activity</span>
-          <span className="w-26">Available</span>
-        </div>
-      </div>
+    <div className="space-y-3 mb-6">
       <CategoryGroup />
     </div>
   );
@@ -85,16 +62,68 @@ function CategoryGroup() {
   return (
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="item-1" className="border-none">
-        <AccordionTrigger className="hover:no-underline bg-white/10 p-3 rounded-t-md rounded-b-none border-b-1 font-semibold text-md">
-          Savings
+        <AccordionTrigger className="group hover:no-underline bg-white/10 p-5 rounded-b-none rounded-t-md font-semibold text-lg">
+          <span className="flex gap-4 items-center">
+            <Blinds size={18} />
+            💰 Savings
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="p-1 rounded-full bg-white/10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer">
+                  <Plus size={15} />
+                </div>
+              </PopoverTrigger>
+              <PopoverContent></PopoverContent>
+            </Popover>
+          </span>
         </AccordionTrigger>
-        <AccordionContent className="bg-white/10 p-3 rounded-b-md rounded-t-none px-4 text-lg flex justify-between">
-          <span>💻 TV, Phone, Internet</span>
-          <div className="flex">
-            <span className="w-26">100</span>
-            <span className="w-26">100</span>
-            <span className="w-26">100</span>
-          </div>
+        <AccordionContent className="border rounded-md rounded-t-none">
+          <Table className="">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[61%] font-bold text-gray-400 px-5">
+                  Category
+                </TableHead>
+                <TableHead className="w-[13%] font-bold text-gray-400 text-right px-5">
+                  Assigned
+                </TableHead>
+                <TableHead className="w-[13%] font-bold text-gray-400 text-right px-5">
+                  Spent
+                </TableHead>
+                <TableHead className="w-[13%] font-bold text-gray-400 text-right px-5">
+                  Available
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow className="text-md">
+                <TableCell className="w-[61%] p-5">
+                  Tv, Transportation
+                  <Progress value={33} className="mt-2 h-1" />
+                </TableCell>
+                <TableCell className="w-[13%] text-right p-5">₹500</TableCell>
+                <TableCell className="w-[13%] text-right p-5">₹500</TableCell>
+                <TableCell className="w-[13%] text-right p-5">₹1000</TableCell>
+              </TableRow>
+              <TableRow className="text-md">
+                <TableCell className="w-[61%] p-5">
+                  Tv, Transportation
+                  <Progress value={33} className="mt-2 h-1" />
+                </TableCell>
+                <TableCell className="w-[13%] text-right p-5">₹500</TableCell>
+                <TableCell className="w-[13%] text-right p-5">₹500</TableCell>
+                <TableCell className="w-[13%] text-right p-5">₹1000</TableCell>
+              </TableRow>
+              <TableRow className="text-md">
+                <TableCell className="w-[61%] p-5">
+                  Tv, Transportation
+                  <Progress value={33} className="mt-2 h-1" />
+                </TableCell>
+                <TableCell className="w-[13%] text-right p-5">₹500</TableCell>
+                <TableCell className="w-[13%] text-right p-5">₹500</TableCell>
+                <TableCell className="w-[13%] text-right p-5">₹1000</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </AccordionContent>
       </AccordionItem>
     </Accordion>
