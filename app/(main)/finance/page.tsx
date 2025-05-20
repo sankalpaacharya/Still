@@ -29,9 +29,17 @@ type Props = {};
 
 export default function Page({}: Props) {
   return (
-    <div>
-      <TotalAmountStatus amount={2889} />
-      <BudgetTable />
+    <div className="border">
+      <div className="flex w-[65%] justify-center">
+        <TotalAmountStatus amount={2889} />
+      </div>
+      <div className="flex gap-2">
+        <BudgetTable />
+        <div className="w-[30%]  p-5 rounded-md bg-gray-500/10 h-[40rem]">
+          <h2 className="text-md font-semibold">📺 Tv Streaming </h2>
+          <div className="mt-1 p-5 rounded-md bg-white/10">Target</div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -52,7 +60,7 @@ function TotalAmountStatus({ amount }: { amount: number }) {
 
 function BudgetTable() {
   return (
-    <div className="space-y-3 mb-6">
+    <div className="space-y-3 mb-6 flex-1">
       <CategoryGroup />
     </div>
   );
@@ -66,14 +74,22 @@ function CategoryGroup() {
           <span className="flex gap-4 items-center">
             <Blinds size={18} />
             💰 Savings
-            <Popover>
-              <PopoverTrigger asChild>
-                <div className="p-1 rounded-full bg-white/10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer">
-                  <Plus size={15} />
-                </div>
-              </PopoverTrigger>
-              <PopoverContent></PopoverContent>
-            </Popover>
+            <div onClick={(e) => e.stopPropagation()}>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <div className="p-1 rounded-full bg-white/10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer">
+                    <Plus size={15} />
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <Input placeholder="New Catgeory" className="mb-4" />
+                  <div className="flex gap-2">
+                    <Button variant={"secondary"}>Cancel</Button>
+                    <Button>Ok</Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
           </span>
         </AccordionTrigger>
         <AccordionContent className="border rounded-md rounded-t-none">
