@@ -30,9 +30,9 @@ export function CategoryGroup({
   onAddCategory,
 }: CategoryGroupProps) {
   return (
-    <Accordion 
-      type="multiple" 
-      defaultValue={defaultOpen ? ["category-group"] : []} 
+    <Accordion
+      type="multiple"
+      defaultValue={defaultOpen ? ["category-group"] : []}
       className="w-full"
     >
       <AccordionItem value="category-group" className="border-none">
@@ -51,7 +51,13 @@ export function CategoryGroup({
                   <Input placeholder="New Category" className="mb-4" />
                   <div className="flex gap-2">
                     <Button variant={"secondary"}>Cancel</Button>
-                    <Button onClick={() => onAddCategory && onAddCategory("New Category")}>Ok</Button>
+                    <Button
+                      onClick={() =>
+                        onAddCategory && onAddCategory("New Category")
+                      }
+                    >
+                      Ok
+                    </Button>
                   </div>
                 </PopoverContent>
               </Popover>

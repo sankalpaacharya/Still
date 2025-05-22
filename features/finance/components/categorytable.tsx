@@ -23,35 +23,35 @@ type CategoryTableProps = {
 };
 
 export function CategoryTable({ categories = [] }: CategoryTableProps) {
-  // If no categories are provided, use demo data
-  const displayCategories = categories.length > 0 
-    ? categories 
-    : [
-        {
-          id: '1',
-          name: 'Tv, Transportation',
-          assigned: 500,
-          spent: 500,
-          available: 1000,
-          progressPercentage: 33,
-        },
-        {
-          id: '2',
-          name: 'Groceries',
-          assigned: 500,
-          spent: 500,
-          available: 1000,
-          progressPercentage: 33,
-        },
-        {
-          id: '3',
-          name: 'Entertainment',
-          assigned: 500,
-          spent: 500,
-          available: 1000,
-          progressPercentage: 33,
-        },
-      ];
+  const displayCategories =
+    categories.length > 0
+      ? categories
+      : [
+          {
+            id: "1",
+            name: "📺 Tv, Transportation",
+            assigned: 500,
+            spent: 500,
+            available: 1000,
+            progressPercentage: 33,
+          },
+          {
+            id: "2",
+            name: "🛒 Groceries",
+            assigned: 500,
+            spent: 500,
+            available: 1000,
+            progressPercentage: 33,
+          },
+          {
+            id: "3",
+            name: "🍿 Entertainment",
+            assigned: 500,
+            spent: 500,
+            available: 1000,
+            progressPercentage: 33,
+          },
+        ];
 
   return (
     <Table>

@@ -1,5 +1,10 @@
 import {create} from 'zustand'
 
+
+export type  MonthlyTarget = {
+    price:number
+}
+
 export type Category = {
     name: string,
     target: number,
