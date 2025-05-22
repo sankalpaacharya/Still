@@ -5,6 +5,7 @@ import {
   BudgetTable,
   TargetCard,
 } from "@/features/finance/components";
+import { Plus } from "lucide-react";
 
 type Props = {};
 
@@ -35,8 +36,17 @@ export default function Page({}: Props) {
           onAssign={handleAssignAmount}
         />
       </div>
+
       <div className="flex gap-2">
-        <BudgetTable onAddCategory={handleAddCategory} />
+        <div className="flex flex-col w-full">
+          <div className="mb-6">
+            <span className="hover:bg-indigo-600/30 rounded-md p-2 px-3 flex space-x-2 items-center gap-1 w-fit transition-all duration-200 cursor-pointer">
+              <Plus size={18} />
+              add catgeory
+            </span>
+          </div>
+          <BudgetTable onAddCategory={handleAddCategory} />
+        </div>
         <TargetCard
           title="📺 Tv Streaming"
           onSaveTarget={handleSaveTarget}

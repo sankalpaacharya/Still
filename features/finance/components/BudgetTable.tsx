@@ -1,6 +1,7 @@
 "use client";
 
 import { CategoryGroup } from "./CategoryGroup";
+import { useBudgetStore } from "@/lib/store";
 
 type BudgetCategory = {
   id: string;
@@ -14,19 +15,17 @@ type BudgetTableProps = {
 };
 
 export function BudgetTable({ categories, onAddCategory }: BudgetTableProps) {
-  // Default category if none provided
-  const displayCategories = categories || [
-    { id: "savings", title: "💰 Savings" },
-  ];
+  const displayCategories = useBudgetStore((state) => state.groups);
 
   return (
     <div className="space-y-3 mb-6 flex-1">
       {displayCategories.map((category) => (
         <CategoryGroup
-          key={category.id}
-          title={category.title}
-          icon={category.icon}
-          onAddCategory={(name) => onAddCategory && onAddCategory(category.id, name)}
+          key={category.name}
+          name={category.name}
+          onAddCategory={(name) =>
+            onAddCategory && onAddCategory(category.name, name)
+          }
         />
       ))}
     </div>

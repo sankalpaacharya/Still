@@ -18,14 +18,14 @@ import { CategoryTable } from "./categorytable";
 
 type CategoryGroupProps = {
   icon?: React.ReactNode;
-  title: string;
+  name: string;
   defaultOpen?: boolean;
   onAddCategory?: (name: string) => void;
 };
 
 export function CategoryGroup({
   icon = <Blinds size={18} />,
-  title,
+  name,
   defaultOpen = true,
   onAddCategory,
 }: CategoryGroupProps) {
@@ -39,7 +39,7 @@ export function CategoryGroup({
         <AccordionTrigger className="group hover:no-underline bg-white/10 p-5 rounded-b-none rounded-t-md font-semibold text-lg">
           <span className="flex gap-4 items-center">
             {icon}
-            {title}
+            {name}
             <div onClick={(e) => e.stopPropagation()}>
               <Popover>
                 <PopoverTrigger asChild>

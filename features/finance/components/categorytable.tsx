@@ -8,6 +8,7 @@ import {
   TableBody,
 } from "@/components/ui/table";
 import { CategoryItem } from "./CategoryItem";
+import { useBudgetStore } from "@/lib/store";
 
 type Category = {
   id: string;
