@@ -14,7 +14,7 @@ type BudgetTableProps = {
   onAddCategory?: (categoryId: string, name: string) => void;
 };
 
-export function BudgetTable({ categories, onAddCategory }: BudgetTableProps) {
+export function BudgetTable({ onAddCategory }: BudgetTableProps) {
   const displayCategories = useBudgetStore((state) => state.groups);
 
   return (
@@ -23,6 +23,7 @@ export function BudgetTable({ categories, onAddCategory }: BudgetTableProps) {
         <CategoryGroup
           key={category.name}
           name={category.name}
+          categories={category.categories}
           onAddCategory={(name) =>
             onAddCategory && onAddCategory(category.name, name)
           }

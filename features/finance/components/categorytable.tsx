@@ -8,51 +8,14 @@ import {
   TableBody,
 } from "@/components/ui/table";
 import { CategoryItem } from "./CategoryItem";
-import { useBudgetStore } from "@/lib/store";
-
-type Category = {
-  id: string;
-  name: string;
-  assigned: number;
-  spent: number;
-  available: number;
-  progressPercentage: number;
-};
+import { Category } from "@/lib/store";
 
 type CategoryTableProps = {
   categories?: Category[];
 };
 
 export function CategoryTable({ categories = [] }: CategoryTableProps) {
-  const displayCategories =
-    categories.length > 0
-      ? categories
-      : [
-          {
-            id: "1",
-            name: "📺 Tv, Transportation",
-            assigned: 500,
-            spent: 500,
-            available: 1000,
-            progressPercentage: 33,
-          },
-          {
-            id: "2",
-            name: "🛒 Groceries",
-            assigned: 500,
-            spent: 500,
-            available: 1000,
-            progressPercentage: 33,
-          },
-          {
-            id: "3",
-            name: "🍿 Entertainment",
-            assigned: 500,
-            spent: 500,
-            available: 1000,
-            progressPercentage: 33,
-          },
-        ];
+  const displayCategories = categories.length > 0 ? categories : [];
 
   return (
     <Table>
@@ -73,14 +36,14 @@ export function CategoryTable({ categories = [] }: CategoryTableProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {displayCategories.map((category) => (
+        {displayCategories.map((category: Category) => (
           <CategoryItem
-            key={category.id}
+            key={category.name}
             name={category.name}
-            assigned={category.assigned}
-            spent={category.spent}
+            assigned={category.assign}
+            spent={category.activity}
             available={category.available}
-            progressPercentage={category.progressPercentage}
+            progressPercentage={60}
           />
         ))}
       </TableBody>
