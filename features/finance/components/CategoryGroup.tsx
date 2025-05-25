@@ -1,5 +1,6 @@
 "use client";
 import { Blinds } from "lucide-react";
+import { useMemo, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -16,7 +17,7 @@ import {
 import { CategoryTable } from "./categorytable";
 import { Category, useBudgetStore } from "@/lib/store";
 import { AddCategoryPopover } from "./AddCategoryPopover";
-import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 type CategoryGroupProps = {
   icon?: React.ReactNode;
@@ -34,9 +35,49 @@ export function CategoryGroup({
   onAddCategory,
 }: CategoryGroupProps) {
   const [categoryName, setCategoryName] = useState<string>("");
-  const { updateCategoryGroup } = useBudgetStore((state) => state);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const { updateCategoryGroup, groups } = useBudgetStore((state) => state);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCategoryName(e.target.value);
+  };
+
   const updateCategoryName = () => {
-    updateCategoryGroup(name, categoryName);
+    if (!categoryName.trim()) {
+      toast.error("Name cannot be empty");
+      return;
+    }
+
+    if (categoryName.trim() === name) {
+      setIsPopoverOpen(false);
+      setCategoryName("");
+      return;
+    }
+
+    // Only check for duplicates if the name has actually changed
+    if (groups.some((item) => item.name === categoryName.trim())) {
+      toast.error("Name already exists");
+      return;
+    }
+
+    updateCategoryGroup(name, categoryName.trim());
+    setIsPopoverOpen(false);
+    setCategoryName("");
+    toast.success("Category group name updated");
+  };
+
+  const handleCancel = () => {
+    setCategoryName("");
+    setIsPopoverOpen(false);
+  };
+
+  const handlePopoverOpenChange = (open: boolean) => {
+    setIsPopoverOpen(open);
+    if (open) {
+      setCategoryName(name);
+    } else {
+      setCategoryName("");
+    }
   };
 
   return (
@@ -51,7 +92,10 @@ export function CategoryGroup({
             <div className="flex gap-2 items-center flex-1">
               {icon}
               <div onClick={(e) => e.stopPropagation()}>
-                <Popover>
+                <Popover
+                  open={isPopoverOpen}
+                  onOpenChange={handlePopoverOpenChange}
+                >
                   <PopoverTrigger asChild>
                     <span className="hover:underline cursor-pointer">
                       {name}
@@ -59,18 +103,20 @@ export function CategoryGroup({
                   </PopoverTrigger>
                   <PopoverContent>
                     <Input
-                      defaultValue={name}
-                      onChange={(e) => setCategoryName(e.target.value)}
+                      value={categoryName}
+                      onChange={handleInputChange}
+                      placeholder="Enter category group name"
                     />
                     <div className="mt-3 space-x-2">
-                      <Button>Cancel</Button>
+                      <Button variant="outline" onClick={handleCancel}>
+                        Cancel
+                      </Button>
                       <Button onClick={updateCategoryName}>Ok</Button>
                     </div>
                   </PopoverContent>
                 </Popover>
               </div>
             </div>
-
             <div onClick={(e) => e.stopPropagation()}>
               <AddCategoryPopover onAddCategory={onAddCategory} />
             </div>

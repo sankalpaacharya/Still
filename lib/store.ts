@@ -92,7 +92,6 @@ const initialState: Budget = {
   }
   
 
-
 export type Actions = {
     addCategoryGroup: (name: string) => void
     addCategory: (categoryGroupName: string, categoryName: string) => void

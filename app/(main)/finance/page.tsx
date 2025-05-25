@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBudgetStore } from "@/lib/store";
+import toast from "react-hot-toast";
 
 type Props = {};
 
@@ -21,6 +22,7 @@ export default function Page({}: Props) {
   const [availableAmount, setAvailableAmount] = useState(2889);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const { groups } = useBudgetStore((state) => state);
 
   const { addCategoryGroup } = useBudgetStore((state) => state);
 
@@ -42,14 +44,18 @@ export default function Page({}: Props) {
 
   const handleCreateCategory = () => {
     if (newCategoryName.trim()) {
-      // Generate a unique ID for the new category
-      const categoryId = `category_${Date.now()}`;
-
+      if (
+        groups.some(
+          (categoryGroup) => categoryGroup.name === newCategoryName.trim()
+        )
+      ) {
+        toast.error("name already exists");
+        return;
+      }
       addCategoryGroup(newCategoryName.trim());
 
       console.log(`Created new category: ${newCategoryName.trim()}`);
 
-      // Reset form and close popover
       setNewCategoryName("");
       setIsPopoverOpen(false);
     }
