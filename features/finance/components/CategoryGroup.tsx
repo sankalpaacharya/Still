@@ -118,7 +118,7 @@ export function CategoryGroup({
               </div>
             </div>
             <div onClick={(e) => e.stopPropagation()}>
-              <AddCategoryPopover onAddCategory={onAddCategory} />
+              <AddCategoryPopover categoryGroupName={name} />
             </div>
           </div>
         </AccordionTrigger>

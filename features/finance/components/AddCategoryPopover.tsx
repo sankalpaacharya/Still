@@ -8,62 +8,115 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useBudgetStore } from "@/lib/store";
+import toast from "react-hot-toast";
 
 type AddCategoryPopoverProps = {
-  onAddCategory?: (name: string) => void;
   className?: string;
+  categoryGroupName: string;
 };
 
 export function AddCategoryPopover({
-  onAddCategory,
+  categoryGroupName,
   className,
 }: AddCategoryPopoverProps) {
   const [categoryName, setCategoryName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const { addCategory, groups } = useBudgetStore();
+
+  const categoryExists = (name: string): boolean => {
+    const group = groups.find((g) => g.name === categoryGroupName);
+    return (
+      group?.categories.some(
+        (category) => category.name.toLowerCase() === name.toLowerCase()
+      ) ?? false
+    );
+  };
+
+  const resetForm = () => {
+    setCategoryName("");
+    setIsOpen(false);
+  };
 
   const handleSubmit = () => {
-    if (categoryName.trim() && onAddCategory) {
-      onAddCategory(categoryName.trim());
-      setCategoryName("");
-      setIsOpen(false);
+    const trimmedName = categoryName.trim();
+
+    if (!trimmedName) {
+      toast.error("Category name cannot be empty");
+      return;
+    }
+
+    if (categoryExists(trimmedName)) {
+      toast.error("Category with this name already exists");
+      return;
+    }
+
+    try {
+      addCategory(categoryGroupName, trimmedName);
+      toast.success("Category added successfully");
+      resetForm();
+    } catch (error) {
+      toast.error("Failed to add category");
     }
   };
 
-  const handleCancel = () => {
-    setCategoryName("");
-    setIsOpen(false);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      resetForm();
+    }
   };
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <div
-          className={`p-1 rounded-full bg-white/10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer ${
+          className={`p-1 rounded-full bg-white/10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-white/20 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer ${
             className || ""
           }`}
+          role="button"
+          tabIndex={0}
+          aria-label="Add new category"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setIsOpen(true);
+            }
+          }}
         >
           <Plus size={15} />
         </div>
       </PopoverTrigger>
-      <PopoverContent onClick={(e) => e.stopPropagation()}>
-        <Input
-          placeholder="New Category"
-          className="mb-4"
-          value={categoryName}
-          onChange={(e) => setCategoryName(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSubmit();
-            } else if (e.key === "Escape") {
-              handleCancel();
-            }
-          }}
-        />
-        <div className="flex gap-2">
-          <Button variant="secondary" onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit}>Ok</Button>
+      <PopoverContent onClick={(e) => e.stopPropagation()} className="w-80">
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="category-name" className="sr-only">
+              Category Name
+            </label>
+            <Input
+              id="category-name"
+              placeholder="Enter category name"
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
+              onKeyDown={handleKeyDown}
+              autoFocus
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="secondary" onClick={resetForm} size="sm">
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={!categoryName.trim()}
+              size="sm"
+            >
+              Add Category
+            </Button>
+          </div>
         </div>
       </PopoverContent>
     </Popover>
