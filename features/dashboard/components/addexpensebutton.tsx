@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { ComboboxDemo } from "./addexpenseselect";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -94,18 +95,7 @@ export default function AddExpenseModalButton() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="category">Category</Label>
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="bg-white/5">
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ComboboxDemo />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="date">Date</Label>

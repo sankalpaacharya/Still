@@ -22,24 +22,14 @@ export default function Page({}: Props) {
   const [availableAmount, setAvailableAmount] = useState(2889);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { groups } = useBudgetStore((state) => state);
+  const { groups, selectedCategory, selectedGroup } = useBudgetStore(
+    (state) => state
+  );
 
   const { addCategoryGroup } = useBudgetStore((state) => state);
 
   const handleAssignAmount = () => {
     console.log("Assigning amount");
-  };
-
-  const handleAddCategory = (categoryId: string, name: string) => {
-    console.log(`Adding category ${name} to ${categoryId}`);
-  };
-
-  const handleSaveTarget = (period: string, amount: number) => {
-    console.log(`Saving ${period} target of ${amount}`);
-  };
-
-  const handleDeleteTarget = () => {
-    console.log("Deleting target");
   };
 
   const handleCreateCategory = () => {
@@ -133,13 +123,15 @@ export default function Page({}: Props) {
             </Popover>
           </div>
 
-          <BudgetTable onAddCategory={handleAddCategory} />
+          <BudgetTable />
         </div>
 
         <TargetCard
-          title="📺 TV Streaming"
-          onSaveTarget={handleSaveTarget}
-          onDeleteTarget={handleDeleteTarget}
+          title={
+            selectedCategory
+              ? `${selectedCategory} (${selectedGroup})`
+              : "Select a category"
+          }
         />
       </div>
     </div>

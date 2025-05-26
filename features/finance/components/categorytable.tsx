@@ -12,9 +12,13 @@ import { Category } from "@/lib/store";
 
 type CategoryTableProps = {
   categories?: Category[];
+  groupName?: string;
 };
 
-export function CategoryTable({ categories = [] }: CategoryTableProps) {
+export function CategoryTable({
+  categories = [],
+  groupName = "",
+}: CategoryTableProps) {
   const displayCategories = categories.length > 0 ? categories : [];
 
   return (
@@ -44,6 +48,7 @@ export function CategoryTable({ categories = [] }: CategoryTableProps) {
             spent={category.activity}
             available={category.available}
             progressPercentage={60}
+            groupName={groupName}
           />
         ))}
       </TableBody>

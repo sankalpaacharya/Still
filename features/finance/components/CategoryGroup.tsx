@@ -24,7 +24,6 @@ type CategoryGroupProps = {
   name: string;
   defaultOpen?: boolean;
   categories: Category[];
-  onAddCategory?: (name: string) => void;
 };
 
 export function CategoryGroup({
@@ -32,7 +31,6 @@ export function CategoryGroup({
   name,
   categories,
   defaultOpen = true,
-  onAddCategory,
 }: CategoryGroupProps) {
   const [categoryName, setCategoryName] = useState<string>("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -123,7 +121,10 @@ export function CategoryGroup({
           </div>
         </AccordionTrigger>
         <AccordionContent className="border rounded-md rounded-t-none">
-          <CategoryTable categories={categories} />
+          <CategoryTable
+            categories={categories}
+            groupName={name}
+          />
         </AccordionContent>
       </AccordionItem>
     </Accordion>

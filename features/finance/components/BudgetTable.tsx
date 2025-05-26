@@ -12,10 +12,9 @@ type BudgetCategory = {
 
 type BudgetTableProps = {
   categories?: BudgetCategory[];
-  onAddCategory?: (categoryId: string, name: string) => void;
 };
 
-export function BudgetTable({ onAddCategory }: BudgetTableProps) {
+export function BudgetTable({}: BudgetTableProps) {
   const displayCategories = useBudgetStore((state) => state.groups);
 
   return (
@@ -26,9 +25,6 @@ export function BudgetTable({ onAddCategory }: BudgetTableProps) {
             key={category.name}
             name={category.name}
             categories={category.categories}
-            onAddCategory={(name) =>
-              onAddCategory && onAddCategory(category.name, name)
-            }
           />
         ))}
       </div>

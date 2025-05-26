@@ -37,13 +37,17 @@ export type Budget = {
     totalAmount: number
     groups: CategoryGroup[]
     readyToAssign: number 
+    selectedCategory: string | null
+    selectedGroup: string | null
 }
 
 
 
 const initialState: Budget = {
     totalAmount: 5000,
-    readyToAssign: 2000, 
+    readyToAssign: 2000,
+    selectedCategory: null,
+    selectedGroup: null,
     groups: [
       {
         name: 'Essentials',
@@ -104,6 +108,7 @@ export type Actions = {
     deleteCategory: (categoryGroupName: string, categoryName: string) => void
     updateTotalAmount: (amount: number) => void
     calculateReadyToAssign: () => void
+    setSelectedCategory: (categoryName: string | null, groupName: string | null) => void
 }
 
 
@@ -111,6 +116,8 @@ export const useBudgetStore = create<Budget & Actions>((set, get) => ({
     totalAmount: 0,
     groups: initialState.groups,
     readyToAssign: 0,
+    selectedCategory: null,
+    selectedGroup: null,
     
     addCategoryGroup: (name: string) => set((state) => ({
         ...state,
@@ -271,16 +278,24 @@ export const useBudgetStore = create<Budget & Actions>((set, get) => ({
         get().calculateReadyToAssign()
     },
     
-    calculateReadyToAssign: () => set((state) => {
-        const totalAssigned = state.groups.reduce((total, group) => {
+    calculateReadyToAssign: () => {
+        const totalAssigned = get().groups.reduce((total, group) => {
             return total + group.categories.reduce((groupTotal, category) => {
                 return groupTotal + category.assign
             }, 0)
         }, 0)
         
-        return {
+        set((state) => ({
             ...state,
             readyToAssign: state.totalAmount - totalAssigned
-        }
-    })
+        }))
+    },
+    
+    setSelectedCategory: (categoryName: string | null, groupName: string | null) => {
+        set((state) => ({
+            ...state,
+            selectedCategory: categoryName,
+            selectedGroup: groupName
+        }))
+    }
 }))

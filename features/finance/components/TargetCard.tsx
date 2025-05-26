@@ -11,21 +11,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useBudgetStore } from "@/lib/store";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
 type TargetCardProps = {
   title: string;
-  onSaveTarget?: (period: string, amount: number, schedule: string) => void;
-  onDeleteTarget?: () => void;
-  onCancel?: () => void;
 };
 
-export function TargetCard({
-  title = "📺 Tv Streaming",
-  onSaveTarget,
-  onDeleteTarget,
-  onCancel,
-}: TargetCardProps) {
+export function TargetCard({ title = "Select a category" }: TargetCardProps) {
+  const { selectedCategory, selectedGroup, updateCategoryTarget } =
+    useBudgetStore((state) => state);
+
   const handleSave = (period: string) => {
+    if (!selectedCategory || !selectedGroup) {
+      return;
+    }
+
     const amountInput = document.getElementById(
       `target-amount-${period}`
     ) as HTMLInputElement;
@@ -36,7 +38,30 @@ export function TargetCard({
     const amount = Number(amountInput?.value || 0);
     const schedule = scheduleSelect?.value || "";
 
-    onSaveTarget && onSaveTarget(period, amount, schedule);
+    let target = null;
+
+    if (period === "weekly") {
+      target = {
+        type: "weekly" as const,
+        need: amount,
+        every: schedule,
+      };
+    } else if (period === "monthly") {
+      target = {
+        type: "monthly" as const,
+        need: amount,
+        on: Number(schedule),
+      };
+    } else if (period === "yearly") {
+      target = {
+        type: "yearly" as const,
+        need: amount,
+        date: new Date(schedule),
+      };
+    }
+
+    updateCategoryTarget(selectedGroup, selectedCategory, target);
+    toast.success("Target saved successfully");
   };
 
   const weekDays = [
@@ -100,16 +125,39 @@ export function TargetCard({
               <Button
                 className="text-red-500 hover:bg-red-600/20"
                 variant="ghost"
-                onClick={onDeleteTarget}
+                onClick={() => {
+                  if (selectedCategory && selectedGroup) {
+                    updateCategoryTarget(selectedGroup, selectedCategory, null);
+                    toast.success("Target deleted");
+                  }
+                }}
+                disabled={!selectedCategory || !selectedGroup}
               >
                 <Trash />
                 Delete
               </Button>
               <div className="space-x-3">
-                <Button variant="ghost" onClick={onCancel}>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    // Reset input fields
+                    const amountInput = document.getElementById(
+                      "target-amount-weekly"
+                    ) as HTMLInputElement;
+                    if (amountInput) amountInput.value = "0";
+
+                    const scheduleSelect = document.getElementById(
+                      "schedule-weekly"
+                    ) as HTMLSelectElement;
+                    if (scheduleSelect) scheduleSelect.value = "";
+                  }}
+                >
                   Cancel
                 </Button>
-                <Button onClick={() => handleSave("weekly")}>
+                <Button
+                  onClick={() => handleSave("weekly")}
+                  disabled={!selectedCategory || !selectedGroup}
+                >
                   Save Target
                 </Button>
               </div>
@@ -152,16 +200,39 @@ export function TargetCard({
               <Button
                 className="text-red-500 hover:bg-red-600/20"
                 variant="ghost"
-                onClick={onDeleteTarget}
+                onClick={() => {
+                  if (selectedCategory && selectedGroup) {
+                    updateCategoryTarget(selectedGroup, selectedCategory, null);
+                    toast.success("Target deleted");
+                  }
+                }}
+                disabled={!selectedCategory || !selectedGroup}
               >
                 <Trash />
                 Delete
               </Button>
               <div className="space-x-3">
-                <Button variant="ghost" onClick={onCancel}>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    // Reset input fields
+                    const amountInput = document.getElementById(
+                      "target-amount-monthly"
+                    ) as HTMLInputElement;
+                    if (amountInput) amountInput.value = "0";
+
+                    const scheduleSelect = document.getElementById(
+                      "schedule-monthly"
+                    ) as HTMLSelectElement;
+                    if (scheduleSelect) scheduleSelect.value = "";
+                  }}
+                >
                   Cancel
                 </Button>
-                <Button onClick={() => handleSave("monthly")}>
+                <Button
+                  onClick={() => handleSave("monthly")}
+                  disabled={!selectedCategory || !selectedGroup}
+                >
                   Save Target
                 </Button>
               </div>
@@ -182,16 +253,39 @@ export function TargetCard({
               <Button
                 className="text-red-500 hover:bg-red-600/20"
                 variant="ghost"
-                onClick={onDeleteTarget}
+                onClick={() => {
+                  if (selectedCategory && selectedGroup) {
+                    updateCategoryTarget(selectedGroup, selectedCategory, null);
+                    toast.success("Target deleted");
+                  }
+                }}
+                disabled={!selectedCategory || !selectedGroup}
               >
                 <Trash />
                 Delete
               </Button>
               <div className="space-x-3">
-                <Button variant="ghost" onClick={onCancel}>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    // Reset input fields
+                    const amountInput = document.getElementById(
+                      "target-amount-yearly"
+                    ) as HTMLInputElement;
+                    if (amountInput) amountInput.value = "0";
+
+                    const scheduleInput = document.getElementById(
+                      "schedule-yearly"
+                    ) as HTMLInputElement;
+                    if (scheduleInput) scheduleInput.value = "";
+                  }}
+                >
                   Cancel
                 </Button>
-                <Button onClick={() => handleSave("yearly")}>
+                <Button
+                  onClick={() => handleSave("yearly")}
+                  disabled={!selectedCategory || !selectedGroup}
+                >
                   Save Target
                 </Button>
               </div>
