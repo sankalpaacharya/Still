@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Target, Trash } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,7 @@ import {
 import { useBudgetStore } from "@/lib/store";
 import toast from "react-hot-toast";
 import { MonthlyTarget, WeeklyTarget, YearlyTarget } from "@/lib/store";
+import { Category } from "@/lib/store";
 
 type TargetCardProps = {
   title: string;
@@ -23,27 +24,53 @@ type TargetCardProps = {
 export function TargetCard({ title = "Select a category" }: TargetCardProps) {
   const { selectedCategory, selectedGroup, updateCategoryTarget, groups } =
     useBudgetStore((state) => state);
-  console.log("render", selectedCategory, selectedGroup);
+  const [activeTab, setActiveTab] = useState("weekly");
+  const [activeCategoryTarget, setActiveCategoryTarget] = useState<Category>();
 
   const targetAmount = groups
     .find((grp) => grp.name === selectedGroup)
     ?.categories.find((category) => category.name === selectedCategory);
-  console.log("this is target ammount", targetAmount);
 
-  const [weeklyAmount, setWeeklyAmount] = useState<number>(
-    targetAmount?.target?.need || 0
-  );
+  useEffect(() => {
+    setActiveTab(targetAmount?.target?.type || "weekly");
+  }, [targetAmount?.target?.type]);
+
+  useEffect(() => {
+    setActiveCategoryTarget(targetAmount);
+  }, [targetAmount]);
+
+  const [weeklyAmount, setWeeklyAmount] = useState<number>(0);
   const [weeklySchedule, setWeeklySchedule] = useState<string>("");
 
-  const [monthlyAmount, setMonthlyAmount] = useState<number>(
-    targetAmount?.target?.need || 0
-  );
+  const [monthlyAmount, setMonthlyAmount] = useState<number>(0);
   const [monthlySchedule, setMonthlySchedule] = useState<string>("");
 
-  const [yearlyAmount, setYearlyAmount] = useState<number>(
-    targetAmount?.target?.need || 0
-  );
+  const [yearlyAmount, setYearlyAmount] = useState<number>(0);
   const [yearlySchedule, setYearlySchedule] = useState<string>("");
+
+  useEffect(() => {
+    if (activeCategoryTarget?.target) {
+      const target = activeCategoryTarget.target;
+
+      if (target.type === "weekly") {
+        setWeeklyAmount(target.need);
+        setWeeklySchedule(target.every);
+      } else if (target.type === "monthly") {
+        setMonthlyAmount(target.need);
+        setMonthlySchedule(target.on.toString());
+      } else if (target.type === "yearly") {
+        setYearlyAmount(target.need);
+        setYearlySchedule(target.date.toISOString().split("T")[0]);
+      }
+    } else {
+      setWeeklyAmount(0);
+      setWeeklySchedule("");
+      setMonthlyAmount(0);
+      setMonthlySchedule("");
+      setYearlyAmount(0);
+      setYearlySchedule("");
+    }
+  }, [activeCategoryTarget]);
 
   const handleSave = (period: string) => {
     if (!selectedCategory || !selectedGroup) {
@@ -137,7 +164,7 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
             aside to stay on track over time.
           </p>
         </div>
-        <Tabs defaultValue={targetAmount?.target?.type || "weekly"}>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="w-full">
             <TabsTrigger value="weekly">Weekly</TabsTrigger>
             <TabsTrigger value="monthly">Monthly</TabsTrigger>
