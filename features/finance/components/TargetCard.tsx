@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/select";
 import { useBudgetStore } from "@/lib/store";
 import toast from "react-hot-toast";
-import { useState } from "react";
 
 type TargetCardProps = {
   title: string;
