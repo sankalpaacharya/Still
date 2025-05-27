@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Target, Trash } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -13,54 +14,98 @@ import {
 } from "@/components/ui/select";
 import { useBudgetStore } from "@/lib/store";
 import toast from "react-hot-toast";
+import { MonthlyTarget, WeeklyTarget, YearlyTarget } from "@/lib/store";
 
 type TargetCardProps = {
   title: string;
 };
 
 export function TargetCard({ title = "Select a category" }: TargetCardProps) {
-  const { selectedCategory, selectedGroup, updateCategoryTarget } =
+  const { selectedCategory, selectedGroup, updateCategoryTarget, groups } =
     useBudgetStore((state) => state);
+  console.log("render", selectedCategory, selectedGroup);
+
+  const targetAmount = groups
+    .find((grp) => grp.name === selectedGroup)
+    ?.categories.find((category) => category.name === selectedCategory);
+  console.log("this is target ammount", targetAmount);
+
+  const [weeklyAmount, setWeeklyAmount] = useState<number>(
+    targetAmount?.target?.need || 0
+  );
+  const [weeklySchedule, setWeeklySchedule] = useState<string>("");
+
+  const [monthlyAmount, setMonthlyAmount] = useState<number>(
+    targetAmount?.target?.need || 0
+  );
+  const [monthlySchedule, setMonthlySchedule] = useState<string>("");
+
+  const [yearlyAmount, setYearlyAmount] = useState<number>(
+    targetAmount?.target?.need || 0
+  );
+  const [yearlySchedule, setYearlySchedule] = useState<string>("");
 
   const handleSave = (period: string) => {
     if (!selectedCategory || !selectedGroup) {
       return;
     }
 
-    const amountInput = document.getElementById(
-      `target-amount-${period}`
-    ) as HTMLInputElement;
-    const scheduleSelect = document.getElementById(`schedule-${period}`) as
-      | HTMLSelectElement
-      | HTMLInputElement;
-
-    const amount = Number(amountInput?.value || 0);
-    const schedule = scheduleSelect?.value || "";
-
-    let target = null;
+    let target: WeeklyTarget | YearlyTarget | MonthlyTarget | null = null;
 
     if (period === "weekly") {
+      if (!weeklySchedule) {
+        toast.error("Please select a day for weekly target");
+        return;
+      }
       target = {
-        type: "weekly" as const,
-        need: amount,
-        every: schedule,
+        type: "weekly",
+        need: weeklyAmount,
+        every: weeklySchedule,
       };
     } else if (period === "monthly") {
+      if (!monthlySchedule) {
+        toast.error("Please select a date for monthly target");
+        return;
+      }
       target = {
-        type: "monthly" as const,
-        need: amount,
-        on: Number(schedule),
+        type: "monthly",
+        need: monthlyAmount,
+        on: Number(monthlySchedule),
       };
     } else if (period === "yearly") {
+      if (!yearlySchedule) {
+        toast.error("Please select a target date");
+        return;
+      }
       target = {
-        type: "yearly" as const,
-        need: amount,
-        date: new Date(schedule),
+        type: "yearly",
+        need: yearlyAmount,
+        date: new Date(yearlySchedule),
       };
     }
 
     updateCategoryTarget(selectedGroup, selectedCategory, target);
     toast.success("Target saved successfully");
+  };
+
+  const handleDelete = () => {
+    if (selectedCategory && selectedGroup) {
+      updateCategoryTarget(selectedGroup, selectedCategory, null);
+      toast.success("Target deleted");
+    }
+  };
+
+  const handleCancel = (period: string) => {
+    if (period === "weekly") {
+      setWeeklyAmount(0);
+      setWeeklySchedule("");
+    } else if (period === "monthly") {
+      setMonthlyAmount(0);
+      setMonthlySchedule("");
+    } else if (period === "yearly") {
+      setYearlyAmount(0);
+      setYearlySchedule("");
+    }
   };
 
   const weekDays = [
@@ -92,7 +137,7 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
             aside to stay on track over time.
           </p>
         </div>
-        <Tabs defaultValue="weekly">
+        <Tabs defaultValue={targetAmount?.target?.type || "weekly"}>
           <TabsList className="w-full">
             <TabsTrigger value="weekly">Weekly</TabsTrigger>
             <TabsTrigger value="monthly">Monthly</TabsTrigger>
@@ -103,11 +148,16 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
           <TabsContent value="weekly" className="space-y-4 mt-2">
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="target-amount-weekly">I need (₹)</Label>
-              <Input type="number" id="target-amount-weekly" defaultValue="0" />
+              <Input
+                type="number"
+                id="target-amount-weekly"
+                value={weeklyAmount}
+                onChange={(e) => setWeeklyAmount(Number(e.target.value) || 0)}
+              />
             </div>
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="schedule-weekly">Every</Label>
-              <Select>
+              <Select value={weeklySchedule} onValueChange={setWeeklySchedule}>
                 <SelectTrigger id="schedule-weekly" className="w-full">
                   <SelectValue placeholder="Select day" />
                 </SelectTrigger>
@@ -124,33 +174,14 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
               <Button
                 className="text-red-500 hover:bg-red-600/20"
                 variant="ghost"
-                onClick={() => {
-                  if (selectedCategory && selectedGroup) {
-                    updateCategoryTarget(selectedGroup, selectedCategory, null);
-                    toast.success("Target deleted");
-                  }
-                }}
+                onClick={handleDelete}
                 disabled={!selectedCategory || !selectedGroup}
               >
                 <Trash />
                 Delete
               </Button>
               <div className="space-x-3">
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    // Reset input fields
-                    const amountInput = document.getElementById(
-                      "target-amount-weekly"
-                    ) as HTMLInputElement;
-                    if (amountInput) amountInput.value = "0";
-
-                    const scheduleSelect = document.getElementById(
-                      "schedule-weekly"
-                    ) as HTMLSelectElement;
-                    if (scheduleSelect) scheduleSelect.value = "";
-                  }}
-                >
+                <Button variant="ghost" onClick={() => handleCancel("weekly")}>
                   Cancel
                 </Button>
                 <Button
@@ -170,12 +201,17 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
               <Input
                 type="number"
                 id="target-amount-monthly"
-                defaultValue="0"
+                value={monthlyAmount}
+                onChange={(e) => setMonthlyAmount(Number(e.target.value) || 0)}
+                min="0"
               />
             </div>
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="schedule-monthly">On the</Label>
-              <Select>
+              <Select
+                value={monthlySchedule}
+                onValueChange={setMonthlySchedule}
+              >
                 <SelectTrigger id="schedule-monthly" className="w-full">
                   <SelectValue placeholder="Select date" />
                 </SelectTrigger>
@@ -199,33 +235,14 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
               <Button
                 className="text-red-500 hover:bg-red-600/20"
                 variant="ghost"
-                onClick={() => {
-                  if (selectedCategory && selectedGroup) {
-                    updateCategoryTarget(selectedGroup, selectedCategory, null);
-                    toast.success("Target deleted");
-                  }
-                }}
+                onClick={handleDelete}
                 disabled={!selectedCategory || !selectedGroup}
               >
                 <Trash />
                 Delete
               </Button>
               <div className="space-x-3">
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    // Reset input fields
-                    const amountInput = document.getElementById(
-                      "target-amount-monthly"
-                    ) as HTMLInputElement;
-                    if (amountInput) amountInput.value = "0";
-
-                    const scheduleSelect = document.getElementById(
-                      "schedule-monthly"
-                    ) as HTMLSelectElement;
-                    if (scheduleSelect) scheduleSelect.value = "";
-                  }}
-                >
+                <Button variant="ghost" onClick={() => handleCancel("monthly")}>
                   Cancel
                 </Button>
                 <Button
@@ -242,43 +259,35 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
           <TabsContent value="yearly" className="space-y-4 mt-2">
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="target-amount-yearly">I need (₹)</Label>
-              <Input type="number" id="target-amount-yearly" defaultValue="0" />
+              <Input
+                type="number"
+                id="target-amount-yearly"
+                value={yearlyAmount}
+                onChange={(e) => setYearlyAmount(Number(e.target.value) || 0)}
+                min="0"
+              />
             </div>
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="schedule-yearly">Target Date</Label>
-              <Input type="date" id="schedule-yearly" />
+              <Input
+                type="date"
+                id="schedule-yearly"
+                value={yearlySchedule}
+                onChange={(e) => setYearlySchedule(e.target.value)}
+              />
             </div>
             <div className="flex justify-between">
               <Button
                 className="text-red-500 hover:bg-red-600/20"
                 variant="ghost"
-                onClick={() => {
-                  if (selectedCategory && selectedGroup) {
-                    updateCategoryTarget(selectedGroup, selectedCategory, null);
-                    toast.success("Target deleted");
-                  }
-                }}
+                onClick={handleDelete}
                 disabled={!selectedCategory || !selectedGroup}
               >
                 <Trash />
                 Delete
               </Button>
               <div className="space-x-3">
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    // Reset input fields
-                    const amountInput = document.getElementById(
-                      "target-amount-yearly"
-                    ) as HTMLInputElement;
-                    if (amountInput) amountInput.value = "0";
-
-                    const scheduleInput = document.getElementById(
-                      "schedule-yearly"
-                    ) as HTMLInputElement;
-                    if (scheduleInput) scheduleInput.value = "";
-                  }}
-                >
+                <Button variant="ghost" onClick={() => handleCancel("yearly")}>
                   Cancel
                 </Button>
                 <Button

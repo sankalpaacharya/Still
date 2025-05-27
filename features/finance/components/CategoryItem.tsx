@@ -98,9 +98,7 @@ export function CategoryItem({
 
   return (
     <TableRow
-      className={`text-md hover:bg-gray-100/10 cursor-pointer transition-colors ${
-        isSelected ? "bg-blue-50/20" : ""
-      }`}
+      className={`text-md hover:bg-gray-100/10 cursor-pointer transition-colors`}
       onClick={handleClick}
     >
       <TableCell className="w-[61%] p-5">
