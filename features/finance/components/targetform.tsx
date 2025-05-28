@@ -72,6 +72,7 @@ export function TargetForm({
         <Input
           type="date"
           value={schedule}
+          className="w-full"
           onChange={(e) => onScheduleChange(e.target.value)}
         />
       );
@@ -103,7 +104,6 @@ export function TargetForm({
           type="number"
           value={amount}
           onChange={(e) => onAmountChange(Number(e.target.value) || 0)}
-          min="0"
         />
       </div>
 

@@ -7,7 +7,10 @@ type TotalAmountStatusProps = {
   onAssign?: () => void;
 };
 
-export function TotalAmountStatus({ amount, onAssign }: TotalAmountStatusProps) {
+export function TotalAmountStatus({
+  amount,
+  onAssign,
+}: TotalAmountStatusProps) {
   return (
     <div className="flex justify-center mb-6">
       <div className="p-4 bg-green-700 rounded-md shadow-2xl flex w-72 justify-between">

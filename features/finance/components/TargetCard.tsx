@@ -4,6 +4,7 @@ import { Target } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTargetForm } from "@/hooks/useTargetForm";
 import { TargetForm } from "./targetform";
+import { Button } from "@/components/ui/button";
 
 type TargetCardProps = {
   title: string;
@@ -17,12 +18,16 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
     saveTarget,
     deleteTarget,
     resetForm,
+    error,
     canSave,
   } = useTargetForm();
 
   const [activeTab, setActiveTab] = useState<"weekly" | "monthly" | "yearly">(
     "weekly"
   );
+
+  console.log(currentCategory?.target);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (currentCategory?.target) {
@@ -31,6 +36,11 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
       );
     }
   }, [currentCategory?.target]);
+  useEffect(() => {
+    if (error) {
+      setIsEditing(true);
+    }
+  }, [error]);
 
   return (
     <div className="w-full max-w-md p-5 rounded-md bg-gray-500/10 min-h-96">
@@ -51,37 +61,51 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
             aside to stay on track over time.
           </p>
         </div>
+        {!isEditing ? (
+          <Button onClick={() => setIsEditing(true)}>
+            {currentCategory?.target === null ? "Create Target" : "Edit Target"}
+          </Button>
+        ) : (
+          <Tabs
+            value={activeTab}
+            onValueChange={(value) => setActiveTab(value as typeof activeTab)}
+          >
+            <TabsList className="w-full">
+              <TabsTrigger value="weekly">Weekly</TabsTrigger>
+              <TabsTrigger value="monthly">Monthly</TabsTrigger>
+              <TabsTrigger value="yearly">Yearly</TabsTrigger>
+            </TabsList>
 
-        <Tabs
-          value={activeTab}
-          onValueChange={(value) => setActiveTab(value as typeof activeTab)}
-        >
-          <TabsList className="w-full">
-            <TabsTrigger value="weekly">Weekly</TabsTrigger>
-            <TabsTrigger value="monthly">Monthly</TabsTrigger>
-            <TabsTrigger value="yearly">Yearly</TabsTrigger>
-          </TabsList>
-
-          {(["weekly", "monthly", "yearly"] as const).map((targetType) => (
-            <TabsContent key={targetType} value={targetType}>
-              <TargetForm
-                type={targetType}
-                amount={formData[targetType].amount}
-                schedule={formData[targetType].schedule}
-                onAmountChange={(amount) =>
-                  updateFormData(targetType, "amount", amount)
-                }
-                onScheduleChange={(schedule) =>
-                  updateFormData(targetType, "schedule", schedule)
-                }
-                onSave={() => saveTarget(targetType)}
-                onDelete={deleteTarget}
-                onCancel={() => resetForm(targetType)}
-                canSave={canSave}
-              />
-            </TabsContent>
-          ))}
-        </Tabs>
+            {(["weekly", "monthly", "yearly"] as const).map((targetType) => (
+              <TabsContent key={targetType} value={targetType}>
+                <TargetForm
+                  type={targetType}
+                  amount={formData[targetType].amount}
+                  schedule={formData[targetType].schedule}
+                  onAmountChange={(amount) =>
+                    updateFormData(targetType, "amount", amount)
+                  }
+                  onScheduleChange={(schedule) =>
+                    updateFormData(targetType, "schedule", schedule)
+                  }
+                  onSave={() => {
+                    saveTarget(targetType);
+                    setIsEditing(false);
+                  }}
+                  onDelete={() => {
+                    deleteTarget();
+                    setIsEditing(false);
+                  }}
+                  onCancel={() => {
+                    resetForm(targetType);
+                    setIsEditing(false);
+                  }}
+                  canSave={canSave}
+                />
+              </TabsContent>
+            ))}
+          </Tabs>
+        )}
       </div>
     </div>
   );

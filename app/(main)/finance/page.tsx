@@ -19,14 +19,13 @@ import toast from "react-hot-toast";
 type Props = {};
 
 export default function Page({}: Props) {
-  const [availableAmount, setAvailableAmount] = useState(2889);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { groups, selectedCategory, selectedGroup } = useBudgetStore(
     (state) => state
   );
 
-  const { addCategoryGroup } = useBudgetStore((state) => state);
+  const { addCategoryGroup, totalAmount } = useBudgetStore((state) => state);
 
   const handleAssignAmount = () => {
     console.log("Assigning amount");
@@ -67,10 +66,7 @@ export default function Page({}: Props) {
   return (
     <div className="space-y-6">
       <div className="flex w-[65%] justify-center">
-        <TotalAmountStatus
-          amount={availableAmount}
-          onAssign={handleAssignAmount}
-        />
+        <TotalAmountStatus amount={totalAmount} onAssign={handleAssignAmount} />
       </div>
 
       <div className="flex gap-6">

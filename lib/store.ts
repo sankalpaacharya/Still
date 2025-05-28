@@ -54,11 +54,7 @@ const initialState: Budget = {
         categories: [
           {
             name: 'Groceries',
-            target: {
-              type: 'weekly',
-              need: 1500,
-              every: 'Saturday'
-            },
+            target: null,
             assign: 1000,
             activity: -200, 
             available: 800
@@ -113,7 +109,7 @@ export type Actions = {
 
 
 export const useBudgetStore = create<Budget & Actions>((set, get) => ({
-    totalAmount: 0,
+    totalAmount: 5000,
     groups: initialState.groups,
     readyToAssign: 0,
     selectedCategory: null,

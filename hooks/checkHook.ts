@@ -1,6 +1,6 @@
 import { useBudgetStore } from "@/lib/store";
 import { WeeklyTarget,MonthlyTarget,YearlyTarget } from "@/lib/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /*
 this hook will provide, functionality
@@ -20,15 +20,33 @@ const [monthlySchedule, setMonthlySchedule] = useState<string>("");
 const [yearlyAmount, setYearlyAmount] = useState<number>(0);
 const [yearlySchedule, setYearlySchedule] = useState<string>("");
 
-let form = {
-
-}
-
 
 const selectedTarget = groups
 .find((grp) => grp.name === selectedGroup)
 ?.categories.find((category) => category.name === selectedCategory);
 
+
+useEffect(()=>{
+
+//do something 
+
+},[selectedTarget])
+
+
+function updateForm(){
+
+}
+
+function saveTarget(){
+
+}
+
+
+function deleteTarget(){
+    if(selectedGroup && selectedCategory){
+        updateCategoryTarget(selectedGroup,selectedCategory,null)
+    }
+}
 
 
 return  {

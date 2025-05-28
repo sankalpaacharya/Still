@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useBudgetStore } from '@/lib/store';
-import { Target, WeeklyTarget, MonthlyTarget, YearlyTarget } from '@/lib/store';
+import { Target } from '@/lib/store';
 import toast from 'react-hot-toast';
-
-
-
 
 export type TargetFormData = {
     weekly: { amount: number; schedule: string };
@@ -20,7 +17,7 @@ export function useTargetForm() {
   const currentCategory = groups
     .find((grp) => grp.name === selectedGroup)
     ?.categories.find((category) => category.name === selectedCategory);
-
+  const [error,setError] = useState(false)
   const [formData, setFormData] = useState<TargetFormData>({
     weekly: { amount: 0, schedule: '' },
     monthly: { amount: 0, schedule: '' },
@@ -46,7 +43,6 @@ export function useTargetForm() {
       
       setFormData(newFormData);
     } else {
-      // Reset form if no target
       setFormData({
         weekly: { amount: 0, schedule: '' },
         monthly: { amount: 0, schedule: '' },
@@ -73,6 +69,7 @@ export function useTargetForm() {
     
     if (!data.schedule) {
       toast.error(`Please select a ${targetType} schedule`);
+      setError(true);
       return;
     }
 
@@ -88,11 +85,13 @@ export function useTargetForm() {
 
     updateCategoryTarget(selectedGroup, selectedCategory, target);
     toast.success('Target saved successfully');
+    setError(false)
   };
 
   const deleteTarget = () => {
     if (selectedCategory && selectedGroup) {
       updateCategoryTarget(selectedGroup, selectedCategory, null);
+      setError(false)
       toast.success('Target deleted');
     }
   };
@@ -111,6 +110,7 @@ export function useTargetForm() {
     saveTarget,
     deleteTarget,
     resetForm,
+    error,
     canSave: Boolean(selectedCategory && selectedGroup)
   };
 }
