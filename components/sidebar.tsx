@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { initBudgetStoreSync } from "@/lib/zustand-sync";
 import {
   Home as HomeIcon,
   Menu,
@@ -61,7 +62,12 @@ export default function Sidebar() {
   const location = usePathname();
   const [user, setUser] = useState<User>();
   const router = useRouter();
+  useEffect(() => {
+    console.log("is this called sidebar");
+    const unsub = initBudgetStoreSync();
 
+    return () => unsub();
+  }, []);
   useEffect(() => {
     const getUser = async () => {
       const supabase = await createClient();
