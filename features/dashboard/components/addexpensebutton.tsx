@@ -11,44 +11,37 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ComboboxDemo } from "./addexpenseselect";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { CategoryGroupCombobox } from "./addexpenseselect";
 import { Plus } from "lucide-react";
 import { DatePicker } from "@/components/ui/date-picker";
-
-const categories = [
-  "Food & Drink",
-  "Groceries",
-  "Shopping",
-  "Entertainment",
-  "Transport",
-  "Bills",
-  "Health",
-  "Travel",
-  "Other",
-];
+import { addExpenseAction } from "../actions";
+import { useBudgetStore } from "@/lib/store";
+import toast from "react-hot-toast";
 
 export default function AddExpenseModalButton() {
+  const { addActivity } = useBudgetStore((state) => state);
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
+  const [categoryGroup, setCategoryGroup] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!description || !amount || !category) {
-      // toast.error("Please fill all required fields");
-      return;
+      toast.error("Fill all details");
     }
 
-    // Reset form
+    addExpenseAction({
+      category,
+      categoryGroup,
+      amount: parseInt(amount),
+      description,
+      date,
+    });
+    addActivity(categoryGroup, category, parseInt(amount));
+
     setDescription("");
     setAmount("");
     setCategory("");
@@ -86,7 +79,6 @@ export default function AddExpenseModalButton() {
               <Input
                 id="amount"
                 type="number"
-                step="0.01"
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
@@ -95,7 +87,11 @@ export default function AddExpenseModalButton() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="category">Category</Label>
-              <ComboboxDemo />
+              <CategoryGroupCombobox
+                selectedCategory={category}
+                setCategoryGroup={setCategoryGroup}
+                setSelectedCategory={setCategory}
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="date">Date</Label>

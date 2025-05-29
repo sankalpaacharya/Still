@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Target } from "lucide-react";
+import { Target, SquarePen } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTargetForm } from "@/hooks/useTargetForm";
 import { TargetForm } from "./targetform";
@@ -63,7 +63,14 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
         </div>
         {!isEditing ? (
           <Button onClick={() => setIsEditing(true)}>
-            {currentCategory?.target === null ? "Create Target" : "Edit Target"}
+            {currentCategory?.target === null ? (
+              <span className="flex items-center gap-2">Create Target</span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <SquarePen />
+                Edit Target
+              </span>
+            )}
           </Button>
         ) : (
           <Tabs
@@ -97,7 +104,6 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
                     setIsEditing(false);
                   }}
                   onCancel={() => {
-                    resetForm(targetType);
                     setIsEditing(false);
                   }}
                   canSave={canSave}

@@ -1,7 +1,7 @@
 "use client";
-import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState, Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -18,9 +18,18 @@ import {
 } from "@/components/ui/popover";
 import { useBudgetStore } from "@/lib/store";
 
-export function ComboboxDemo() {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+type props = {
+  setSelectedCategory: Dispatch<SetStateAction<string>>;
+  setCategoryGroup: Dispatch<SetStateAction<string>>;
+  selectedCategory: string;
+};
+
+export function CategoryGroupCombobox({
+  selectedCategory,
+  setSelectedCategory,
+  setCategoryGroup,
+}: props) {
+  const [open, setOpen] = useState(false);
   const { groups } = useBudgetStore((state) => state);
 
   return (
@@ -32,7 +41,7 @@ export function ComboboxDemo() {
           aria-expanded={open}
           className="w-full justify-between"
         >
-          {value || "Select category..."}
+          {selectedCategory || "Select category..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -48,15 +57,20 @@ export function ComboboxDemo() {
                     key={category.name}
                     value={category.name}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
+                      setSelectedCategory(
+                        currentValue === selectedCategory ? "" : currentValue
+                      );
                       setOpen(false);
+                      setCategoryGroup(group.name);
                     }}
                   >
                     {category.name}
                     <Check
                       className={cn(
                         "ml-auto h-4 w-4",
-                        value === category.name ? "opacity-100" : "opacity-0"
+                        selectedCategory === category.name
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
                   </CommandItem>

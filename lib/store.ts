@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { subscribeWithSelector } from 'zustand/middleware'
 
 export type WeeklyTarget = {
     type: 'weekly'
@@ -108,7 +109,8 @@ export type Actions = {
 }
 
 
-export const useBudgetStore = create<Budget & Actions>((set, get) => ({
+export const useBudgetStore = create<Budget & Actions>()(
+    subscribeWithSelector((set, get) => ({
     totalAmount: 5000,
     groups: initialState.groups,
     readyToAssign: 0,
@@ -295,3 +297,5 @@ export const useBudgetStore = create<Budget & Actions>((set, get) => ({
         }))
     }
 }))
+)
+

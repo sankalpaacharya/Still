@@ -17,6 +17,5 @@ export const signInWithGoogle = async ()=>{
     if(data.url){
     redirect(data.url)
     }
-    
 
 }
