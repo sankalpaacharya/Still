@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   TotalAmountStatus,
   BudgetTable,
@@ -15,12 +15,21 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBudgetStore } from "@/lib/store";
 import toast from "react-hot-toast";
+import { hydrateBugetStore } from "@/lib/zustand-sync";
 
 type Props = {};
 
 export default function Page({}: Props) {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  useEffect(() => {
+    const hydarate = async () => {
+      await hydrateBugetStore();
+    };
+    hydarate();
+  }, []);
+
   const { groups, selectedCategory, selectedGroup } = useBudgetStore(
     (state) => state
   );

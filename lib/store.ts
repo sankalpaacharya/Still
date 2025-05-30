@@ -111,8 +111,8 @@ export type Actions = {
 
 export const useBudgetStore = create<Budget & Actions>()(
     subscribeWithSelector((set, get) => ({
-    totalAmount: 5000,
-    groups: initialState.groups,
+    totalAmount: 0,
+    groups: [],
     readyToAssign: 0,
     selectedCategory: null,
     selectedGroup: null,
