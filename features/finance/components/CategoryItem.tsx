@@ -4,6 +4,13 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { useBudgetStore } from "@/lib/store";
 import { Input } from "@/components/ui/input";
 import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Trash } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 type CategoryItemProps = {
   name: string;
@@ -37,6 +44,7 @@ export function CategoryItem({
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const cellRef = useRef<HTMLTableCellElement>(null);
+  const [categoryName, setCategoryName] = useState("");
 
   const isSelected = selectedCategory === name && selectedGroup === groupName;
 
@@ -102,7 +110,33 @@ export function CategoryItem({
       onClick={handleClick}
     >
       <TableCell className="w-[61%] p-5">
-        {name}
+        <Popover>
+          <PopoverTrigger asChild>
+            <span className="hover:underline cursor-pointer">{name}</span>
+          </PopoverTrigger>
+          <PopoverContent>
+            <Input
+              onChange={(e) => setCategoryName(e.target.value)}
+              placeholder="Enter category name"
+            />
+            <div className="flex justify-between items-center mt-5">
+              <Button variant={"secondary"}>
+                <Trash />
+                Delete
+              </Button>
+              <div className=" space-x-2">
+                <Button variant="outline">Cancel</Button>
+                <Button
+                  onClick={() =>
+                    updateCategory(groupName, name, { name: categoryName })
+                  }
+                >
+                  Ok
+                </Button>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
         <Progress value={progressPercentage} className="mt-2 h-1" />
       </TableCell>
 

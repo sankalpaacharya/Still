@@ -1,6 +1,6 @@
 "use client";
 import { Blinds } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -17,7 +17,8 @@ import {
 import { CategoryTable } from "./categorytable";
 import { Category, useBudgetStore } from "@/lib/store";
 import { AddCategoryPopover } from "./AddCategoryPopover";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { Trash } from "lucide-react";
 
 type CategoryGroupProps = {
   icon?: React.ReactNode;
@@ -34,7 +35,9 @@ export function CategoryGroup({
 }: CategoryGroupProps) {
   const [categoryName, setCategoryName] = useState<string>("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { updateCategoryGroup, groups } = useBudgetStore((state) => state);
+  const { updateCategoryGroup, groups, deleteCategoryGroup } = useBudgetStore(
+    (state) => state
+  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCategoryName(e.target.value);
@@ -52,7 +55,6 @@ export function CategoryGroup({
       return;
     }
 
-    // Only check for duplicates if the name has actually changed
     if (groups.some((item) => item.name === categoryName.trim())) {
       toast.error("Name already exists");
       return;
@@ -105,11 +107,20 @@ export function CategoryGroup({
                       onChange={handleInputChange}
                       placeholder="Enter category group name"
                     />
-                    <div className="mt-3 space-x-2">
-                      <Button variant="outline" onClick={handleCancel}>
-                        Cancel
+                    <div className="flex justify-between items-center mt-5">
+                      <Button
+                        variant={"secondary"}
+                        onClick={() => deleteCategoryGroup(name)}
+                      >
+                        <Trash />
+                        Delete
                       </Button>
-                      <Button onClick={updateCategoryName}>Ok</Button>
+                      <div className=" space-x-2">
+                        <Button variant="outline" onClick={handleCancel}>
+                          Cancel
+                        </Button>
+                        <Button onClick={updateCategoryName}>Ok</Button>
+                      </div>
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -121,10 +132,7 @@ export function CategoryGroup({
           </div>
         </AccordionTrigger>
         <AccordionContent className="border rounded-md rounded-t-none">
-          <CategoryTable
-            categories={categories}
-            groupName={name}
-          />
+          <CategoryTable categories={categories} groupName={name} />
         </AccordionContent>
       </AccordionItem>
     </Accordion>

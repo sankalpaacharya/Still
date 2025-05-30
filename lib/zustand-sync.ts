@@ -35,6 +35,7 @@ export async function hydrateBugetStore(){
   const supabase = await createClient()
   const {data:{user}} =  await supabase.auth.getUser()
   const {data} = await supabase.from("finance").select("data").eq("user_id",user?.id).single()
+  console.log(data)
   useBudgetStore.setState({
     ...data?.data
   })

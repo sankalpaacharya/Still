@@ -8,7 +8,6 @@ export type TargetFormData = {
     monthly: { amount: number; schedule: string };
     yearly: { amount: number; schedule: string };
   };
-  
 
 export function useTargetForm() {
   const { selectedCategory, selectedGroup, updateCategoryTarget, groups } = 
@@ -37,7 +36,7 @@ export function useTargetForm() {
       } else if (target.type === 'yearly') {
         newFormData.yearly = { 
           amount: target.need, 
-          schedule: target.date.toISOString().split('T')[0] 
+          schedule: new Date(target.date).toISOString().split('T')[0] 
         };
       }
       
