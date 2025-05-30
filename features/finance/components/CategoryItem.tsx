@@ -34,9 +34,8 @@ export function CategoryItem({
   const setSelectedCategory = useBudgetStore(
     (state) => state.setSelectedCategory
   );
-  const { updateCategory, selectedGroup, selectedCategory } = useBudgetStore(
-    (state) => state
-  );
+  const { updateCategory, selectedGroup, selectedCategory, deleteCategory } =
+    useBudgetStore((state) => state);
 
   const [assignHover, setAssignHover] = useState(false);
   const [assgin, setAssgin] = useState<number>(assigned);
@@ -120,7 +119,10 @@ export function CategoryItem({
               placeholder="Enter category name"
             />
             <div className="flex justify-between items-center mt-5">
-              <Button variant={"secondary"}>
+              <Button
+                variant={"secondary"}
+                onClick={() => deleteCategory(groupName, name)}
+              >
                 <Trash />
                 Delete
               </Button>
