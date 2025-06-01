@@ -5,9 +5,15 @@ import { cn } from "@/lib/utils";
 
 interface ChatInputProps {
   className?: string;
+  onMessageSend: (message: string) => void;
+  disabled?: boolean;
 }
 
-export default function ChatInput({ className }: ChatInputProps) {
+export default function ChatInput({
+  className,
+  onMessageSend,
+  disabled,
+}: ChatInputProps) {
   const [message, setMessage] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -22,6 +28,7 @@ export default function ChatInput({ className }: ChatInputProps) {
 
   const handleSendMessage = () => {
     if (message.trim()) {
+      onMessageSend(message);
       console.log("Message sent:", message);
       setMessage("");
     }
@@ -47,6 +54,7 @@ export default function ChatInput({ className }: ChatInputProps) {
           placeholder="Ask anything"
           className="w-full bg-transparent border-0 min-h-14 max-h-[300px] px-5 py-4 text-white focus:outline-none placeholder:text-gray-500 resize-none"
           rows={1}
+          disabled={disabled}
         />
 
         <div className="flex items-center justify-between px-5 py-3 border-t border-gray-800/50">

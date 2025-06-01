@@ -4,9 +4,9 @@ import Markdown from "react-markdown";
 import { Sparkles } from "lucide-react";
 import remarkGfm from "remark-gfm";
 
-type Props = { isUser: boolean };
+type Props = { isUser: boolean; message: string };
 
-export default function Conversation({ isUser }: Props) {
+export default function Message({ isUser, message }: Props) {
   const essay = `# Nepal: A Land of Natural Beauty and Cultural Heritage
 Nepal, a landlocked country located in South Asia, is known for its breathtaking landscapes, rich cultural heritage, and ancient history. Nestled between India and China, it is home to some of the world's tallest peaks, including the majestic Mount Everest, the highest point on Earth.
 
@@ -23,12 +23,7 @@ Nepal is a melting pot of cultures and traditions. The country is home to variou
       {isUser ? (
         <div className="flex justify-end">
           <div className="bg-gray-400/10 p-3 rounded-xl max-w-md border flex shadow-md">
-            <p className="text-lg font-medium">
-              Please find me the best hotel in Gandhinagar. Lorem ipsum dolor
-              sit amet consectetur adipisicing elit. Voluptatibus voluptate
-              itaque excepturi, saepe voluptates voluptatem deserunt qui, minima
-              vitae nisi, ipsum esse a?
-            </p>
+            <p className="text-lg font-medium">{message}</p>
           </div>
         </div>
       ) : (
@@ -39,7 +34,7 @@ Nepal is a melting pot of cultures and traditions. The country is home to variou
               <p className="font-bold">Sanku</p>
             </div>
             <div className="prose prose-slate dark:prose-invert prose-md text-white prose-li:marker:text-pink-400 prose-p:font-semibold max-w-4xl px-3">
-              <Markdown remarkPlugins={[remarkGfm]}>{essay}</Markdown>
+              <Markdown remarkPlugins={[remarkGfm]}>{message}</Markdown>
             </div>
           </div>
         </div>

@@ -1,17 +1,154 @@
-import React from "react";
+"use client";
+import React, { useEffect, useRef, useState } from "react";
 import ChatInput from "@/features/chat/components/chat-input";
-import Conversation from "@/features/chat/components/coversation";
+import Message from "@/features/chat/components/message";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 type Props = {};
 
+type ChatHistory = {
+  role: "user" | "ai";
+  message: string;
+};
+
 export default function Page() {
+  const [response, setResponse] = useState<string>("");
+  const responseRef = useRef<string>("");
+  const [chatHistory, setChatHistory] = useState<ChatHistory[]>([]);
+  const [isStreaming, setIsStreaming] = useState(false);
+
+  // Ref for the current user message (latest exchange start)
+  const currentUserMessageRef = useRef<HTMLDivElement>(null);
+
+  // Function to scroll to current user message
+  const scrollToCurrentExchange = () => {
+    setTimeout(() => {
+      currentUserMessageRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start", // Shows user message at top, AI response below
+        inline: "nearest",
+      });
+    }, 100);
+  };
+
+  const handleMessageSend = async (message: string) => {
+    setResponse("");
+    responseRef.current = "";
+    setIsStreaming(true);
+
+    // Add user message to chat history
+    setChatHistory((prev) => [...prev, { role: "user", message }]);
+
+    // Scroll to focus on this new exchange
+    scrollToCurrentExchange();
+
+    try {
+      await fetchEventSource("http://localhost:8000/chat-stream", {
+        onmessage(ev) {
+          if (ev.data === "") {
+            setResponse((prev) => prev + "\n");
+            responseRef.current += "\n";
+          } else {
+            setResponse((prev) => prev + ev.data);
+            responseRef.current += ev.data;
+          }
+        },
+        onclose() {
+          setChatHistory((prev) => [
+            ...prev,
+            { role: "ai", message: responseRef.current },
+          ]);
+          setIsStreaming(false);
+        },
+        onerror(err) {
+          console.error("EventSource error:", err);
+          setIsStreaming(false);
+          setChatHistory((prev) => [
+            ...prev,
+            {
+              role: "ai",
+              message: "Sorry, there was an error processing your request.",
+            },
+          ]);
+        },
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: message }),
+      });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setIsStreaming(false);
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          role: "ai",
+          message: "Sorry, there was an error connecting to the server.",
+        },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    console.log(chatHistory);
+  }, [chatHistory]);
+
   return (
     <div className="flex flex-col h-full">
-      <ScrollArea className="flex-1  h-[800px] p-10">
-        <Conversation isUser={false} />
-      </ScrollArea>
-      <ChatInput />
+      {chatHistory.length === 0 && (
+        <section className="flex-1">
+          <div className="flex flex-col justify-center items-center h-full gap-10">
+            <h2 className="text-3xl font-bold">How can I help you?</h2>
+            <ChatInput
+              onMessageSend={handleMessageSend}
+              disabled={isStreaming}
+            />
+          </div>
+        </section>
+      )}
+      {chatHistory.length !== 0 && (
+        <div className="flex flex-col h-full">
+          <ScrollArea className="flex-1 h-[800px] p-10">
+            <div className="space-y-6">
+              {chatHistory.map((chat, index) => {
+                // Check if this is the latest user message
+                const isLatestUserMessage =
+                  chat.role === "user" && index === chatHistory.length - 1;
+
+                // Check if this is the latest user message when AI is streaming
+                const isCurrentUserMessage =
+                  chat.role === "user" &&
+                  isStreaming &&
+                  index === chatHistory.length - 1;
+
+                return (
+                  <div
+                    key={index}
+                    ref={
+                      isLatestUserMessage || isCurrentUserMessage
+                        ? currentUserMessageRef
+                        : null
+                    }
+                  >
+                    <Message
+                      isUser={chat.role === "user"}
+                      message={chat.message}
+                    />
+                  </div>
+                );
+              })}
+
+              {/* Show streaming AI response */}
+              {isStreaming && (
+                <Message isUser={false} message={response || "Thinking..."} />
+              )}
+            </div>
+          </ScrollArea>
+          <ChatInput onMessageSend={handleMessageSend} disabled={isStreaming} />
+        </div>
+      )}
     </div>
   );
 }

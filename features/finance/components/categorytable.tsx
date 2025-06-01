@@ -47,7 +47,11 @@ export function CategoryTable({
             assigned={category.assign}
             spent={category.activity}
             available={category.available}
-            progressPercentage={60}
+            progressPercentage={
+              category.target?.need
+                ? (category.assign / category.target.need) * 100
+                : 0
+            }
             groupName={groupName}
           />
         ))}
