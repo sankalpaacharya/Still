@@ -49,9 +49,7 @@ export default function ChatInput({ className }: ChatInputProps) {
           rows={1}
         />
 
-        {/* Bottom action bar */}
         <div className="flex items-center justify-between px-5 py-3 border-t border-gray-800/50">
-          {/* Left side buttons */}
           <div className="flex items-center space-x-3">
             <button className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-indigo-400 rounded-full hover:bg-white/5 transition-colors">
               <Search size={18} />
@@ -60,7 +58,6 @@ export default function ChatInput({ className }: ChatInputProps) {
               <Lightbulb size={18} />
             </button>
           </div>
-          {/* Right side send button */}
           <button
             onClick={handleSendMessage}
             disabled={!message.trim()}
