@@ -8,7 +8,6 @@ type Props = { isUser: boolean };
 
 export default function Conversation({ isUser }: Props) {
   const essay = `# Nepal: A Land of Natural Beauty and Cultural Heritage
-
 Nepal, a landlocked country located in South Asia, is known for its breathtaking landscapes, rich cultural heritage, and ancient history. Nestled between India and China, it is home to some of the world's tallest peaks, including the majestic Mount Everest, the highest point on Earth.
 
 ## Geography and Natural Beauty
