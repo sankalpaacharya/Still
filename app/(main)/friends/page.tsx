@@ -22,7 +22,6 @@ type Friend = {
 };
 
 export default function FriendsPage() {
-  // Sample friends data based on your screenshot
   const [friends] = useState<Friend[]>([
     {
       id: "1",

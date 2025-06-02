@@ -251,7 +251,7 @@ export function CategoryItem({
             available < 0 ? "text-destructive" : "text-green-600"
           }`}
         >
-          ₹{available}
+          ₹{assignedValue - spent}
         </span>
       </TableCell>
     </TableRow>

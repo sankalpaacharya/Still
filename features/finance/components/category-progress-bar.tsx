@@ -11,5 +11,5 @@ export default function CategoryProgressBar({
   const fundProgress = (assign / target) * 100;
   console.log(target);
 
-  return <Progress value={fundProgress} className="mt-2 h-1" />;
+  return <Progress value={fundProgress} className="mt-2 h-1 " />;
 }

@@ -12,7 +12,7 @@ const unsub = useBudgetStore.subscribe((state)=>({totalAmount:state.totalAmount,
         JSON.stringify(newState.groups) !== JSON.stringify(prevState.groups)
       ){
         try{
-            const {data,error} = await supabase.from("finance").update({data:newState}).eq("user_id",user?.id)
+            const {error} = await supabase.from("finance").update({data:newState}).eq("user_id",user?.id)
           if(error){
             toast.error("error while syncing data")
             console.log("error while syncing",error)
