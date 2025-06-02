@@ -18,15 +18,13 @@ export default function Page() {
   const [chatHistory, setChatHistory] = useState<ChatHistory[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
 
-  // Ref for the current user message (latest exchange start)
   const currentUserMessageRef = useRef<HTMLDivElement>(null);
 
-  // Function to scroll to current user message
   const scrollToCurrentExchange = () => {
     setTimeout(() => {
       currentUserMessageRef.current?.scrollIntoView({
         behavior: "smooth",
-        block: "start", // Shows user message at top, AI response below
+        block: "start",
         inline: "nearest",
       });
     }, 100);
@@ -37,10 +35,8 @@ export default function Page() {
     responseRef.current = "";
     setIsStreaming(true);
 
-    // Add user message to chat history
     setChatHistory((prev) => [...prev, { role: "user", message }]);
 
-    // Scroll to focus on this new exchange
     scrollToCurrentExchange();
 
     try {

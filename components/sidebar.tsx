@@ -11,6 +11,7 @@ import {
   Sparkles,
   LogOut,
   CreditCard,
+  Bell,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -30,6 +31,7 @@ const navItems: NavItem[] = [
     label: "Dashboard",
     href: "/dashboard",
   },
+  { icon: Bell, label: "Notification", href: "/notification" },
   {
     icon: DollarSign,
     label: "Finance",
@@ -45,11 +47,7 @@ const navItems: NavItem[] = [
     label: "Friends",
     href: "/friends",
   },
-  {
-    icon: CreditCard,
-    label: "Account",
-    href: "/account",
-  },
+  { icon: CreditCard, label: "Account", href: "/account" },
 ];
 
 interface User {
