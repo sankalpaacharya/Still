@@ -198,7 +198,6 @@ export function CategoryItem({
         </div>
       </TableCell>
 
-      {/* Assigned Amount Cell */}
       <TableCell className="w-[13%] text-right p-4">
         {isEditingAmount ? (
           <div className="flex items-center justify-end gap-2">

@@ -8,7 +8,6 @@ export const signInWithGoogle = async ()=>{
         provider:"google",
         options:{
             redirectTo:"http://localhost:3000/auth/callback"
-            
         }
     })
     if(error){

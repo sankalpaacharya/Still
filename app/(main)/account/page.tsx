@@ -2,9 +2,7 @@ import React from "react";
 import { AccountCard } from "@/features/account/component/account-card";
 import AddAccountModal from "@/features/account/add-account-modal";
 
-type Props = {};
-
-export default function Page({}: Props) {
+export default function Page() {
   return (
     <div className="">
       <div className="mb-6 flex justify-between items-center">

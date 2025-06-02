@@ -17,9 +17,7 @@ import { useBudgetStore } from "@/lib/store";
 import toast from "react-hot-toast";
 import { hydrateBugetStore } from "@/lib/zustand-sync";
 
-type Props = {};
-
-export default function Page({}: Props) {
+export default function Page() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 

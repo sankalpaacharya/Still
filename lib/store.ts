@@ -42,57 +42,6 @@ export type Budget = {
     selectedGroup: string | null
 }
 
-
-
-const initialState: Budget = {
-    totalAmount: 5000,
-    readyToAssign: 2000,
-    selectedCategory: null,
-    selectedGroup: null,
-    groups: [
-      {
-        name: 'Essentials',
-        categories: [
-          {
-            name: 'Groceries',
-            target: null,
-            assign: 1000,
-            activity: -200, 
-            available: 800
-          },
-          {
-            name: 'Transport',
-            target: {
-              type: 'monthly',
-              need: 1000,
-              on: 1 
-            },
-            assign: 500,
-            activity: -100,
-            available: 400
-          }
-        ]
-      },
-      {
-        name: 'Savings',
-        categories: [
-          {
-            name: 'Emergency Fund',
-            target: {
-              type: 'yearly',
-              need: 12000,
-              date: new Date('2025-12-31')
-            },
-            assign: 500,
-            activity: 0,
-            available: 500
-          }
-        ]
-      }
-    ]
-  }
-  
-
 export type Actions = {
     addCategoryGroup: (name: string) => void
     addCategory: (categoryGroupName: string, categoryName: string) => void

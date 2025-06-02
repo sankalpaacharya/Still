@@ -82,7 +82,6 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Current Target Display */}
         {hasTarget && targetDisplay && !isEditing ? (
           <div className="p-4 bg-muted/50 rounded-lg">
             <div className="flex items-center justify-between mb-3">
@@ -133,7 +132,6 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
           </div>
         ) : null}
 
-        {/* No Target State */}
         {!hasTarget && !isEditing ? (
           <div className="text-center py-8 px-4 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/20">
             <Target className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />

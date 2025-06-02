@@ -5,8 +5,6 @@ import Message from "@/features/chat/components/message";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 
-type Props = {};
-
 type ChatHistory = {
   role: "user" | "ai";
   message: string;
