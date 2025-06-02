@@ -17,13 +17,10 @@ const unsub = useBudgetStore.subscribe((state)=>({totalAmount:state.totalAmount,
             toast.error("error while syncing data")
             console.log("error while syncing",error)
           }
-
-
         }
         catch(e){
             console.log("syncing error",e)
         }
-
       }
 })
 return unsub
