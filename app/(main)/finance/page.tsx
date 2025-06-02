@@ -5,14 +5,7 @@ import {
   BudgetTable,
   TargetCard,
 } from "@/features/finance/components";
-import { Plus } from "lucide-react";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+
 import { useBudgetStore } from "@/lib/store";
 import toast from "react-hot-toast";
 import { hydrateBugetStore } from "@/lib/zustand-sync";
@@ -49,7 +42,6 @@ export default function Page() {
         return;
       }
       addCategoryGroup(newCategoryName.trim());
-
       console.log(`Created new category: ${newCategoryName.trim()}`);
 
       setNewCategoryName("");
@@ -75,60 +67,10 @@ export default function Page() {
       <div className="flex w-[65%] justify-center">
         <TotalAmountStatus amount={totalAmount} onAssign={handleAssignAmount} />
       </div>
-
       <div className="flex gap-6">
-        <div className="flex flex-col w-full space-y-6">
-          <div>
-            <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-              <PopoverTrigger asChild>
-                <button className="hover:bg-indigo-600/30 rounded-md p-2 px-3 flex items-center gap-2 w-fit transition-all duration-200 cursor-pointer">
-                  <Plus size={18} />
-                  <span>Add Category</span>
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-80">
-                <div className="space-y-4">
-                  <div>
-                    <label
-                      htmlFor="category-name"
-                      className="block text-sm font-medium mb-2"
-                    >
-                      Category Name
-                    </label>
-                    <Input
-                      id="category-name"
-                      type="text"
-                      placeholder="Enter category name..."
-                      value={newCategoryName}
-                      onChange={(e) => setNewCategoryName(e.target.value)}
-                      onKeyDown={handleKeyPress}
-                      autoFocus
-                    />
-                  </div>
-                  <div className="flex justify-end space-x-2">
-                    <Button
-                      variant="secondary"
-                      onClick={handleCancelCategory}
-                      size="sm"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={handleCreateCategory}
-                      disabled={!newCategoryName.trim()}
-                      size="sm"
-                    >
-                      Add Category
-                    </Button>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-
+        <div className="flex flex-col w-full">
           <BudgetTable />
         </div>
-
         <TargetCard
           title={
             selectedCategory

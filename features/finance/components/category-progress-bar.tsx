@@ -9,7 +9,10 @@ export default function CategoryProgressBar({
   assign,
 }: Props) {
   const fundProgress = (assign / target) * 100;
-  console.log(target);
-
-  return <Progress value={fundProgress} className="mt-2 h-1 " />;
+  return (
+    <Progress
+      value={fundProgress > 100 ? 100 : fundProgress}
+      className="mt-2 h-1 "
+    />
+  );
 }
