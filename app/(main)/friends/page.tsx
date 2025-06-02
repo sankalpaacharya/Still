@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -16,7 +15,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 type Friend = {
   id: string;
   name: string;
-  avatar: string; // First letter of name
+  avatar: string;
   category: string;
   amount: string;
   streak: number;
@@ -24,7 +23,7 @@ type Friend = {
 
 export default function FriendsPage() {
   // Sample friends data based on your screenshot
-  const [friends, setFriends] = useState<Friend[]>([
+  const [friends] = useState<Friend[]>([
     {
       id: "1",
       name: "Alex Johnson",
@@ -71,7 +70,7 @@ export default function FriendsPage() {
       <div className="mb-6">
         <h2 className="text-3xl font-bold text-gradient">Friends</h2>
         <p className="mt-1 text-muted-foreground">
-          Keep track of your friends' spending habits
+          Keep track of your friends&apos; spending habits
         </p>
       </div>
 
@@ -146,7 +145,7 @@ export default function FriendsPage() {
           ) : (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
-                No friends found matching "{searchQuery}"
+                No friends found matching &ldquo;{searchQuery}&rdquo;
               </p>
             </div>
           )}

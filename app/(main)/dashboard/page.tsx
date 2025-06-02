@@ -5,9 +5,7 @@ import FriendsActivity from "@/features/dashboard/components/friendsactivity";
 import { createClient } from "@/utils/supabase/server";
 import AddExpenseModalButton from "@/features/dashboard/components/addexpensebutton";
 
-type Props = {};
-
-export default async function page({}: Props) {
+export default async function page() {
   const supabase = await createClient();
   const {
     data: { user },
