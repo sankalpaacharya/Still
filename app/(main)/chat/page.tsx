@@ -107,11 +107,8 @@ export default function Page() {
           <ScrollArea className="flex-1 h-[800px] p-10">
             <div className="space-y-6">
               {chatHistory.map((chat, index) => {
-                // Check if this is the latest user message
                 const isLatestUserMessage =
                   chat.role === "user" && index === chatHistory.length - 1;
-
-                // Check if this is the latest user message when AI is streaming
                 const isCurrentUserMessage =
                   chat.role === "user" &&
                   isStreaming &&
@@ -134,7 +131,6 @@ export default function Page() {
                 );
               })}
 
-              {/* Show streaming AI response */}
               {isStreaming && (
                 <Message isUser={false} message={response || "Thinking..."} />
               )}

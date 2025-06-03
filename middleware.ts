@@ -13,7 +13,6 @@ export async function middleware(request: NextRequest) {
 
   const isPublicRoute = publicRoutes.includes(pathname)
   
-  // Only check authentication for non-public routes
   if (!isPublicRoute) {
     
     // Redirect to login if user is not authenticated

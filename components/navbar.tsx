@@ -1,0 +1,51 @@
+import React from "react";
+import { Dumbbell } from "lucide-react";
+import { Button } from "./ui/button";
+import Link from "next/link";
+import { Separator } from "./ui/separator";
+
+type Props = {};
+
+const navLinks = [
+  {
+    name: "About",
+    href: "/about",
+  },
+  {
+    name: "Features",
+    href: "/features",
+  },
+  {
+    name: "Pricing",
+    href: "/pricing",
+  },
+  {
+    name: "FAQ's",
+    href: "/faq",
+  },
+];
+
+export default function Navbar({}: Props) {
+  return (
+    <>
+      <nav className="wrapper p-5 py-7 flex justify-between items-center">
+        <h2 className="flex items-center text-3xl">
+          <Dumbbell className="mr-2" />
+          GymBro
+        </h2>
+        <div className="flex gap-4 items-center">
+          {navLinks.map((link) => (
+            <Link key={link.href} href={link.href}>
+              {link.name}
+            </Link>
+          ))}
+
+          <Button className="cursor-pointer bg-indigo-700 hover:bg-indigo-800 text-white">
+            Get started
+          </Button>
+        </div>
+      </nav>
+      <Separator />
+    </>
+  );
+}

@@ -47,7 +47,7 @@ export function CategoryTable({
             assigned={category.assign}
             spent={category.activity}
             available={category.available}
-            target={category.target?.need ?? 0}
+            target={category.target}
             groupName={groupName}
           />
         ))}

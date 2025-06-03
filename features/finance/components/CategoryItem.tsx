@@ -6,6 +6,8 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Trash, Edit3, Check, X } from "lucide-react";
 import CategoryProgressBar from "./category-progress-bar";
+import { categoryNeedText } from "@/utils/categoryNeedText";
+import { Target } from "@/lib/store";
 
 type CategoryItemProps = {
   name: string;
@@ -13,7 +15,7 @@ type CategoryItemProps = {
   spent: number;
   available: number;
   groupName?: string;
-  target: number;
+  target: Target;
   onAssignedChange?: (newValue: number) => void;
 };
 
@@ -168,7 +170,12 @@ export function CategoryItem({
               </div>
             ) : (
               <div className="flex items-center justify-between flex-1">
-                <span className="font-medium">{name}</span>
+                <div className="flex w-full justify-between">
+                  <p className="font-medium">{name}</p>
+                  <p className="pr-5 md:pr-10 text-muted-foreground">
+                    {categoryNeedText({ target, assign: assignedValue })}
+                  </p>
+                </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Button
                     size="sm"
@@ -193,7 +200,7 @@ export function CategoryItem({
           <CategoryProgressBar
             activity={spent}
             assign={assignedValue}
-            target={target}
+            target={target?.need ?? 0}
           />
         </div>
       </TableCell>

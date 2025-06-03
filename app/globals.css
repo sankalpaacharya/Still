@@ -114,6 +114,10 @@
 
 }
 
+@theme {
+  --color-glass: #474060;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -126,6 +130,9 @@
 
 @layer utilities{
 
+  .wrapper{
+    @apply max-w-[1400px] mx-auto
+  }
   .text-gradient {
     @apply bg-gradient-to-br from-purple-300 via-blue-300 to-pink-300 bg-clip-text text-transparent;
   }
@@ -133,4 +140,29 @@
     @apply rounded-xl backdrop-blur-md bg-white/10 border border-white/20 shadow-lg;
   }
 
+}
+
+.glassmorphism {
+  backdrop-filter: blur(16px);
+  opacity: 1;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #6366F1 0%, #9F7AEA 50%, #F472B6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: bold;
+}
+
+.gradient-bg {
+  width: 200px;
+  height: 200px;
+  background: rgb(2,0,36);
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgb(1, 21, 152) 53%, rgba(255,0,140,1) 100%);
+  position: absolute;
+  z-index: -1;
+  filter: blur(100px);
+  opacity: 0.7;
+  pointer-events: none;
 }

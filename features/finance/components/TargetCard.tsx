@@ -7,6 +7,7 @@ import { TargetForm } from "./targetform";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatDate } from "date-fns";
 
 type TargetCardProps = {
   title: string;
