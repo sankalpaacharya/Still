@@ -31,8 +31,7 @@ export function CategoryItem({
   const setSelectedCategory = useBudgetStore(
     (state) => state.setSelectedCategory
   );
-  const { updateCategory, selectedGroup, selectedCategory, deleteCategory } =
-    useBudgetStore((state) => state);
+  const { updateCategory, deleteCategory } = useBudgetStore((state) => state);
 
   const [assignedValue, setAssignedValue] = useState(assigned);
   const [inputValue, setInputValue] = useState(assigned.toString());

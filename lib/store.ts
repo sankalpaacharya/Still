@@ -20,10 +20,14 @@ export type YearlyTarget = {
 }
 
 export type Target = WeeklyTarget | MonthlyTarget | YearlyTarget | null
-export type MonthlyBudget = {
-    
-}
 
+export type MonthlyBudget = {
+    [month: string]: { // "2025-3"
+      assign: string;
+      activity: string;
+    };
+  };
+ 
 export type Category = {
     name: string
     target: Target

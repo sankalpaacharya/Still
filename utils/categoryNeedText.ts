@@ -18,7 +18,8 @@ export function categoryNeedText({target,assign}:CategoryNeedParams){
     if(target.type==="yearly"){
         if(target.need>assign){
         const monthDifference = differenceInMonths(target.date, new Date())
-        return `$${target.need/monthDifference} more needed this month`
+        console.log("this is month difference",monthDifference,assign)
+        return `$${(target.need)/monthDifference} more needed this month`
         }
     }
 
