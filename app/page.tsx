@@ -274,7 +274,7 @@ const Footer = () => {
               <h3 className="text-lg font-medium">Join our newsletter</h3>
               <p className="text-sm text-gray-400">
                 Sign up to our mailing list below and be the first to know about
-                new updates. Don't worry, we hate spam too.
+                new updates. Don&rsquo;t worry, we hate spam too.
               </p>
               <div className="flex gap-2">
                 <input
