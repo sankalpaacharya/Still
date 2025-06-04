@@ -5,15 +5,11 @@ import {
   BudgetTable,
   TargetCard,
 } from "@/features/finance/components";
-
 import { useBudgetStore } from "@/lib/store";
-import toast from "react-hot-toast";
 import { hydrateBugetStore } from "@/lib/zustand-sync";
+import { MonthSelector } from "@/features/finance/components/months-selector";
 
 export default function Page() {
-  const [newCategoryName, setNewCategoryName] = useState("");
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-
   useEffect(() => {
     const hydarate = async () => {
       await hydrateBugetStore();
@@ -21,50 +17,18 @@ export default function Page() {
     hydarate();
   }, []);
 
-  const { groups, selectedCategory, selectedGroup } = useBudgetStore(
-    (state) => state
-  );
+  const { selectedCategory, selectedGroup } = useBudgetStore((state) => state);
 
-  const { addCategoryGroup, totalAmount } = useBudgetStore((state) => state);
+  const { totalAmount } = useBudgetStore((state) => state);
 
   const handleAssignAmount = () => {
     console.log("Assigning amount");
   };
 
-  const handleCreateCategory = () => {
-    if (newCategoryName.trim()) {
-      if (
-        groups.some(
-          (categoryGroup) => categoryGroup.name === newCategoryName.trim()
-        )
-      ) {
-        toast.error("name already exists");
-        return;
-      }
-      addCategoryGroup(newCategoryName.trim());
-      console.log(`Created new category: ${newCategoryName.trim()}`);
-
-      setNewCategoryName("");
-      setIsPopoverOpen(false);
-    }
-  };
-
-  const handleCancelCategory = () => {
-    setNewCategoryName("");
-    setIsPopoverOpen(false);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleCreateCategory();
-    } else if (e.key === "Escape") {
-      handleCancelCategory();
-    }
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="flex w-[65%] justify-center">
+    <div className="space-y-6 h-full">
+      <div className="flex gap-40">
+        <MonthSelector />
         <TotalAmountStatus amount={totalAmount} onAssign={handleAssignAmount} />
       </div>
       <div className="flex gap-6">

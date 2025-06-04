@@ -1,8 +1,8 @@
 import React from "react";
 import { Dumbbell } from "lucide-react";
-import { Button } from "./ui/button";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
+import { Button } from "./ui/button";
 
 type Props = {};
 
@@ -31,7 +31,7 @@ export default function Navbar({}: Props) {
       <nav className="wrapper p-5 py-7 flex justify-between items-center">
         <h2 className="flex items-center text-3xl">
           <Dumbbell className="mr-2" />
-          GymBro
+          Fixyourspend
         </h2>
         <div className="flex gap-4 items-center">
           {navLinks.map((link) => (
@@ -40,9 +40,11 @@ export default function Navbar({}: Props) {
             </Link>
           ))}
 
-          <Button className="cursor-pointer bg-indigo-700 hover:bg-indigo-800 text-white">
-            Get started
-          </Button>
+          <Link href={"/login"}>
+            <Button className="cursor-pointer bg-indigo-700 hover:bg-indigo-800 text-white">
+              Get started
+            </Button>
+          </Link>
         </div>
       </nav>
       <Separator />

@@ -20,13 +20,15 @@ export type YearlyTarget = {
 }
 
 export type Target = WeeklyTarget | MonthlyTarget | YearlyTarget | null
+export type MonthlyBudget = {
+    
+}
 
 export type Category = {
     name: string
     target: Target
     assign: number
     activity: number
-    available: number
 }
 
 export type CategoryGroup = {
@@ -87,7 +89,6 @@ export const useBudgetStore = create<Budget & Actions>()(
                             target: null,
                             assign: 0,
                             activity: 0,
-                            available: 0
                         }
                     ]
                 }
@@ -155,7 +156,6 @@ export const useBudgetStore = create<Budget & Actions>()(
                                 return { 
                                     ...category, 
                                     assign: newAssign,
-                                    available: newAssign + category.activity
                                 }
                             }
                             return category

@@ -60,63 +60,65 @@ export function BudgetTable({}: BudgetTableProps) {
   };
 
   return (
-    <ScrollArea className="h-[45rem] px-4">
-      <div className="space-y-3 mb-5 flex-1">
-        {groups.map((category) => (
-          <CategoryGroup
-            key={category.name}
-            name={category.name}
-            categories={category.categories}
-          />
-        ))}
-      </div>
-      <div className="pt-2">
-        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" className="gap-2 w-full p-5">
-              <Plus size={16} />
-              Add Category
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80">
-            <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="category-name"
-                  className="block text-sm font-medium mb-2"
-                >
-                  Category Name
-                </label>
-                <Input
-                  id="category-name"
-                  type="text"
-                  placeholder="Enter category name..."
-                  value={newCategoryName}
-                  onChange={(e) => setNewCategoryName(e.target.value)}
-                  onKeyDown={handleKeyPress}
-                  autoFocus
-                />
+    <div className="h-full">
+      <ScrollArea className="overflow-auto">
+        <div className="space-y-3 mb-5 flex-1">
+          {groups.map((category) => (
+            <CategoryGroup
+              key={category.name}
+              name={category.name}
+              categories={category.categories}
+            />
+          ))}
+        </div>
+        <div className="pt-2">
+          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="sm" className="gap-2 w-full p-5">
+                <Plus size={16} />
+                Add Category
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="category-name"
+                    className="block text-sm font-medium mb-2"
+                  >
+                    Category Name
+                  </label>
+                  <Input
+                    id="category-name"
+                    type="text"
+                    placeholder="Enter category name..."
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                    autoFocus
+                  />
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    variant="secondary"
+                    onClick={handleCancelCategory}
+                    size="sm"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleCreateCategory}
+                    disabled={!newCategoryName.trim()}
+                    size="sm"
+                  >
+                    Add Category
+                  </Button>
+                </div>
               </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="secondary"
-                  onClick={handleCancelCategory}
-                  size="sm"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleCreateCategory}
-                  disabled={!newCategoryName.trim()}
-                  size="sm"
-                >
-                  Add Category
-                </Button>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-    </ScrollArea>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </ScrollArea>
+    </div>
   );
 }
