@@ -19,7 +19,6 @@ export default function TaskCard() {
       const newWorkouts = prev.map((w) =>
         w.id === id ? { ...w, isComplete: !w.isComplete } : w
       );
-      const workout = newWorkouts.find((w) => w.id === id);
       return newWorkouts;
     });
   };

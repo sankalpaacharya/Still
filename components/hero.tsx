@@ -3,7 +3,6 @@ import { Button } from "./ui/button";
 import { BicepsFlexed } from "lucide-react";
 import { Instrument_Serif } from "next/font/google";
 import TaskCard from "./taskcard";
-type Props = {};
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument",
@@ -12,7 +11,7 @@ const instrumentSerif = Instrument_Serif({
   style: ["italic"],
 });
 
-export default function Hero({}: Props) {
+export default function Hero() {
   return (
     <main className="wrapper flex justify-center py-20 flex-col items-center space-y-5 relative">
       <p className="border border-gray-800 px-3 rounded-full shadow-xl inline-flex items-center gap-2">

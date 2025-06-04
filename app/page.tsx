@@ -39,23 +39,25 @@ const IntroducingSenku = () => {
       className="wrapper flex justify-center flex-col items-center mt-10 px-4 md:px-6 space-y-3"
     >
       <h2 className="text-xl font-bold uppercase gradient-text">
-        What Sanku want's to say
+        What Sanku want&rsquo;s to say
       </h2>
       <h1 className="text-2xl md:text-4xl text-center max-w-lg">
         Hey, I can understand{" "}
         <span className="text-[#4D4D4D]">
-          Tracking workouts, pushing PRs, and staying consistent isn't easy.{" "}
-        </span>
+          Tracking workouts, pushing PRs, and staying consistent isn&rsquo;t
+          easy.
+        </span>{" "}
         <span className="text-[#4D4D4D]">
           Your AI-powered training partner keeps you on track, motivated, and
-          making real progress with every rep and set.{" "}
+          making real progress with every rep and set.
         </span>
         <br />
-        That's where Gymbro comes in.{" "}
+        That&rsquo;s where Gymbro comes in.
       </h1>
     </motion.div>
   );
 };
+
 const HowItWroks = () => {
   const content = [
     {
