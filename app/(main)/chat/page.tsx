@@ -91,6 +91,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col h-full">
+      <div className="gradient-bg absolute" />
       {chatHistory.length === 0 && (
         <section className="flex-1">
           <div className="flex flex-col justify-center items-center h-full gap-10">
