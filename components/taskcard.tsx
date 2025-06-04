@@ -5,15 +5,13 @@ import { FiPlus } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 
-type Props = {};
-
 const workoutRoutine = [
   { id: 1, name: "Benchpress", weight: 40, rep: 10, isComplete: false },
   { id: 2, name: "Dumbbell Press", weight: 25, rep: 10, isComplete: false },
   { id: 3, name: "Deadlift", weight: 100, rep: 8, isComplete: false },
 ];
 
-export default function TaskCard({}: Props) {
+export default function TaskCard() {
   const [workouts, setWorkouts] = useState(workoutRoutine);
 
   const toggleComplete = (id: number) => {

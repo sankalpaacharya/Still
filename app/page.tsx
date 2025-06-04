@@ -338,7 +338,6 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        {/* Bottom Section with Credits */}
       </div>
 
       <div className="flex flex-col md:flex-row justify-between items-center mt-16 pt-8">

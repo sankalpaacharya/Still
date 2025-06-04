@@ -4,8 +4,6 @@ import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 
-type Props = {};
-
 const navLinks = [
   {
     name: "About",
@@ -25,7 +23,7 @@ const navLinks = [
   },
 ];
 
-export default function Navbar({}: Props) {
+export default function Navbar() {
   return (
     <>
       <nav className="wrapper p-5 py-7 flex justify-between items-center">

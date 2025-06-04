@@ -23,9 +23,7 @@ export default function Hero({}: Props) {
         <h2 className="text-5xl md:text-6xl font-extrabold text-center">
           Your AI-powered gym partner,
           <br />
-          <span className={`${instrumentSerif.className}`}>
-            train smarter,{" "}
-          </span>
+          <span className={`${instrumentSerif.className}`}>train smarter,</span>
           get stronger.
         </h2>
       </div>
