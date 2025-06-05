@@ -7,7 +7,9 @@ export default async function Layout({ children }: Props) {
   return (
     <div className="flex gap-10">
       <Sidebar />
-      <main className="flex-grow mx-auto p-5 h-screen">{children}</main>
+      <main className="flex-grow mx-auto h-screen relative p-5">
+        {children}
+      </main>
     </div>
   );
 }

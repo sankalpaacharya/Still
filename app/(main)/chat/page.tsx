@@ -4,6 +4,8 @@ import ChatInput from "@/features/chat/components/chat-input";
 import Message from "@/features/chat/components/message";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { ShootingStars } from "@/components/ui/shooting-stars";
+import { StarsBackground } from "@/components/ui/stars-background";
 
 type ChatHistory = {
   role: "user" | "ai";
@@ -91,55 +93,63 @@ export default function Page() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="gradient-bg absolute" />
-      {chatHistory.length === 0 && (
-        <section className="flex-1">
-          <div className="flex flex-col justify-center items-center h-full gap-10">
-            <h2 className="text-3xl font-bold">How can I help you?</h2>
+      <div className="gradient-bg absolute inset-0 z-0" />
+      <StarsBackground starDensity={0.000016} />
+      <ShootingStars />
+      <div className="relative z-20 flex flex-col h-full">
+        {chatHistory.length === 0 && (
+          <section className="flex-1">
+            <div className="flex flex-col justify-center items-center h-full gap-10">
+              <h2 className="text-3xl font-bold">How can I help you?</h2>
+              <ChatInput
+                onMessageSend={handleMessageSend}
+                disabled={isStreaming}
+              />
+            </div>
+          </section>
+        )}
+
+        {chatHistory.length !== 0 && (
+          <div className="flex flex-col h-full">
+            <ScrollArea className="flex-1 h-[800px] p-10">
+              <div className="space-y-6">
+                {chatHistory.map((chat, index) => {
+                  const isLatestUserMessage =
+                    chat.role === "user" && index === chatHistory.length - 1;
+                  const isCurrentUserMessage =
+                    chat.role === "user" &&
+                    isStreaming &&
+                    index === chatHistory.length - 1;
+
+                  return (
+                    <div
+                      key={index}
+                      ref={
+                        isLatestUserMessage || isCurrentUserMessage
+                          ? currentUserMessageRef
+                          : null
+                      }
+                    >
+                      <Message
+                        isUser={chat.role === "user"}
+                        message={chat.message}
+                      />
+                    </div>
+                  );
+                })}
+
+                {isStreaming && (
+                  <Message isUser={false} message={response || "Thinking..."} />
+                )}
+              </div>
+            </ScrollArea>
             <ChatInput
               onMessageSend={handleMessageSend}
               disabled={isStreaming}
             />
           </div>
-        </section>
-      )}
-      {chatHistory.length !== 0 && (
-        <div className="flex flex-col h-full">
-          <ScrollArea className="flex-1 h-[800px] p-10">
-            <div className="space-y-6">
-              {chatHistory.map((chat, index) => {
-                const isLatestUserMessage =
-                  chat.role === "user" && index === chatHistory.length - 1;
-                const isCurrentUserMessage =
-                  chat.role === "user" &&
-                  isStreaming &&
-                  index === chatHistory.length - 1;
-
-                return (
-                  <div
-                    key={index}
-                    ref={
-                      isLatestUserMessage || isCurrentUserMessage
-                        ? currentUserMessageRef
-                        : null
-                    }
-                  >
-                    <Message
-                      isUser={chat.role === "user"}
-                      message={chat.message}
-                    />
-                  </div>
-                );
-              })}
-
-              {isStreaming && (
-                <Message isUser={false} message={response || "Thinking..."} />
-              )}
-            </div>
-          </ScrollArea>
-          <ChatInput onMessageSend={handleMessageSend} disabled={isStreaming} />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

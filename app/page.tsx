@@ -15,7 +15,7 @@ const instrumentSerif = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
-export default function Home() {
+export default function Page() {
   return (
     <>
       <Navbar></Navbar>

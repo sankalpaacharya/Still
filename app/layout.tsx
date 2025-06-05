@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gymbro",
+  title: "fixyourspend",
   description: "gymbro your personal AI Gym Partner",
 };
 
