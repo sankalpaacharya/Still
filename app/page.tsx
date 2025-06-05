@@ -119,7 +119,7 @@ const HowItWroks = () => {
   );
 };
 
-export const Testimonials = () => {
+const Testimonials = () => {
   return (
     <div className="wrapper flex flex-col justify-center items-center mt-20 md:mt-30 space-y-5 px-4 md:px-6">
       <span className="border shadow-xl border-gray-800 px-3 py-1 rounded-full">
