@@ -3,6 +3,7 @@ import { CategoryGroup } from "./CategoryGroup";
 import { useBudgetStore } from "@/lib/store";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Plus } from "lucide-react";
+import { addCategoryGroupAction } from "../actions/categories";
 import {
   Popover,
   PopoverTrigger,
@@ -28,21 +29,32 @@ export function BudgetTable({}: BudgetTableProps) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
 
-  const handleCreateCategory = () => {
-    if (newCategoryName.trim()) {
-      if (
-        groups.some(
-          (categoryGroup) => categoryGroup.name === newCategoryName.trim()
-        )
-      ) {
-        toast.error("name already exists");
-        return;
-      }
-      addCategoryGroup(newCategoryName.trim());
-      console.log(`Created new category: ${newCategoryName.trim()}`);
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim()) return;
 
-      setNewCategoryName("");
-      setIsPopoverOpen(false);
+    const categoryName = newCategoryName.trim();
+
+    if (groups.some((categoryGroup) => categoryGroup.name === categoryName)) {
+      toast.error("name already exists");
+      return;
+    }
+
+    addCategoryGroup(categoryName);
+    setNewCategoryName("");
+    setIsPopoverOpen(false);
+
+    try {
+      const result = await addCategoryGroupAction({ title: categoryName });
+
+      if (!result.error) {
+        console.log(`Created new category: ${categoryName}`);
+        toast.success("Category created successfully");
+      } else {
+        toast.error("fuck sick some error");
+      }
+    } catch (error) {
+      console.error("Error creating category:", error);
+      toast.error("Failed to create category");
     }
   };
 

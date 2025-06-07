@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBudgetStore } from "@/lib/store";
 import toast from "react-hot-toast";
+import { addCategoryAction } from "../actions/categories";
 
 type AddCategoryPopoverProps = {
   className?: string;
@@ -38,9 +39,8 @@ export function AddCategoryPopover({
     setIsOpen(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const trimmedName = categoryName.trim();
-
     if (!trimmedName) {
       toast.error("Category name cannot be empty");
       return;
@@ -53,8 +53,16 @@ export function AddCategoryPopover({
 
     try {
       addCategory(categoryGroupName, trimmedName);
-      toast.success("Category added successfully");
       resetForm();
+      const result = await addCategoryAction({
+        categoryGroupName,
+        title: trimmedName,
+      });
+      if (result.error) {
+        toast.error(result.message);
+      } else {
+        toast.success(result.message);
+      }
     } catch (error) {
       toast.error("Failed to add category");
     }
