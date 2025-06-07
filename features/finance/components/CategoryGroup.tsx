@@ -18,6 +18,7 @@ import { CategoryTable } from "./categorytable";
 import { Category, useBudgetStore } from "@/lib/store";
 import { AddCategoryPopover } from "./AddCategoryPopover";
 import toast from "react-hot-toast";
+import { updateCategoryGroupAction } from "../actions/categories";
 import { Trash } from "lucide-react";
 
 type CategoryGroupProps = {
@@ -43,7 +44,7 @@ export function CategoryGroup({
     setCategoryName(e.target.value);
   };
 
-  const updateCategoryName = () => {
+  const updateCategoryName = async () => {
     if (!categoryName.trim()) {
       toast.error("Name cannot be empty");
       return;
@@ -59,7 +60,10 @@ export function CategoryGroup({
       toast.error("Name already exists");
       return;
     }
-
+    await updateCategoryGroupAction({
+      title: name,
+      newTitle: categoryName.trim(),
+    });
     updateCategoryGroup(name, categoryName.trim());
     setIsPopoverOpen(false);
     setCategoryName("");

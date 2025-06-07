@@ -8,6 +8,8 @@ import { Trash, Edit3, Check, X } from "lucide-react";
 import CategoryProgressBar from "./category-progress-bar";
 import { categoryNeedText } from "@/utils/categoryNeedText";
 import { Target } from "@/lib/store";
+import { updateCategoryAction } from "../actions/categories";
+import toast from "react-hot-toast";
 
 type CategoryItemProps = {
   name: string;
@@ -80,6 +82,7 @@ export function CategoryItem({
     const numValue = parseFloat(inputValue) || 0;
     setAssignedValue(numValue);
     updateCategory(groupName, name, { assign: numValue });
+
     if (onAssignedChange) {
       onAssignedChange(numValue);
     }
@@ -91,8 +94,18 @@ export function CategoryItem({
     setIsEditingAmount(false);
   };
 
-  const handleNameSave = () => {
+  const handleNameSave = async () => {
     if (nameValue.trim() && nameValue !== name) {
+      const result = await updateCategoryAction({
+        title: name,
+        categoryGroupName: groupName,
+        newTitle: nameValue,
+      });
+      if (result.error) {
+        toast.error(result.message);
+      } else {
+        toast.success(result.message);
+      }
       updateCategory(groupName, name, { name: nameValue.trim() });
     }
     setIsEditingName(false);

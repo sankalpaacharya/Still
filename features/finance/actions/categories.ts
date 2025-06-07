@@ -11,13 +11,13 @@ type Category = {
 }
 
 type UpdateCategoryGroup = {
-    id: string
     title: string
+    newTitle:string
 }
 
 type UpdateCategory = {
-    id: string
     title: string
+    newTitle:string
     categoryGroupName?: string
 }
 
@@ -73,7 +73,7 @@ export async function addCategoryAction({title, categoryGroupName}: Category): P
         : {error: false, message: "new category has been added"}
 }
 
-export async function updateCategoryGroupAction({id, title}: UpdateCategoryGroup): Promise<ActionResult> {
+export async function updateCategoryGroupAction({title,newTitle}: UpdateCategoryGroup): Promise<ActionResult> {
     const auth = await getAuthenticatedSupabase()
     if (auth.error) return { error: true, message: auth.message }
     
@@ -81,8 +81,8 @@ export async function updateCategoryGroupAction({id, title}: UpdateCategoryGroup
     
     const {error} = await supabase
         .from("category_groups")
-        .update({title})
-        .eq("id", id)
+        .update({title:newTitle})
+        .eq("title", title)
         .eq("user_id", user.id)
     
     return error
@@ -90,13 +90,13 @@ export async function updateCategoryGroupAction({id, title}: UpdateCategoryGroup
         : {error: false, message: "category group updated"}
 }
 
-export async function updateCategoryAction({id, title, categoryGroupName}: UpdateCategory): Promise<ActionResult> {
+export async function updateCategoryAction({title, newTitle, categoryGroupName}: UpdateCategory): Promise<ActionResult> {
     const auth = await getAuthenticatedSupabase()
     if (auth.error) return { error: true, message: auth.message }
     
     const {supabase, user} = auth
     
-    let updateData: any = {title}
+    let updateData: any = {title:newTitle}
     
     if (categoryGroupName) {
         const {data: categoryGroup, error: categoryGroupError} = await supabase
@@ -113,19 +113,7 @@ export async function updateCategoryAction({id, title, categoryGroupName}: Updat
         updateData.category_group_id = categoryGroup.id
     }
     
-    // Check ownership through join
-    const {data: existingCategory} = await supabase
-        .from("categories")
-        .select("*, category_groups!inner(user_id)")
-        .eq("id", id)
-        .eq("category_groups.user_id", user.id)
-        .single()
-    
-    if (!existingCategory) {
-        return {error: true, message: "category not found or no permission"}
-    }
-    
-    const {error} = await supabase.from("categories").update(updateData).eq("id", id)
+    const {error} = await supabase.from("categories").update(updateData).eq("title",title)
     
     return error
         ? {error: true, message: "error while updating category"}
