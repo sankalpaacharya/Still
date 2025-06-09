@@ -205,17 +205,75 @@ export async function saveCategoryTargetAction({
         : {error: false, message: "target saved successfully"}
 }
 
-
-export async function assignMoney({month, assign}:{month:Date, assign:number}){
-             
+export async function assignMoney({
+    month, 
+    assign, 
+    selectedGroup, 
+    selectedCategory
+}: {
+    month: Date
+    assign: number
+    selectedGroup: string
+    selectedCategory: string
+}): Promise<ActionResult> {
     const auth = await getAuthenticatedSupabase()
     if (auth.error) return { error: true, message: auth.message }
     
     const {supabase, user} = auth
     if (!user) return {error: true, message: "no user found"}
-
-    supabase.from("category_months").insert("")
-
-
-
+    
+    const {data: categoryGroup, error: categoryGroupError} = await supabase
+        .from("category_groups")
+        .select("id")
+        .eq("title", selectedGroup)
+        .eq("user_id", user.id)
+        .single()
+    
+    if (categoryGroupError || !categoryGroup) {
+        return {error: true, message: "category group not found"}
+    }
+    
+    const {data: category, error: categoryError} = await supabase
+        .from("categories")
+        .select("id")
+        .eq("title", selectedCategory)
+        .eq("category_group_id", categoryGroup.id)
+        .single()
+    
+    if (categoryError || !category) {
+        return {error: true, message: "category not found"}
+    }
+    
+    const monthKey = new Date(month.getFullYear(), month.getMonth(), 1).toISOString().split('T')[0]
+    
+    const {data: existingAssignment, error: checkError} = await supabase
+        .from("category_months")
+        .select("id")
+        .eq("category_id", category.id)
+        .eq("month", monthKey)
+        .single()
+    
+    let error;
+    if (existingAssignment) {
+     
+        const {error: updateError} = await supabase
+            .from("category_months")
+            .update({ assign })
+            .eq("category_id", category.id)
+            .eq("month", monthKey)
+        error = updateError
+    } else {
+        const {error: insertError} = await supabase
+            .from("category_months")
+            .insert({
+                category_id: category.id,
+                month: monthKey,
+                assign
+            })
+        error = insertError
+    }
+    
+    return error
+        ? {error: true, message: "error while assigning money"}
+        : {error: false, message: "money assigned successfully"}
 }

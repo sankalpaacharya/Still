@@ -8,7 +8,7 @@ import { Trash, Edit3, Check, X } from "lucide-react";
 import CategoryProgressBar from "./category-progress-bar";
 import { categoryNeedText } from "@/utils/categoryNeedText";
 import { Target } from "@/lib/store";
-import { updateCategoryAction } from "../actions/categories";
+import { updateCategoryAction, assignMoney } from "../actions/categories";
 import toast from "react-hot-toast";
 
 type CategoryItemProps = {
@@ -40,6 +40,7 @@ export function CategoryItem({
   const [isEditingAmount, setIsEditingAmount] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameValue, setNameValue] = useState(name);
+  const [isSaving, setIsSaving] = useState(false);
   const amountInputRef = useRef<HTMLInputElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -78,15 +79,36 @@ export function CategoryItem({
     setIsEditingName(true);
   };
 
-  const handleAmountSave = () => {
+  const handleAmountSave = async () => {
     const numValue = parseFloat(inputValue) || 0;
-    setAssignedValue(numValue);
-    updateCategory(groupName, name, { assign: numValue });
+    setIsSaving(true);
 
-    if (onAssignedChange) {
-      onAssignedChange(numValue);
+    try {
+      const result = await assignMoney({
+        month: new Date(),
+        assign: numValue,
+        selectedGroup: groupName,
+        selectedCategory: name,
+      });
+
+      if (result.error) {
+        toast.error(result.message);
+      } else {
+        toast.success(result.message);
+        setAssignedValue(numValue);
+        updateCategory(groupName, name, { assign: numValue });
+
+        if (onAssignedChange) {
+          onAssignedChange(numValue);
+        }
+      }
+    } catch (error) {
+      toast.error("Failed to save assignment");
+      console.error("Error saving assignment:", error);
+    } finally {
+      setIsSaving(false);
+      setIsEditingAmount(false);
     }
-    setIsEditingAmount(false);
   };
 
   const handleAmountCancel = () => {
@@ -227,12 +249,14 @@ export function CategoryItem({
               onKeyDown={(e) => handleKeyDown(e, "amount")}
               className="w-20 text-right h-8"
               onClick={(e) => e.stopPropagation()}
+              disabled={isSaving}
             />
             <Button
               size="sm"
               variant="ghost"
               onClick={handleAmountSave}
               className="h-8 w-8 p-0"
+              disabled={isSaving}
             >
               <Check className="h-3 w-3" />
             </Button>
@@ -241,6 +265,7 @@ export function CategoryItem({
               variant="ghost"
               onClick={handleAmountCancel}
               className="h-8 w-8 p-0"
+              disabled={isSaving}
             >
               <X className="h-3 w-3" />
             </Button>
