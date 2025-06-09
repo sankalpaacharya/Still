@@ -1,5 +1,6 @@
 "use server"
 import { createClient } from "@/utils/supabase/server";
+import { Target } from "@/lib/store";
 
 type CategoryGroup = {
     title: string
@@ -21,10 +22,16 @@ type UpdateCategory = {
     categoryGroupName?: string
 }
 
+
+
 type ActionResult = {
     error: boolean
     message: string
 }
+
+
+// for now i need category group and category but this needs to be change once i actually fetch the data 
+//  instead of fetching from json blob
 
 async function getAuthenticatedSupabase() {
     const supabase = await createClient()
@@ -78,7 +85,6 @@ export async function updateCategoryGroupAction({title,newTitle}: UpdateCategory
     if (auth.error) return { error: true, message: auth.message }
     
     const {supabase, user} = auth
-    
     const {error} = await supabase
         .from("category_groups")
         .update({title:newTitle})
@@ -118,4 +124,98 @@ export async function updateCategoryAction({title, newTitle, categoryGroupName}:
     return error
         ? {error: true, message: "error while updating category"}
         : {error: false, message: "category updated"}
+}
+
+export async function saveCategoryTargetAction({
+    selectedGroup, 
+    selectedCategory, 
+    target
+}: {
+    selectedGroup: string
+    selectedCategory: string
+    target: Target 
+}): Promise<ActionResult> {
+    const auth = await getAuthenticatedSupabase()
+    if (auth.error) return { error: true, message: auth.message }
+    
+    const {supabase, user} = auth
+    if (!user) return {error: true, message: "no user found"}
+    
+    const {data: categoryGroup, error: categoryGroupError} = await supabase
+        .from("category_groups")
+        .select("id")
+        .eq("title", selectedGroup)
+        .eq("user_id", user.id)
+        .single()
+    
+    if (categoryGroupError || !categoryGroup) {
+        return {error: true, message: "category group not found"}
+    }
+    
+    const {data: category, error: categoryError} = await supabase
+        .from("categories")
+        .select("id")
+        .eq("title", selectedCategory)
+        .eq("category_group_id", categoryGroup.id)
+        .single()
+    
+    if (categoryError || !category) {
+        return {error: true, message: "category not found"}
+    }
+    
+    const targetData: any = {
+        category_id: category.id,
+        type: target?.type,
+        amount: target?.need,
+        yearly:null,
+        monthly:null,
+        weekly:null
+    }
+    
+    if (target?.type === "monthly") {
+        targetData["monthly"] = target.on
+    } else if (target?.type === "weekly") {
+        targetData["weekly"] = target.every
+    } else if (target?.type === "yearly") {
+        targetData["yearly"] = target.date
+    }
+    
+    const {data: existingTarget} = await supabase
+        .from("category_targets")
+        .select("id")
+        .eq("category_id", category.id)
+        .single()
+    
+    let error;
+    if (existingTarget) {
+        const {error: updateError} = await supabase
+            .from("category_targets")
+            .update(targetData)
+            .eq("category_id", category.id)
+        error = updateError
+    } else {
+        const {error: insertError} = await supabase
+            .from("category_targets")
+            .insert(targetData)
+        error = insertError
+    }
+    
+    return error
+        ? {error: true, message: "error while saving target"}
+        : {error: false, message: "target saved successfully"}
+}
+
+
+export async function assignMoney({month, assign}:{month:Date, assign:number}){
+             
+    const auth = await getAuthenticatedSupabase()
+    if (auth.error) return { error: true, message: auth.message }
+    
+    const {supabase, user} = auth
+    if (!user) return {error: true, message: "no user found"}
+
+    supabase.from("category_months").insert("")
+
+
+
 }

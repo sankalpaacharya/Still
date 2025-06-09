@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useBudgetStore } from '@/lib/store';
 import { Target } from '@/lib/store';
 import toast from 'react-hot-toast';
+import { saveCategoryTargetAction } from '@/features/finance/actions/categories';
 
 export type TargetFormData = {
     weekly: { amount: number; schedule: string };
@@ -61,7 +62,7 @@ export function useTargetForm() {
     }));
   };
 
-  const saveTarget = (targetType: keyof TargetFormData) => {
+  const saveTarget = async (targetType: keyof TargetFormData) => {
     if (!selectedCategory || !selectedGroup) return;
 
     const data = formData[targetType];
@@ -83,6 +84,8 @@ export function useTargetForm() {
     }
 
     updateCategoryTarget(selectedGroup, selectedCategory, target);
+    const result = await saveCategoryTargetAction({selectedGroup,selectedCategory,target})
+    toast.error(result.message)
     toast.success('Target saved successfully');
     setError(false)
   };
