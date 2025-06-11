@@ -4,7 +4,7 @@ import RecentExpenses from "@/features/dashboard/components/recentexpense";
 import FriendsActivity from "@/features/dashboard/components/friendsactivity";
 import { createClient } from "@/utils/supabase/server";
 import AddExpenseModalButton from "@/features/dashboard/components/addexpensebutton";
-import { getZustandData } from "@/features/finance/actions/categories";
+// import { getZustandData } from "@/features/finance/actions/categories";
 
 export default async function page() {
   const supabase = await createClient();
@@ -12,7 +12,7 @@ export default async function page() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const data = await getZustandData();
+  // const data = await getZustandData();
 
   return (
     <div>
