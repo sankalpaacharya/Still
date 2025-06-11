@@ -35,5 +35,5 @@ export async function hydrateBugetStore(){
   useBudgetStore.setState({
     ...data?.data
   })
- 
 }
+

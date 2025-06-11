@@ -277,3 +277,43 @@ export async function assignMoney({
         ? {error: true, message: "error while assigning money"}
         : {error: false, message: "money assigned successfully"}
 }
+
+export async function getZustandData(){
+  const supabase = await createClient()
+  const {data:{user}} =  await supabase.auth.getUser()
+  if (!user) return {error: true, message: "no user found"}
+  const selectedMonth = new Date()
+  const monthString = selectedMonth.toISOString().slice(0, 7) + '-01'
+
+  const { data, error } = await supabase
+    .from('category_groups')
+    .select(`
+      id,
+      title,
+      is_hidden,
+      created_at,
+      categories (
+        id,
+        title,
+        is_hidden,
+        created_at,
+        category_months!category_months_category_id_fkey (
+          id,
+          activity,
+          assign,
+          available,
+          month
+        )
+      )
+    `)
+    .eq('user_id', user.id)
+    .eq('is_hidden', false)
+    .eq('categories.is_hidden', false)
+    .eq('categories.category_months.month', monthString);
+     
+  if (error) {
+    return { error: true, message: error.message }
+  }
+
+
+}
