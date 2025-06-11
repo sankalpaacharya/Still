@@ -104,7 +104,6 @@ export function CategoryItem({
       }
     } catch (error) {
       toast.error("Failed to save assignment");
-      console.error("Error saving assignment:", error);
     } finally {
       setIsSaving(false);
       setIsEditingAmount(false);

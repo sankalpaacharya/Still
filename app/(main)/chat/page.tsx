@@ -40,7 +40,7 @@ export default function Page() {
     scrollToCurrentExchange();
 
     try {
-      await fetchEventSource("http://localhost:8000/chat-stream", {
+      await fetchEventSource("http://localhost:8000/chat-stream-langgraph", {
         onmessage(ev) {
           if (ev.data === "") {
             setResponse((prev) => prev + "\n");
@@ -72,7 +72,7 @@ export default function Page() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query: message }),
+        body: JSON.stringify({ query: message, session_id: "mkc" }),
       });
     } catch (error) {
       console.error("Error sending message:", error);

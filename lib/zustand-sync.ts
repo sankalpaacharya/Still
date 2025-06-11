@@ -24,7 +24,6 @@ const unsub = useBudgetStore.subscribe((state)=>({totalAmount:state.totalAmount,
       }
 })
 return unsub
-
 }
 
 

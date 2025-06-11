@@ -20,7 +20,6 @@ export async function addExpenseAction(data:Expense){
     data["user_id"] = user?.id
     const response = await supabase.from("expenses").insert({user_id:data["user_id"],category_group:data.categoryGroup,category:data.category,amount:data.amount})
 
-    console.log(response.error)
     console.log(response.data)
 
 }

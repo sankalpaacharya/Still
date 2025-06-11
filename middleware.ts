@@ -17,7 +17,6 @@ export async function middleware(request: NextRequest) {
     
     // Redirect to login if user is not authenticated
     if (data.user===null) {
-      console.log("is this called?")
       return NextResponse.redirect(new URL("/login", request.url))
     }
   }

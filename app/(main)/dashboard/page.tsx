@@ -14,7 +14,6 @@ export default async function page() {
 
   const data = await getZustandData();
 
-  console.log(data);
   return (
     <div>
       <div className="mb-6 flex justify-between items-center">

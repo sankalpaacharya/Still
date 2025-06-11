@@ -23,7 +23,6 @@ type UpdateCategory = {
 }
 
 
-
 type ActionResult = {
     error: boolean
     message: string
@@ -49,7 +48,7 @@ export async function addCategoryGroupAction({title}: CategoryGroup): Promise<Ac
     if (auth.error) return { error: true, message: auth.message }
     
     const {supabase, user} = auth
-    const {error} = await supabase.from("category_groups").insert({user_id: user.id, title})
+    const {error} = await supabase.from("category_groups").insert({user_id: user.id, name:title})
     
     return error 
         ? {error: true, message: "error while adding data"}
@@ -73,7 +72,7 @@ export async function addCategoryAction({title, categoryGroupName}: Category): P
         return {error: true, message: "no such category group"}
     }
     
-    const {error} = await supabase.from("categories").insert({title, category_group_id: categoryGroup.id})
+    const {error} = await supabase.from("categories").insert({name:title, category_group_id: categoryGroup.id})
     
     return error
         ? {error: true, message: "can't insert the category"}
@@ -289,12 +288,12 @@ export async function getZustandData(){
     .from('category_groups')
     .select(`
       id,
-      title,
+      name,
       is_hidden,
       created_at,
       categories (
         id,
-        title,
+        name,
         is_hidden,
         created_at,
         category_months!category_months_category_id_fkey (
@@ -303,7 +302,8 @@ export async function getZustandData(){
           assign,
           available,
           month
-        )
+        ),
+        category_targets(id,type,monthly,yearly,weekly,amount)
       )
     `)
     .eq('user_id', user.id)
@@ -315,5 +315,51 @@ export async function getZustandData(){
     return { error: true, message: error.message }
   }
 
+  const forZustand = {
+    groups: data.map((categoryGroup) => ({
+      name: categoryGroup.name,
+      categories: categoryGroup.categories.map((category) => {
+        const categoryMonth = category.category_months?.[0] || {
+          activity: 0,
+          assign: 0,
+          available: 0
+        };
 
+        const categoryTarget = category.category_targets?.[0];
+
+        let target = null;
+        if (categoryTarget) {
+          if (categoryTarget.type === 'monthly') {
+            target = {
+              on: categoryTarget.monthly, 
+              need: categoryTarget.amount || 0,
+              type: 'monthly'
+            };
+          } else if (categoryTarget.type === 'yearly') {
+            target = {
+              date: categoryTarget.yearly, 
+              need: categoryTarget.amount || 0,
+              type: 'yearly'
+            };
+          } else if(categoryTarget.type==="weekly"){
+            target = {
+               every:categoryTarget. weekly,
+                type:"weekly",
+                need: categoryTarget.amount || 0
+            }
+          }
+        }
+
+        return {
+          name: category.name,
+          assign: categoryMonth.assign,
+          target: target,
+          activity: categoryMonth.activity,
+          available: categoryMonth.available 
+        };
+      })
+    })),
+    totalAmount: 5000 
+  };
+  return forZustand
 }

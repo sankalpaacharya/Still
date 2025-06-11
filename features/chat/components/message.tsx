@@ -34,7 +34,9 @@ Nepal is a melting pot of cultures and traditions. The country is home to variou
               <p className="font-bold">Sanku</p>
             </div>
             <div className="prose prose-slate dark:prose-invert prose-xl text-white prose-li:marker:text-pink-400  max-w-4xl px-3">
-              <Markdown remarkPlugins={[remarkGfm]}>{message}</Markdown>
+              <Markdown components={{}} remarkPlugins={[remarkGfm]}>
+                {message}
+              </Markdown>
             </div>
           </div>
         </div>
