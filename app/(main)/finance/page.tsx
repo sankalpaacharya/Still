@@ -6,7 +6,7 @@ import {
   TargetCard,
 } from "@/features/finance/components";
 import { useBudgetStore } from "@/lib/store";
-import { hydrateBugetStore } from "@/lib/zustand-sync";
+import { hydrateBudgetStore } from "@/lib/zustand-sync";
 import { MonthSelector } from "@/features/finance/components/months-selector";
 import { StarsBackground } from "@/components/ui/stars-background";
 import { ShootingStars } from "@/components/ui/shooting-stars";
@@ -14,7 +14,7 @@ import { ShootingStars } from "@/components/ui/shooting-stars";
 export default function Page() {
   useEffect(() => {
     const hydarate = async () => {
-      await hydrateBugetStore();
+      await hydrateBudgetStore();
     };
     hydarate();
   }, []);
@@ -29,8 +29,8 @@ export default function Page() {
 
   return (
     <div className="space-y-6 h-full">
-      <StarsBackground starDensity={0.000016} />
-      <ShootingStars />
+      {/* <StarsBackground starDensity={0.000016} />
+      <ShootingStars /> */}
       <div className="flex gap-40">
         <MonthSelector />
         <TotalAmountStatus amount={totalAmount} onAssign={handleAssignAmount} />

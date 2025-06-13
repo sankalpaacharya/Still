@@ -62,8 +62,11 @@ export type Actions = {
     updateTotalAmount: (amount: number) => void
     calculateReadyToAssign: () => void
     setSelectedCategory: (categoryName: string | null, groupName: string | null) => void
+    updateSelectedMonth:(month:string)=>void
 }
 
+
+const initialDate = new Date()
 
 export const useBudgetStore = create<Budget & Actions>()(
     subscribeWithSelector((set, get) => ({
@@ -72,7 +75,7 @@ export const useBudgetStore = create<Budget & Actions>()(
     readyToAssign: 0,
     selectedCategory: null,
     selectedGroup: null,
-    selectedMonth:"2025-5",
+    selectedMonth:`${initialDate.getFullYear()}-${initialDate.getMonth()+1}-01`,
     
     addCategoryGroup: (name: string) => set((state) => ({
         ...state,
@@ -252,7 +255,13 @@ export const useBudgetStore = create<Budget & Actions>()(
             selectedCategory: categoryName,
             selectedGroup: groupName
         }))
-    }
+    },
+    updateSelectedMonth: (month) =>{
+        set((state)=>({
+            ...state,
+            selectedMonth:month
+        }))
+    },
 }))
 )
 

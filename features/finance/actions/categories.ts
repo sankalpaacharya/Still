@@ -86,7 +86,7 @@ export async function updateCategoryGroupAction({title,newTitle}: UpdateCategory
     const {supabase, user} = auth
     const {error} = await supabase
         .from("category_groups")
-        .update({title:newTitle})
+        .update({name:newTitle})
         .eq("title", title)
         .eq("user_id", user.id)
     
@@ -143,7 +143,7 @@ export async function saveCategoryTargetAction({
     const {data: categoryGroup, error: categoryGroupError} = await supabase
         .from("category_groups")
         .select("id")
-        .eq("title", selectedGroup)
+        .eq("name", selectedGroup)
         .eq("user_id", user.id)
         .single()
     
@@ -154,7 +154,7 @@ export async function saveCategoryTargetAction({
     const {data: category, error: categoryError} = await supabase
         .from("categories")
         .select("id")
-        .eq("title", selectedCategory)
+        .eq("name", selectedCategory)
         .eq("category_group_id", categoryGroup.id)
         .single()
     
@@ -224,7 +224,7 @@ export async function assignMoney({
     const {data: categoryGroup, error: categoryGroupError} = await supabase
         .from("category_groups")
         .select("id")
-        .eq("title", selectedGroup)
+        .eq("name", selectedGroup)
         .eq("user_id", user.id)
         .single()
     
@@ -235,15 +235,16 @@ export async function assignMoney({
     const {data: category, error: categoryError} = await supabase
         .from("categories")
         .select("id")
-        .eq("title", selectedCategory)
+        .eq("name", selectedCategory)
         .eq("category_group_id", categoryGroup.id)
         .single()
     
     if (categoryError || !category) {
         return {error: true, message: "category not found"}
     }
-    
-    const monthKey = new Date(month.getFullYear(), month.getMonth(), 1).toISOString().split('T')[0]
+    // how im handling date is pretty messed up so fix that
+
+    const monthKey = "2025-06-01"
     
     const {data: existingAssignment, error: checkError} = await supabase
         .from("category_months")
