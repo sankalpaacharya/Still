@@ -1,13 +1,21 @@
 "use client";
 import { useBudgetStore } from "@/lib/store";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import debounce from "lodash/debounce";
 
 export function MonthSelector() {
   const { selectedMonth, updateSelectedMonth } = useBudgetStore(
     (state) => state
   );
 
+  const debounceUpdateMonth = useCallback(
+    debounce((month: number) => {
+      const newMonthString = `2025-${month.toString().padStart(2, "0")}-01`;
+      updateSelectedMonth(newMonthString);
+    }, 300),
+    []
+  );
   const [currentSelectedMonth, setCurrentSelectedMonth] = useState(
     parseInt(selectedMonth.split("-")[1])
   );
@@ -43,7 +51,7 @@ export function MonthSelector() {
     const newMonthString = `2025-${newMonth.toString().padStart(2, "0")}-01`;
 
     setCurrentSelectedMonth(newMonth);
-    updateSelectedMonth(newMonthString);
+    debounceUpdateMonth(newMonth);
 
     setIsPrevDisable(newMonth <= 1);
     setIsNextDisable(false);
@@ -56,7 +64,7 @@ export function MonthSelector() {
     console.log("📅 Next month clicked:", newMonthString);
 
     setCurrentSelectedMonth(newMonth);
-    updateSelectedMonth(newMonthString);
+    debounceUpdateMonth(newMonth);
 
     // Update button states
     setIsNextDisable(newMonth >= new Date().getMonth() + 1);

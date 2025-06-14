@@ -233,7 +233,7 @@ export function CategoryItem({
           <CategoryProgressBar
             activity={spent}
             assign={assignedValue}
-            target={target?.need ?? 0}
+            target={target}
           />
         </div>
       </TableCell>
