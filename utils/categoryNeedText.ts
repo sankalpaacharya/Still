@@ -54,7 +54,6 @@ export function categoryNeedText({ target, assign }: CategoryNeedParams): string
     }
 
     if(target.type==="weekly"){
-            console.log("😀😀😀😀😀😀😀😀😀😀😀😀😀",target.need,assign);
             const dayNumber = getDayNumber(target.every)
             const date =  new Date(selectedMonth)
             const numberofWeeks = getWeeksInMonth(date.getFullYear(),date.getMonth(),dayNumber || 0)

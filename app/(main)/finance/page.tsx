@@ -8,8 +8,6 @@ import {
 import { useBudgetStore } from "@/lib/store";
 import { hydrateBudgetStore } from "@/lib/zustand-sync";
 import { MonthSelector } from "@/features/finance/components/months-selector";
-import { StarsBackground } from "@/components/ui/stars-background";
-import { ShootingStars } from "@/components/ui/shooting-stars";
 
 export default function Page() {
   useEffect(() => {
