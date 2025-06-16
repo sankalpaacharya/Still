@@ -1,7 +1,17 @@
 import toast from "react-hot-toast";
-import { useBudgetStore } from "./store";
+import { useBudgetStore, type CategoryGroup, type Target } from "./store";
 // change to server, i will not turn on rls for now so it's safe to call from server
 import { createClient } from "@/utils/supabase/client";
+
+interface BudgetStoreData {
+  groups: CategoryGroup[];
+  totalAmount: number;
+}
+
+interface ErrorResponse {
+  error: true;
+  message: string;
+}
 
 export const initBudgetStoreSync = () => {
   const unsub = useBudgetStore.subscribe(
@@ -15,7 +25,7 @@ export const initBudgetStoreSync = () => {
   return unsub;
 };
 
-export async function getHydrateData(selectedMonth?: string) {
+export async function getHydrateData(selectedMonth?: string): Promise<BudgetStoreData | ErrorResponse> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: true, message: "no user found" };
@@ -57,7 +67,7 @@ export async function getHydrateData(selectedMonth?: string) {
     return { error: true, message: error.message };
   }
   
-  const forZustand: any = {
+  const forZustand: BudgetStoreData = {
     groups: data.map((categoryGroup) => ({
       name: categoryGroup.name,
       categories: categoryGroup.categories.map((category) => {
@@ -68,7 +78,7 @@ export async function getHydrateData(selectedMonth?: string) {
         };
         const categoryTarget = category.category_targets?.[0];
         
-        let target = null;
+        let target: Target = null;
         if (categoryTarget) {
           if (categoryTarget.type === 'monthly') {
             target = {
@@ -78,7 +88,7 @@ export async function getHydrateData(selectedMonth?: string) {
             };
           } else if (categoryTarget.type === 'yearly') {
             target = {
-              date: categoryTarget.yearly, 
+              date: new Date(categoryTarget.yearly), 
               need: categoryTarget.amount || 0,
               type: 'yearly'
             };
@@ -96,7 +106,7 @@ export async function getHydrateData(selectedMonth?: string) {
           assign: categoryMonth.assign,
           target: target,
           activity: categoryMonth.activity,
-          available: categoryMonth.available 
+          avaialble: categoryMonth.available 
         };
       })
     })),
@@ -110,7 +120,7 @@ export async function hydrateBudgetStoreForMonth(selectedMonth: string) {
   try {
     const data = await getHydrateData(selectedMonth);
     
-    if (data.error) {
+    if ('error' in data) {
       toast.error(data.message);
       return;
     }
@@ -132,7 +142,7 @@ export async function hydrateBudgetStore() {
   try {
     const data = await getHydrateData();
     
-    if (data.error) {
+    if ('error' in data) {
       toast.error(data.message);
       return;
     }
