@@ -16,7 +16,7 @@ export function TotalAmountStatus({
       <div className="p-4 bg-green-700 rounded-md shadow-2xl flex w-72 justify-between">
         <div>
           <h2 className="text-3xl font-bold">₹{amount}</h2>
-          <p className="text-sm">Ready Assign</p>
+          <p className="text-sm">Remaining</p>
         </div>
         <Button className="shadow-xl cursor-pointer" onClick={onAssign}>
           Assign

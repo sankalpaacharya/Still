@@ -85,8 +85,8 @@ export function useTargetForm() {
 
     updateCategoryTarget(selectedGroup, selectedCategory, target);
     const result = await saveCategoryTargetAction({selectedGroup,selectedCategory,target})
-    toast.error(result.message)
-    toast.success('Target saved successfully');
+    if(result.error)toast.error(result.message);
+    if(!result.error)toast.success(result.message);
     setError(false)
   };
 

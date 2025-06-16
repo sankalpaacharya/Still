@@ -1,4 +1,5 @@
-import { Target } from "@/lib/store"
+import { Target, useBudgetStore } from "@/lib/store"
+import { endOfMonth, startOfMonth, eachWeekOfInterval, Day } from "date-fns"
 
 type CategoryNeedParams = {
     target: Target,
@@ -30,13 +31,11 @@ export function getMonthlyNeedAmount(target: Target): number {
 }
 
 export function categoryNeedText({ target, assign }: CategoryNeedParams): string {
+    const {selectedMonth} = useBudgetStore((state)=>state)
     if (!target) return ""
     
     const monthlyAmount = getMonthlyNeedAmount(target)
     
-    if (assign === target.need) {
-        return "on track"
-    }
     
     if (target.type === "monthly") {
         if (target.need > assign) {
@@ -53,6 +52,39 @@ export function categoryNeedText({ target, assign }: CategoryNeedParams): string
             return `$${(monthlyAmount-assign).toFixed(2)} more needed this month`
         }
     }
-    
+
+    if(target.type==="weekly"){
+            console.log("😀😀😀😀😀😀😀😀😀😀😀😀😀",target.need,assign);
+            const dayNumber = getDayNumber(target.every)
+            const date =  new Date(selectedMonth)
+            const numberofWeeks = getWeeksInMonth(date.getFullYear(),date.getMonth(),dayNumber || 0)
+            return `$${numberofWeeks*target.need-assign} need more this month`
+    }
     return ""
 }
+
+
+
+
+export function getWeeksInMonth(year:number,month:number, weekStartsOn:Day):number{
+   const start = startOfMonth(new Date(year, month))  
+   const end = endOfMonth(start)
+   const weeks = eachWeekOfInterval({start,end},{weekStartsOn})
+   return weeks.length
+
+}
+
+
+export function getDayNumber(dayName: string): Day | undefined {
+    const daysMap: Record<string,  Day> = {
+      sunday: 0,
+      monday: 1,
+      tuesday: 2,
+      wednesday: 3,
+      thursday: 4,
+      friday: 5,
+      saturday: 6
+    };
+  
+    return daysMap[dayName.toLowerCase()];
+  }
