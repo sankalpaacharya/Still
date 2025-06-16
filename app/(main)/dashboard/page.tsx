@@ -1,18 +1,14 @@
 import React from "react";
 import ExpenseStats from "@/features/dashboard/components/expensestats";
-import RecentExpenses from "@/features/dashboard/components/recentexpense";
-import FriendsActivity from "@/features/dashboard/components/friendsactivity";
 import { createClient } from "@/utils/supabase/server";
 import AddExpenseModalButton from "@/features/dashboard/components/addexpensebutton";
-// import { getZustandData } from "@/features/finance/actions/categories";
+import Camera from "@/components/camera";
 
 export default async function page() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  // const data = await getZustandData();
 
   return (
     <div>
@@ -33,12 +29,7 @@ export default async function page() {
       <ExpenseStats />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="md:col-span-2">
-          <RecentExpenses />
-        </div>
-        <div className="md:col-span-1">
-          <FriendsActivity />
-        </div>
+        <Camera />
       </div>
     </div>
   );
