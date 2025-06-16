@@ -20,6 +20,7 @@ export default function Camera() {
         audio={false}
         screenshotFormat="image/jpeg"
         width={320}
+        videoConstraints={{ facingMode: "environment" }}
       />
       <Button onClick={capture}>Capture</Button>
 
