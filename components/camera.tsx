@@ -5,7 +5,7 @@ import { Camera, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -76,26 +76,31 @@ export default function SnapUpload() {
             </Button>
           )}
         </DialogFooter>
-        <Card>
-          <CardContent className="space-y-3">
-            <div className="grid w-full max-w-sm items-center gap-3">
-              <Label htmlFor="email">Name</Label>
-              <Input type="text" id="text" placeholder="Name" />
-            </div>
-            <div className="grid w-full max-w-sm items-center gap-3">
-              <Label htmlFor="email">Amount</Label>
-              <Input type="number" id="text" placeholder="Name" />
-            </div>
-            <div className="grid w-full max-w-sm items-center gap-3">
-              <Label htmlFor="email">Category</Label>
-              <CategoryGroupCombobox
-                selectedCategory={category}
-                setSelectedCategory={setCategory}
-                setCategoryGroup={setCategoryGroup}
-              />
-            </div>
-          </CardContent>
-        </Card>
+        {hasCaptured && (
+          <Card>
+            <CardContent className="space-y-3">
+              <div className="grid w-full max-w-sm items-center gap-3">
+                <Label htmlFor="email">Name</Label>
+                <Input type="text" id="text" placeholder="Name" />
+              </div>
+              <div className="grid w-full max-w-sm items-center gap-3">
+                <Label htmlFor="email">Amount</Label>
+                <Input type="number" id="text" placeholder="Name" />
+              </div>
+              <div className="grid w-full max-w-sm items-center gap-3">
+                <Label htmlFor="email">Category</Label>
+                <CategoryGroupCombobox
+                  selectedCategory={category}
+                  setSelectedCategory={setCategory}
+                  setCategoryGroup={setCategoryGroup}
+                />
+              </div>
+            </CardContent>
+            <CardFooter className="!justify-center">
+              <Button>Save Changes</Button>
+            </CardFooter>
+          </Card>
+        )}
       </DialogContent>
     </Dialog>
   );
