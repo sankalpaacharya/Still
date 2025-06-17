@@ -21,7 +21,7 @@ export default function SnapUpload() {
   const [hasCaptured, sethasCaptured] = useState(false);
   const [category, setCategory] = useState("");
   const [categoryGroup, setCategoryGroup] = useState("");
-
+  console.log(categoryGroup);
   const capture = async () => {
     const screenshot = webcamRef.current?.getScreenshot();
     if (!screenshot) return;
