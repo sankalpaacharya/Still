@@ -2,7 +2,7 @@ import React from "react";
 import ExpenseStats from "@/features/dashboard/components/expensestats";
 import { createClient } from "@/utils/supabase/server";
 import AddExpenseModalButton from "@/features/dashboard/components/addexpensebutton";
-import Camera from "@/components/camera";
+import SnapUpload from "@/components/camera";
 
 export default async function page() {
   const supabase = await createClient();
@@ -29,7 +29,7 @@ export default async function page() {
       <ExpenseStats />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Camera />
+        <SnapUpload />
       </div>
     </div>
   );
