@@ -34,7 +34,6 @@ export default function SnapUpload() {
       toast.error("Failed to capture image");
       return;
     }
-
     setImage(screenshot);
     sethasCaptured(true);
     setIsUploading(true);
@@ -44,11 +43,13 @@ export default function SnapUpload() {
       const blob = dataURLtoBlob(screenshot);
       formData.append("image", blob);
       formData.append("user_id", "123");
-
-      const response = await fetch("http://localhost:8000/upload-snap", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL!}/upload-snap`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

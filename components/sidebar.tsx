@@ -61,7 +61,6 @@ export default function Sidebar() {
   const [user, setUser] = useState<User>();
   const router = useRouter();
   useEffect(() => {
-    console.log("is this called sidebar");
     const unsub = initBudgetStoreSync();
 
     return () => unsub();

@@ -40,40 +40,43 @@ export default function Page() {
     scrollToCurrentExchange();
 
     try {
-      await fetchEventSource("http://localhost:8000/chat-stream-langgraph", {
-        onmessage(ev) {
-          if (ev.data === "") {
-            setResponse((prev) => prev + "\n");
-            responseRef.current += "\n";
-          } else {
-            setResponse((prev) => prev + ev.data);
-            responseRef.current += ev.data;
-          }
-        },
-        onclose() {
-          setChatHistory((prev) => [
-            ...prev,
-            { role: "ai", message: responseRef.current },
-          ]);
-          setIsStreaming(false);
-        },
-        onerror(err) {
-          console.error("EventSource error:", err);
-          setIsStreaming(false);
-          setChatHistory((prev) => [
-            ...prev,
-            {
-              role: "ai",
-              message: "Sorry, there was an error processing your request.",
-            },
-          ]);
-        },
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query: message, session_id: "mkc" }),
-      });
+      await fetchEventSource(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/chat-stream-langgraph`,
+        {
+          onmessage(ev) {
+            if (ev.data === "") {
+              setResponse((prev) => prev + "\n");
+              responseRef.current += "\n";
+            } else {
+              setResponse((prev) => prev + ev.data);
+              responseRef.current += ev.data;
+            }
+          },
+          onclose() {
+            setChatHistory((prev) => [
+              ...prev,
+              { role: "ai", message: responseRef.current },
+            ]);
+            setIsStreaming(false);
+          },
+          onerror(err) {
+            console.error("EventSource error:", err);
+            setIsStreaming(false);
+            setChatHistory((prev) => [
+              ...prev,
+              {
+                role: "ai",
+                message: "Sorry, there was an error processing your request.",
+              },
+            ]);
+          },
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query: message, session_id: "mkc" }),
+        }
+      );
     } catch (error) {
       console.error("Error sending message:", error);
       setIsStreaming(false);
