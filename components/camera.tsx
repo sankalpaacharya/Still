@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog,
   DialogContent,
@@ -119,12 +118,18 @@ export default function SnapUpload() {
         <DialogTitle className="">📷 Snap</DialogTitle>
 
         {image && (
-          <div className="mt-4">
+          <div className="mt-4 bg-secondary p-3 rounded-lg flex gap-2">
             <img
               src={image}
               alt="Captured expense receipt"
-              className="w-full rounded-lg"
+              className="w-20 h-20 rounded-lg"
             />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">Receipt captured</p>
+              <p className="text-xs text-muted-foreground">
+                Details extracted automatically
+              </p>
+            </div>
           </div>
         )}
 
