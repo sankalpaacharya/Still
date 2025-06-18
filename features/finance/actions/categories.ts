@@ -51,7 +51,7 @@ export async function addCategoryGroupAction({title}: CategoryGroup): Promise<Ac
     const {error} = await supabase.from("category_groups").insert({user_id: user.id, name:title})
     
     return error 
-        ? {error: true, message: "error while adding data"}
+        ? {error: true, message: error.message}
         : {error: false, message: "category group added"}
 }
 

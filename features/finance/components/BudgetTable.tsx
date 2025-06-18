@@ -50,7 +50,7 @@ export function BudgetTable({}: BudgetTableProps) {
         console.log(`Created new category: ${categoryName}`);
         toast.success("Category created successfully");
       } else {
-        toast.error("fuck sick some error");
+        toast.error(result.message);
       }
     } catch (error) {
       console.error("Error creating category:", error);
