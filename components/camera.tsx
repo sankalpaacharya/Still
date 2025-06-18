@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog,
   DialogContent,
@@ -114,7 +115,7 @@ export default function SnapUpload() {
       <DialogTrigger asChild>
         <Camera className="cursor-pointer" />
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl overflow-y-scroll max-h-screen">
         <DialogTitle className="">📷 Snap</DialogTitle>
 
         {image && (
@@ -133,7 +134,7 @@ export default function SnapUpload() {
               ref={webcamRef}
               audio={false}
               screenshotFormat="image/jpeg"
-              width={500}
+              width={600}
               videoConstraints={{ facingMode: "environment" }}
               className="rounded-lg"
             />
