@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { initBudgetStoreSync } from "@/lib/zustand-sync";
+import { initBudgetStoreSync, hydrateBudgetStore } from "@/lib/zustand-sync";
 import {
   Home as HomeIcon,
   Menu,
@@ -79,6 +79,13 @@ export default function Sidebar() {
       });
     };
     getUser();
+  }, []);
+
+  useEffect(() => {
+    const hydarate = async () => {
+      await hydrateBudgetStore();
+    };
+    hydarate();
   }, []);
 
   const handleLogout = async () => {

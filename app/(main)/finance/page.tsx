@@ -6,19 +6,10 @@ import {
   TargetCard,
 } from "@/features/finance/components";
 import { useBudgetStore } from "@/lib/store";
-import { hydrateBudgetStore } from "@/lib/zustand-sync";
 import { MonthSelector } from "@/features/finance/components/months-selector";
 
 export default function Page() {
-  useEffect(() => {
-    const hydarate = async () => {
-      await hydrateBudgetStore();
-    };
-    hydarate();
-  }, []);
-
   const { selectedCategory, selectedGroup } = useBudgetStore((state) => state);
-
   const { totalAmount } = useBudgetStore((state) => state);
 
   const handleAssignAmount = () => {

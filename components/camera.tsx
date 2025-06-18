@@ -14,24 +14,98 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { CategoryGroupCombobox } from "@/features/dashboard/components/addexpenseselect";
+import { dataURLtoBlob } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 export default function SnapUpload() {
   const webcamRef = useRef<Webcam>(null);
   const [image, setImage] = useState<string | null>(null);
   const [hasCaptured, sethasCaptured] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
   const [category, setCategory] = useState("");
   const [categoryGroup, setCategoryGroup] = useState("");
-  console.log(categoryGroup);
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState(0);
+
   const capture = async () => {
     const screenshot = webcamRef.current?.getScreenshot();
-    if (!screenshot) return;
+    if (!screenshot) {
+      toast.error("Failed to capture image");
+      return;
+    }
+
     setImage(screenshot);
     sethasCaptured(true);
+    setIsUploading(true);
+
+    try {
+      const formData = new FormData();
+      const blob = dataURLtoBlob(screenshot);
+      formData.append("image", blob);
+      formData.append("user_id", "123");
+
+      const response = await fetch("http://localhost:8000/upload-snap", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        toast.error("Can't process the image");
+        resetSnap();
+        return;
+      }
+
+      console.log("Upload successful:", data);
+      setAmount(data["amount"] || 0);
+      setName(data["title"] || "");
+      setIsLoading(false);
+      setCategory(data["category"]);
+      setCategoryGroup(data["categoryGroup"]);
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Failed to upload image. Please try again.");
+      resetSnap();
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const resetSnap = () => {
     setImage(null);
     sethasCaptured(false);
+    setIsLoading(true);
+    setIsUploading(false);
+    setName("");
+    setAmount(0);
+    setCategory("");
+    setCategoryGroup("");
+  };
+
+  const handleSave = () => {
+    if (!name.trim()) {
+      toast.error("Please enter a name");
+      return;
+    }
+
+    if (amount <= 0) {
+      toast.error("Please enter a valid amount");
+      return;
+    }
+
+    if (!category) {
+      toast.error("Please select a category");
+      return;
+    }
+
+    console.log("Saving:", { name, amount, category, categoryGroup });
+    toast.success("Expense saved successfully!");
   };
 
   return (
@@ -41,11 +115,17 @@ export default function SnapUpload() {
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogTitle className="">📷 Snap</DialogTitle>
+
         {image && (
           <div className="mt-4">
-            <img src={image} alt="Captured" className="w-full rounded-lg" />
+            <img
+              src={image}
+              alt="Captured expense receipt"
+              className="w-full rounded-lg"
+            />
           </div>
         )}
+
         {!hasCaptured && (
           <div className="relative">
             <Webcam
@@ -64,31 +144,55 @@ export default function SnapUpload() {
         )}
 
         <DialogFooter className="!justify-center">
-          {hasCaptured && (
+          {hasCaptured && !isUploading && (
             <Button onClick={resetSnap} className="gap-2" variant={"secondary"}>
               <RotateCcw className="w-4 h-4" />
+              Retake
             </Button>
           )}
           {!hasCaptured && (
-            <Button onClick={capture} className="gap-2">
+            <Button onClick={capture} className="gap-2" disabled={isUploading}>
               <Camera className="w-4 h-4" />
-              Capture
+              {isUploading ? "Processing..." : "Capture"}
             </Button>
           )}
         </DialogFooter>
-        {hasCaptured && (
+
+        {isUploading && (
+          <div className="flex items-center justify-center py-4">
+            <div className="text-sm text-muted-foreground">
+              Processing image...
+            </div>
+          </div>
+        )}
+
+        {!isLoading && !isUploading && (
           <Card>
-            <CardContent className="space-y-3">
-              <div className="grid w-full max-w-sm items-center gap-3">
-                <Label htmlFor="email">Name</Label>
-                <Input type="text" id="text" placeholder="Name" />
+            <CardContent className="space-y-3 pt-6">
+              <div className="grid w-full items-center gap-3">
+                <Label htmlFor="expense-name">Name</Label>
+                <Input
+                  type="text"
+                  id="expense-name"
+                  placeholder="Expense name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
               </div>
-              <div className="grid w-full max-w-sm items-center gap-3">
-                <Label htmlFor="email">Amount</Label>
-                <Input type="number" id="text" placeholder="Name" />
+              <div className="grid w-full items-center gap-3">
+                <Label htmlFor="expense-amount">Amount</Label>
+                <Input
+                  type="number"
+                  id="expense-amount"
+                  placeholder="0.00"
+                  value={amount || ""}
+                  onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+                  min="0"
+                  step="0.01"
+                />
               </div>
-              <div className="grid w-full max-w-sm items-center gap-3">
-                <Label htmlFor="email">Category</Label>
+              <div className="grid w-full items-center gap-3">
+                <Label htmlFor="expense-category">Category</Label>
                 <CategoryGroupCombobox
                   selectedCategory={category}
                   setSelectedCategory={setCategory}
@@ -96,8 +200,10 @@ export default function SnapUpload() {
                 />
               </div>
             </CardContent>
-            <CardFooter className="!justify-center">
-              <Button>Save Changes</Button>
+            <CardFooter className="flex">
+              <Button onClick={handleSave} className="w-full">
+                Save Expense
+              </Button>
             </CardFooter>
           </Card>
         )}
