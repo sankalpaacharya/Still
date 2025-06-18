@@ -1,0 +1,12 @@
+// .vscode/settings.json
+{
+    "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.fixAll.eslint": "explicit"
+    },
+    "eslint.options": {
+      "extensions": [".js", ".jsx", ".ts", ".tsx"]
+    }
+  }
+  

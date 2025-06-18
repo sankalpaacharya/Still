@@ -1,6 +1,5 @@
 import React, { ReactNode } from "react";
 import Sidebar from "@/components/sidebar";
-import MobileBottomNavbar from "@/components/mobilenavbar";
 
 type Props = { children: ReactNode };
 
