@@ -41,7 +41,7 @@ export default function Page() {
 
     try {
       await fetchEventSource(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/chat-stream-langgraph`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/chat-stream`,
         {
           onmessage(ev) {
             if (ev.data === "") {
@@ -74,7 +74,7 @@ export default function Page() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ query: message, session_id: "mkc" }),
+          body: JSON.stringify({ query: message }),
         }
       );
     } catch (error) {
