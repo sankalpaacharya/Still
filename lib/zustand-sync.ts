@@ -102,6 +102,7 @@ export async function getHydrateData(selectedMonth?: string): Promise<BudgetStor
         }
         
         return {
+          id:category.id,
           name: category.name,
           assign: categoryMonth.assign,
           target: target,

@@ -28,6 +28,7 @@ export type MonthlyData = {
 };
  
 export type Category = {
+    id?:string
     name: string
     target: Target
     assign:number

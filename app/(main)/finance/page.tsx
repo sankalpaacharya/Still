@@ -10,7 +10,6 @@ import { MonthSelector } from "@/features/finance/components/months-selector";
 export default function Page() {
   const { selectedCategory, selectedGroup } = useBudgetStore((state) => state);
   const { totalAmount } = useBudgetStore((state) => state);
-
   const handleAssignAmount = () => {
     console.log("Assigning amount");
   };

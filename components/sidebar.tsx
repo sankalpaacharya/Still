@@ -60,11 +60,13 @@ export default function Sidebar() {
   const location = usePathname();
   const [user, setUser] = useState<User>();
   const router = useRouter();
-  useEffect(() => {
-    const unsub = initBudgetStoreSync();
 
-    return () => unsub();
-  }, []);
+  // useEffect(() => {
+  //   const unsub = initBudgetStoreSync();
+
+  //   return () => unsub();
+  // }, []);
+
   useEffect(() => {
     const getUser = async () => {
       const supabase = await createClient();

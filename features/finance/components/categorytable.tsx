@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Table,
   TableHeader,
@@ -42,7 +41,7 @@ export function CategoryTable({
       <TableBody>
         {displayCategories.map((category: Category) => (
           <CategoryItem
-            key={category.name}
+            key={category.id}
             name={category.name}
             assigned={category.assign}
             spent={category.activity}
