@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { initBudgetStoreSync, hydrateBudgetStore } from "@/lib/zustand-sync";
+import { hydrateBudgetStore } from "@/lib/zustand-sync";
 import {
   Home as HomeIcon,
   Menu,
