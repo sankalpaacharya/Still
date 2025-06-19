@@ -4,6 +4,7 @@ import { endOfMonth, startOfMonth, eachWeekOfInterval, Day } from "date-fns"
 type CategoryNeedParams = {
     target: Target,
     assign: number,
+    selectedMonth: string
 }
 
 export function getMonthlyNeedAmount(target: Target): number {
@@ -30,8 +31,7 @@ export function getMonthlyNeedAmount(target: Target): number {
     return 0
 }
 
-export function categoryNeedText({ target, assign }: CategoryNeedParams): string {
-    const {selectedMonth} = useBudgetStore((state)=>state)
+export function categoryNeedText({ target, assign,selectedMonth }: CategoryNeedParams): string {
     if (!target) return ""
     
     const monthlyAmount = getMonthlyNeedAmount(target)
@@ -54,7 +54,6 @@ export function categoryNeedText({ target, assign }: CategoryNeedParams): string
     }
 
     if(target.type==="weekly"){
-            console.log("😀😀😀😀😀😀😀😀😀😀😀😀😀",target.need,assign);
             const dayNumber = getDayNumber(target.every)
             const date =  new Date(selectedMonth)
             const numberofWeeks = getWeeksInMonth(date.getFullYear(),date.getMonth(),dayNumber || 0)
