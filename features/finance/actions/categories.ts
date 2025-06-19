@@ -87,7 +87,7 @@ export async function updateCategoryGroupAction({title,newTitle}: UpdateCategory
     const {error} = await supabase
         .from("category_groups")
         .update({name:newTitle})
-        .eq("title", title)
+        .eq("name", title)
         .eq("user_id", user.id)
     
     return error
@@ -101,13 +101,13 @@ export async function updateCategoryAction({title, newTitle, categoryGroupName}:
     
     const {supabase, user} = auth
     
-    let updateData: any = {title:newTitle}
+    let updateData: any = {name:newTitle}
     
     if (categoryGroupName) {
         const {data: categoryGroup, error: categoryGroupError} = await supabase
             .from("category_groups")
             .select("*")
-            .eq("title", categoryGroupName)
+            .eq("name", categoryGroupName)
             .eq("user_id", user.id)
             .single()
         
@@ -118,7 +118,7 @@ export async function updateCategoryAction({title, newTitle, categoryGroupName}:
         updateData.category_group_id = categoryGroup.id
     }
     
-    const {error} = await supabase.from("categories").update(updateData).eq("title",title)
+    const {error} = await supabase.from("categories").update(updateData).eq("name",title)
     
     return error
         ? {error: true, message: "error while updating category"}
