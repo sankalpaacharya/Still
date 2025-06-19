@@ -30,7 +30,7 @@ export function CategoryItem({
   groupName = "",
   onAssignedChange,
 }: CategoryItemProps) {
-  const { updateCategory, deleteCategory, setSelectedCategory } =
+  const { updateCategory, deleteCategory, setSelectedCategory, selectedMonth } =
     useBudgetStore((state) => state);
 
   const [assignedValue, setAssignedValue] = useState(assigned);
@@ -168,7 +168,6 @@ export function CategoryItem({
       className={`group hover:bg-muted/50 cursor-pointer transition-colors`}
       onClick={handleRowClick}
     >
-      {/* Category Name Cell */}
       <TableCell className="w-[61%] p-4">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -204,7 +203,11 @@ export function CategoryItem({
                 <div className="flex w-full justify-between">
                   <p className="font-medium">{name}</p>
                   <p className="pr-5 md:pr-10 text-muted-foreground">
-                    {categoryNeedText({ target, assign: assignedValue })}
+                    {categoryNeedText({
+                      target,
+                      assign: assignedValue,
+                      selectedMonth,
+                    })}
                   </p>
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
