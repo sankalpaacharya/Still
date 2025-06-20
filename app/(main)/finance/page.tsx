@@ -1,8 +1,8 @@
 "use client";
 import {
-  TotalAmountStatus,
   BudgetTable,
   TargetCard,
+  BalanceCard,
 } from "@/features/finance/components";
 import { useBudgetStore } from "@/lib/store";
 import { MonthSelector } from "@/features/finance/components/months-selector";
@@ -16,11 +16,9 @@ export default function Page() {
 
   return (
     <div className="space-y-6 h-full">
-      {/* <StarsBackground starDensity={0.000016} />
-      <ShootingStars /> */}
       <div className="flex gap-40">
         <MonthSelector />
-        <TotalAmountStatus amount={totalAmount} onAssign={handleAssignAmount} />
+        <BalanceCard amount={totalAmount} onAssign={handleAssignAmount} />
       </div>
       <div className="flex gap-6">
         <div className="flex flex-col w-full">

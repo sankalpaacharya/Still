@@ -1,4 +1,4 @@
-export { TotalAmountStatus } from './TotalAmountStatus';
+export { BalanceCard  } from './TotalAmountStatus';
 export { CategoryItem } from './CategoryItem';
 export { CategoryTable } from './categorytable';
 export { CategoryGroup } from './CategoryGroup';

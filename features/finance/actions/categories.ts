@@ -29,8 +29,6 @@ type ActionResult = {
 }
 
 
-// for now i need category group and category but this needs to be change once i actually fetch the data 
-//  instead of fetching from json blob
 
 async function getAuthenticatedSupabase() {
     const supabase = await createClient()

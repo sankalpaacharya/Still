@@ -177,11 +177,11 @@ export default function SnapUpload() {
           <Card>
             <CardContent className="space-y-3 pt-6">
               <div className="grid w-full items-center gap-3">
-                <Label htmlFor="expense-name">Name</Label>
+                <Label htmlFor="expense-name">Description</Label>
                 <Input
                   type="text"
                   id="expense-name"
-                  placeholder="Expense name"
+                  placeholder="Description"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />

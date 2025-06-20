@@ -12,6 +12,7 @@ import {
   LogOut,
   CreditCard,
   Bell,
+  BanknoteArrowDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,11 @@ const navItems: NavItem[] = [
     href: "/finance",
   },
   {
+    icon: BanknoteArrowDown,
+    label: "Cash Flow",
+    href: "/cashflow",
+  },
+  {
     icon: Sparkles,
     label: "Chat",
     href: "/chat",
@@ -60,12 +66,6 @@ export default function Sidebar() {
   const location = usePathname();
   const [user, setUser] = useState<User>();
   const router = useRouter();
-
-  // useEffect(() => {
-  //   const unsub = initBudgetStoreSync();
-
-  //   return () => unsub();
-  // }, []);
 
   useEffect(() => {
     const getUser = async () => {
