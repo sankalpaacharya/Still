@@ -2,11 +2,10 @@ import React from "react";
 import DataTable from "@/features/cashflow/components/data-table";
 import { columns } from "@/features/cashflow/components/columns";
 import { getExpenses } from "@/features/cashflow/actions";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default async function Page() {
   const expenses = await getExpenses();
-  const totalExpenses = Object.values(expenses).flat().length;
+  // const totalExpenses = Object.values(expenses).flat().length;
   const totalAmount = Object.values(expenses)
     .flat()
     .reduce((sum, expense) => sum + expense.amount, 0);
