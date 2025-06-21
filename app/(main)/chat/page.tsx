@@ -96,7 +96,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="gradient-bg absolute inset-0 z-0" />
+      <div className="gradient-bg absolute inset-0 left-30" />
       <StarsBackground starDensity={0.000016} />
       <ShootingStars />
       <div className="relative z-20 flex flex-col h-full">

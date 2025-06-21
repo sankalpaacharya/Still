@@ -18,7 +18,7 @@ export async function addExpenseAction(data:Expense){
         return {error:"user is not authenticated"}
     }
     data["user_id"] = user?.id
-    const response = await supabase.from("expenses").insert({user_id:data["user_id"],category_group:data.categoryGroup,category:data.category,amount:data.amount})
+    const response = await supabase.from("expenses").insert({user_id:data["user_id"],category_group:data.categoryGroup,category:data.category,amount:data.amount,description:data.description})
 
     console.log(response.data)
 
