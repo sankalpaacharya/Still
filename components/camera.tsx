@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { addExpenseAction } from "@/features/dashboard/actions";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +28,7 @@ export default function SnapUpload() {
   const [categoryGroup, setCategoryGroup] = useState("");
   const [name, setName] = useState("");
   const [amount, setAmount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
 
   const capture = async () => {
     const screenshot = webcamRef.current?.getScreenshot();
@@ -89,7 +91,7 @@ export default function SnapUpload() {
     setCategoryGroup("");
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name.trim()) {
       toast.error("Please enter a name");
       return;
@@ -106,11 +108,19 @@ export default function SnapUpload() {
     }
 
     console.log("Saving:", { name, amount, category, categoryGroup });
-    toast.success("Expense saved successfully!");
+    const result = await addExpenseAction({
+      amount: amount,
+      description: name,
+      category: category,
+      categoryGroup: categoryGroup,
+    });
+    if (result?.error) return toast.error(result.message);
+    setIsOpen(false);
+    return toast.success(result.message);
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Camera className="cursor-pointer" />
       </DialogTrigger>
