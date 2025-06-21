@@ -2,18 +2,10 @@
 import React from "react";
 import {
   ColumnDef,
-  flexRender,
-  getCoreRowModel,
   useReactTable,
+  getCoreRowModel,
+  flexRender,
 } from "@tanstack/react-table";
-import {
-  Table,
-  TableCell,
-  TableRow,
-  TableHead,
-  TableHeader,
-  TableBody,
-} from "@/components/ui/table";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -31,47 +23,102 @@ export default function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow>
-              {headerGroup.headers.map((header, index) => {
-                return (
-                  <TableHead key={index}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
+    <div className="space-y-1">
+      {/* Header - only visible on larger screens */}
+      <div className="hidden lg:grid grid-cols-12 gap-4 px-6 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider border-b border-zinc-100 dark:border-zinc-800">
+        <div className="col-span-2">Date</div>
+        <div className="col-span-5">Description</div>
+        <div className="col-span-3">Category</div>
+        <div className="col-span-2 text-right">Amount</div>
+      </div>
 
-        <TableBody>
-          {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row, index) => (
-              <TableRow key={index}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      {/* Rows */}
+      {table.getRowModel().rows.length ? (
+        <div className="space-y-2">
+          {table.getRowModel().rows.map((row, index) => (
+            <div
+              key={row.id}
+              className="group bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-sm transition-all duration-200"
+            >
+              <div className="hidden lg:grid grid-cols-12 gap-4 items-center px-6 py-4">
+                {row.getVisibleCells().map((cell, cellIndex) => {
+                  let colSpan = "col-span-2";
+                  if (cellIndex === 1) colSpan = "col-span-5";
+                  if (cellIndex === 2) colSpan = "col-span-3";
+                  if (cellIndex === 3) colSpan = "col-span-2";
+
+                  return (
+                    <div key={cell.id} className={colSpan}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Mobile Layout */}
+              <div className="lg:hidden px-4 py-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <div className="font-medium text-zinc-900 dark:text-zinc-100 mb-1">
+                      {flexRender(
+                        row.getVisibleCells()[1].column.columnDef.cell,
+                        row.getVisibleCells()[1].getContext()
+                      )}
+                    </div>
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                      {flexRender(
+                        row.getVisibleCells()[2].column.columnDef.cell,
+                        row.getVisibleCells()[2].getContext()
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right ml-4">
+                    <div className="font-semibold text-zinc-900 dark:text-zinc-100">
+                      {flexRender(
+                        row.getVisibleCells()[3].column.columnDef.cell,
+                        row.getVisibleCells()[3].getContext()
+                      )}
+                    </div>
+                    <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                      {flexRender(
+                        row.getVisibleCells()[0].column.columnDef.cell,
+                        row.getVisibleCells()[0].getContext()
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 mx-auto mb-4 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-zinc-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+            No expenses found
+          </h3>
+          <p className="text-zinc-500 dark:text-zinc-400">
+            Start by adding your first expense to see it here.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
