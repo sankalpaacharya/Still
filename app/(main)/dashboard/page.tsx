@@ -3,12 +3,16 @@ import ExpenseStats from "@/features/dashboard/components/expensestats";
 import { createClient } from "@/utils/supabase/server";
 import AddExpenseModalButton from "@/features/dashboard/components/addexpensebutton";
 import SnapUpload from "@/components/camera";
+import { mostSpentCategory } from "@/features/dashboard/actions";
+import TopSpentCategories from "@/features/dashboard/components/mostspent";
 
 export default async function page() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const data = await mostSpentCategory();
+  console.log(data);
 
   return (
     <div>
@@ -27,7 +31,7 @@ export default async function page() {
         <AddExpenseModalButton />
       </div>
       <ExpenseStats />
-
+      <TopSpentCategories />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SnapUpload />
       </div>
