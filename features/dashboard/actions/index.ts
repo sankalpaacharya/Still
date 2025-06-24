@@ -1,6 +1,5 @@
 "use server"
 import { createClient } from "@/utils/supabase/server"
-import { resolveTxt } from "node:dns"
 
 type Expense = {
    categoryGroup:string  
@@ -8,7 +7,9 @@ type Expense = {
    description?:string
    amount:number
    date?:string
-   user_id?:string
+   userId?:string
+   categoryId:string
+   
 }
 
 export async function addExpenseAction(data:Expense){
@@ -17,8 +18,8 @@ export async function addExpenseAction(data:Expense){
     if(error){
         return {error:true,message:"user not found"}
     }
-    data["user_id"] = user?.id
-    const {error:insertError} = await supabase.from("expenses").insert({user_id:data["user_id"],category_group:data.categoryGroup,category:data.category,amount:data.amount,description:data.description})
+    data.userId = user?.id
+    const {error:insertError} = await supabase.from("expenses").insert({user_id:data.userId,category_group:data.categoryGroup,category:data.category,amount:data.amount,description:data.description,category_id:data.categoryId})
     if(insertError) return {error:true,message:insertError.message}
     return {error:false,message:"Expense Added"}
 

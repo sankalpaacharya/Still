@@ -29,6 +29,7 @@ export default function SnapUpload() {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [CategoryChange, setCategoryChange] = useState<any>({});
 
   const capture = async () => {
     const screenshot = webcamRef.current?.getScreenshot();
@@ -71,6 +72,7 @@ export default function SnapUpload() {
       setIsLoading(false);
       setCategory(data["category"]);
       setCategoryGroup(data["categoryGroup"]);
+      setCategoryChange({ categoryID: data["categoryID"] });
     } catch (error) {
       console.error("Upload error:", error);
       toast.error("Failed to upload image. Please try again.");
@@ -101,18 +103,17 @@ export default function SnapUpload() {
       toast.error("Please enter a valid amount");
       return;
     }
-
     if (!category) {
       toast.error("Please select a category");
       return;
     }
 
-    console.log("Saving:", { name, amount, category, categoryGroup });
     const result = await addExpenseAction({
       amount: amount,
       description: name,
       category: category,
       categoryGroup: categoryGroup,
+      categoryId: CategoryChange.categoryID,
     });
     if (result?.error) return toast.error(result.message);
     setIsOpen(false);
@@ -214,6 +215,7 @@ export default function SnapUpload() {
                   selectedCategory={category}
                   setSelectedCategory={setCategory}
                   setCategoryGroup={setCategoryGroup}
+                  onChange={setCategoryChange}
                 />
               </div>
             </CardContent>

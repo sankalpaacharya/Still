@@ -25,6 +25,7 @@ export default function AddExpenseModalButton() {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [categoryGroup, setCategoryGroup] = useState("");
+  const [categoryChange, setCategoryChange] = useState<any>({});
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -32,13 +33,13 @@ export default function AddExpenseModalButton() {
     if (!description || !amount || !category) {
       toast.error("Fill all details");
     }
-
     addExpenseAction({
       category,
       categoryGroup,
       amount: parseInt(amount),
       description,
       date,
+      categoryId: categoryChange.categoryID,
     });
     addActivity(categoryGroup, category, parseInt(amount));
 
@@ -89,6 +90,7 @@ export default function AddExpenseModalButton() {
               <Label htmlFor="category">Category</Label>
               <CategoryGroupCombobox
                 selectedCategory={category}
+                onChange={setCategoryChange}
                 setCategoryGroup={setCategoryGroup}
                 setSelectedCategory={setCategory}
               />

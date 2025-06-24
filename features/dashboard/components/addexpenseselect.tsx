@@ -22,12 +22,14 @@ type props = {
   setSelectedCategory: Dispatch<SetStateAction<string>>;
   setCategoryGroup: Dispatch<SetStateAction<string>>;
   selectedCategory: string;
+  onChange: Dispatch<SetStateAction<any>>;
 };
 
 export function CategoryGroupCombobox({
   selectedCategory,
   setSelectedCategory,
   setCategoryGroup,
+  onChange,
 }: props) {
   const [open, setOpen] = useState(false);
   const { groups } = useBudgetStore((state) => state);
@@ -54,7 +56,7 @@ export function CategoryGroupCombobox({
               <CommandGroup key={group.name} heading={group.name}>
                 {group.categories.map((category) => (
                   <CommandItem
-                    key={category.name}
+                    key={category.id}
                     value={category.name}
                     onSelect={(currentValue) => {
                       setSelectedCategory(
@@ -62,6 +64,10 @@ export function CategoryGroupCombobox({
                       );
                       setOpen(false);
                       setCategoryGroup(group.name);
+                      onChange({
+                        categoryID: category.id,
+                        categoryName: category.name,
+                      });
                     }}
                   >
                     {category.name}

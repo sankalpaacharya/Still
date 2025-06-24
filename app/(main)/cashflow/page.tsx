@@ -6,6 +6,7 @@ import { getExpenses } from "@/features/cashflow/actions";
 export default async function Page() {
   const expenses = await getExpenses();
   // const totalExpenses = Object.values(expenses).flat().length;
+  console.log("these are the expenses", expenses);
   const totalAmount = Object.values(expenses)
     .flat()
     .reduce((sum, expense) => sum + expense.amount, 0);

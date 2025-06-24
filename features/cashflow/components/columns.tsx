@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
 export type Expense = {
+  category_id: string;
   created_at: string;
   amount: number;
   category: string;

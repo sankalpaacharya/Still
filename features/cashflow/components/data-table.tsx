@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CategoryGroupCombobox } from "@/features/dashboard/components/addexpenseselect";
+import { updateExpenseAction } from "../actions";
+import toast from "react-hot-toast";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -49,16 +51,21 @@ export default function DataTable<TData, TValue>({
       description: cells[1]?.getValue() || "",
       category: cells[2]?.getValue() || "",
       amount: cells[3]?.getValue() || "",
+      categoryID: row.original["category_id"],
     };
     setEditingExpense(expenseData);
     setIsSheetOpen(true);
     setCategory(category);
   };
 
-  const handleSaveExpense = (e: React.FormEvent) => {
+  const handleSaveExpense = async (e: React.FormEvent) => {
     e.preventDefault();
     if (onUpdateExpense && editingExpense) {
       onUpdateExpense(editingExpense);
+    }
+    const result = await updateExpenseAction(editingExpense);
+    if (result.error) {
+      toast.error(result.message);
     }
     setIsSheetOpen(false);
     setEditingExpense(null);
@@ -73,7 +80,6 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-1">
-      {/* Header - only visible on larger screens */}
       <div className="hidden lg:grid grid-cols-12 gap-4 px-6 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider border-b border-zinc-100 dark:border-zinc-800">
         <div className="col-span-2">Date</div>
         <div className="col-span-5">Description</div>
@@ -81,7 +87,6 @@ export default function DataTable<TData, TValue>({
         <div className="col-span-2 text-right">Amount</div>
       </div>
 
-      {/* Rows */}
       {table.getRowModel().rows.length ? (
         <div className="space-y-2">
           {table.getRowModel().rows.map((row) => (
@@ -176,6 +181,7 @@ export default function DataTable<TData, TValue>({
                     <div className="space-y-2">
                       <Label htmlFor="category">Category</Label>
                       <CategoryGroupCombobox
+                        onChange={() => {}}
                         selectedCategory={""}
                         setCategoryGroup={setCategory}
                         setSelectedCategory={setCategoryGroup}
