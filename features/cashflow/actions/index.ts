@@ -1,3 +1,4 @@
+"use server"
 import { createClient } from "@/utils/supabase/server";
 import { Expense } from "../components/columns";
 
@@ -24,7 +25,6 @@ export async function getExpenses():Promise<GroupExpense | {}>{
             expenseData[group] = [expense]
         }
     }
-
     return expenseData
 }
 
@@ -33,8 +33,9 @@ export async function updateExpenseAction(data:any){
     const supabase = await createClient()
     const {data:{user}} = await supabase.auth.getUser()
     if (!user) return {error:true,message:"user not found"}
-    const {error} = await supabase.from("expenses").update(data).eq("category_id",data["category_id"])
-    if(error) return {error:true,message:"can't update the expense"}
+    const {error} = await supabase.from("expenses").update({category_id:data["categoryID"],category:data["category"],amount:data["amount"],description:data["description"]}).eq("category_id",data["categoryID"])
+    if(error) return {error:true,message:error.message}
     return {error:false,message:"updated successfully"}
+
 
 }

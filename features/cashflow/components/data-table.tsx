@@ -63,6 +63,7 @@ export default function DataTable<TData, TValue>({
     if (onUpdateExpense && editingExpense) {
       onUpdateExpense(editingExpense);
     }
+    console.log("before submitting", editingExpense);
     const result = await updateExpenseAction(editingExpense);
     if (result.error) {
       toast.error(result.message);
@@ -155,7 +156,7 @@ export default function DataTable<TData, TValue>({
 
                 {/* sheet here */}
               </SheetTrigger>
-              <SheetContent className="sm:max-w-md">
+              <SheetContent className="sm:max-w-md px-5">
                 <SheetHeader>
                   <SheetTitle>Edit Expense</SheetTitle>
                   <SheetDescription>
