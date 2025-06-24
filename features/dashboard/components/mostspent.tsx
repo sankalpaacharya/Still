@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 
 const TopSpentCategories = ({ data = [] }) => {
-  // Mock data for demonstration - replace with your actual data
   const mockData = [
     {
       category: "Food & Dining",
