@@ -11,7 +11,6 @@ import {
   Sparkles,
   LogOut,
   CreditCard,
-  Bell,
   BanknoteArrowDown,
   X,
 } from "lucide-react";
@@ -34,7 +33,7 @@ const navItems: NavItem[] = [
     label: "Dashboard",
     href: "/dashboard",
   },
-  { icon: Bell, label: "Notification", href: "/notification" },
+  // { icon: Bell, label: "Notification", href: "/notification" },
   {
     icon: DollarSign,
     label: "Finance",
@@ -50,11 +49,7 @@ const navItems: NavItem[] = [
     label: "Chat",
     href: "/chat",
   },
-  {
-    icon: User,
-    label: "Friends",
-    href: "/friends",
-  },
+
   { icon: CreditCard, label: "Account", href: "/account" },
 ];
 
