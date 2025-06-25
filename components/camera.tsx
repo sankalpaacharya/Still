@@ -18,6 +18,10 @@ import { CategoryGroupCombobox } from "@/features/dashboard/components/addexpens
 import { dataURLtoBlob } from "@/lib/utils";
 import toast from "react-hot-toast";
 
+type CategoryChange = {
+  categoryID: string;
+};
+
 export default function SnapUpload() {
   const webcamRef = useRef<Webcam>(null);
   const [image, setImage] = useState<string | null>(null);
@@ -29,7 +33,9 @@ export default function SnapUpload() {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const [CategoryChange, setCategoryChange] = useState<any>({});
+  const [CategoryChange, setCategoryChange] = useState<CategoryChange>({
+    categoryID: "",
+  });
 
   const capture = async () => {
     const screenshot = webcamRef.current?.getScreenshot();
@@ -74,6 +80,7 @@ export default function SnapUpload() {
       setCategoryGroup(data["categoryGroup"]);
       setCategoryChange({ categoryID: data["categoryID"] });
     } catch (error) {
+      console.log(error);
       toast.error("Failed to upload image. Please try again.");
       resetSnap();
     } finally {
