@@ -156,7 +156,7 @@ export default function DataTable<TData, TValue>({
 
                 {/* sheet here */}
               </SheetTrigger>
-              <SheetContent className="sm:max-w-md px-5">
+              <SheetContent className="md:w-3/4 w-full px-5">
                 <SheetHeader>
                   <SheetTitle>Edit Expense</SheetTitle>
                   <SheetDescription>

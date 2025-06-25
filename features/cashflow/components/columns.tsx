@@ -42,7 +42,6 @@ export const columns: ColumnDef<Expense>[] = [
     cell: ({ getValue, row }) => {
       const description = getValue() as string;
       const merchant = description;
-
       return (
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg flex items-center justify-center flex-shrink-0">

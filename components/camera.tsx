@@ -74,7 +74,6 @@ export default function SnapUpload() {
       setCategoryGroup(data["categoryGroup"]);
       setCategoryChange({ categoryID: data["categoryID"] });
     } catch (error) {
-      console.error("Upload error:", error);
       toast.error("Failed to upload image. Please try again.");
       resetSnap();
     } finally {

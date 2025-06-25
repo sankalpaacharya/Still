@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { motion } from "motion/react";
 
 interface NavItem {
   icon: React.ElementType;
@@ -79,6 +80,7 @@ export default function Sidebar() {
         name: data.user?.user_metadata.full_name,
       });
     };
+    console.log("fetching the user data");
     getUser();
   }, []);
 
@@ -98,7 +100,7 @@ export default function Sidebar() {
       console.error("Error signing out:", error);
     }
   };
-
+  console.log("side bar is render");
   return (
     <aside
       className={cn(
@@ -131,37 +133,38 @@ export default function Sidebar() {
           const IconComponent = item.icon;
           const isActive = location === item.href;
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center p-2 rounded-md transition-colors hover:bg-white/5",
-                isActive && "bg-white/10",
-                !expanded && "justify-center"
-              )}
-            >
-              <IconComponent
-                size={20}
+            <motion.span key={item.href} whileTap={{ scale: 0.95 }}>
+              <Link
+                href={item.href}
                 className={cn(
-                  isActive ? "text-indigo-400" : "text-muted-foreground"
-                )}
-              />
-              <div
-                className={cn(
-                  "overflow-hidden transition-all duration-300 whitespace-nowrap",
-                  expanded ? "w-40 ml-3" : "w-0 ml-0"
+                  "flex items-center p-2 rounded-md transition-colors hover:bg-white/5",
+                  isActive && "bg-white/10",
+                  !expanded && "justify-center"
                 )}
               >
-                <span
+                <IconComponent
+                  size={20}
                   className={cn(
-                    "text-sm",
-                    isActive ? "text-white" : "text-muted-foreground"
+                    isActive ? "text-indigo-400" : "text-muted-foreground"
+                  )}
+                />
+                <div
+                  className={cn(
+                    "overflow-hidden transition-all duration-300 whitespace-nowrap",
+                    expanded ? "w-40 ml-3" : "w-0 ml-0"
                   )}
                 >
-                  {item.label}
-                </span>
-              </div>
-            </Link>
+                  <span
+                    className={cn(
+                      "text-sm",
+                      isActive ? "text-white" : "text-muted-foreground"
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                </div>
+              </Link>
+            </motion.span>
           );
         })}
       </div>

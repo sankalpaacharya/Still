@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import ChatInput from "@/features/chat/components/chat-input";
 import Message from "@/features/chat/components/message";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -89,10 +89,6 @@ export default function Page() {
       ]);
     }
   };
-
-  useEffect(() => {
-    console.log(chatHistory);
-  }, [chatHistory]);
 
   return (
     <div className="flex flex-col h-full">
