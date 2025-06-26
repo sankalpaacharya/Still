@@ -8,7 +8,6 @@ import { Check } from "lucide-react";
 import { FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import localFont from "next/font/local";
-import MessageBubble from "@/components/message-bubble";
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument",
