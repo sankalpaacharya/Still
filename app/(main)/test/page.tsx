@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Loading() {
+export default function Page() {
   return (
     <div className="min-h-screen text-white p-6">
       <div className="mx-auto">
