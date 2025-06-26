@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import { BicepsFlexed } from "lucide-react";
 import { Instrument_Serif } from "next/font/google";
 import TaskCard from "./taskcard";
+import MessageBubble from "./message-bubble";
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument",
@@ -30,6 +31,24 @@ export default function Hero() {
       <p className="text-gray-400 px-20 text-center md:px-0">
         Get more done with less effort, in a way that works for you.
       </p>
+      <MessageBubble
+        message="You spend like money respawns 💸"
+        className="absolute top-30 rotate-10 hidden lg:block"
+      />
+      <MessageBubble
+        message="You treat money like it's a rumor, gone in seconds."
+        className="absolute top-70 rotate-5 hidden lg:block"
+      />
+
+      <MessageBubble
+        message="Bank account: 0. Self-respect: also 0"
+        className="absolute top-30 right-0 rotate-10 hidden lg:block"
+      />
+
+      <MessageBubble
+        message="Even broke people judging you rn 😭"
+        className="absolute top-70 right-0 rotate-5 hidden lg:block"
+      />
       <div className="space-y-2 flex flex-col items-center">
         <Button className="cursor-pointer font-bold mt-5 py-6 bg-indigo-700 hover:bg-indigo-800 text-white">
           <BicepsFlexed />
@@ -38,7 +57,7 @@ export default function Hero() {
         <p className="text-gray-400 text-sm">used by 100k+ users</p>
         <div className="gradient-bg absolute top-[30rem]" />
       </div>
-      <div>
+      <div className="p-5">
         <TaskCard></TaskCard>
       </div>
     </main>

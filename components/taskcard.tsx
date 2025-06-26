@@ -45,7 +45,7 @@ export default function ExpenseRoastChat() {
     <motion.div
       animate={{ y: [0, -10, 0] }}
       transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-      className="p-5 space-y-5 bg-glass/40 rounded-3xl max-w-md mx-auto flex flex-col"
+      className="space-y-5 bg-glass/40 rounded-3xl max-w-md p-5 mx-auto flex flex-col"
     >
       <div className="flex justify-between items-center mb-6">
         <div className="flex gap-2 items-center">

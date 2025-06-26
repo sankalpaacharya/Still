@@ -8,6 +8,7 @@ import { Check } from "lucide-react";
 import { FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import localFont from "next/font/local";
+import MessageBubble from "@/components/message-bubble";
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument",
@@ -25,6 +26,8 @@ const satoshifont = localFont({
 export default function Page() {
   return (
     <div className={satoshifont.className}>
+      <div className="pointer-events-none absolute top-0 left-0 h-[200px] w-[200px] bg-[linear-gradient(90deg,#020024_0%,#011598_53%,#FF008C_100%)] opacity-70 blur-[100px] z-[-1]"></div>
+      <div className="pointer-events-none absolute top-0 right-0 h-[200px] w-[200px] bg-[linear-gradient(90deg,#020024_0%,#011598_53%,#FF008C_100%)] opacity-70 blur-[100px] z-[-1]"></div>
       <Navbar></Navbar>
       <Hero></Hero>
       <IntroducingSanku />
