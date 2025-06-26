@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
 import { FiPlus } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
