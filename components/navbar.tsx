@@ -1,5 +1,5 @@
 import React from "react";
-import { Dumbbell } from "lucide-react";
+import { Laugh } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
@@ -27,10 +27,7 @@ export default function Navbar() {
   return (
     <>
       <nav className="wrapper p-5 py-7 flex justify-between items-center">
-        <h2 className="flex items-center text-3xl">
-          <Dumbbell className="mr-2" />
-          Fixyourspend
-        </h2>
+        <h2 className="flex items-center text-3xl">🎯 Still</h2>
         <div className="flex gap-4 items-center">
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href}>

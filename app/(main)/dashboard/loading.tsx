@@ -4,7 +4,6 @@ export default function Loading() {
   return (
     <div className="min-h-screen text-white p-6">
       <div className="mx-auto">
-        {/* Header Section */}
         <div className="flex justify-between items-center mb-8">
           <div>
             <Skeleton className="h-8 w-48 mb-2" />
@@ -13,7 +12,6 @@ export default function Loading() {
           <Skeleton className="h-10 w-32 rounded-lg" />
         </div>
 
-        {/* Stats Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[...Array(4)].map((_, index) => (
             <div key={index} className="rounded-lg p-6">
@@ -33,7 +31,6 @@ export default function Loading() {
             <Skeleton className="h-5 w-32" />
           </div>
 
-          {/* Category Items */}
           <div className="space-y-4">
             {[...Array(3)].map((_, index) => (
               <div key={index} className="flex items-center justify-between">

@@ -5,20 +5,36 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { ThemeProvider } from "@/components/next-themes";
 
-const satoshifont = localFont({
-  src: "../public/fonts/Satoshi-Regular.woff2",
+const sfPro = localFont({
+  src: [
+    {
+      path: "../public/fonts/sfpro/SFPRODISPLAYREGULAR.woff",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/sfpro/SFPRODISPLAYMEDIUM.woff",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/sfpro/SFPRODISPLAYBOLD.woff",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/sfpro/SFPRODISPLAYLIGHTITALIC.woff",
+      weight: "300",
+      style: "italic",
+    },
+  ],
+  variable: "--font-sfpro",
   display: "swap",
-  variable: "--font-satoshi",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: "fixyourspend",
-  description: "gymbro your personal AI Gym Partner",
+  description: "Still Your Financial Guide",
 };
 
 export default function RootLayout({
@@ -28,9 +44,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${satoshifont.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${sfPro.variable} ${sfPro.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

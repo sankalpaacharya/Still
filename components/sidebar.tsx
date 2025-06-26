@@ -33,7 +33,6 @@ const navItems: NavItem[] = [
     label: "Dashboard",
     href: "/dashboard",
   },
-  // { icon: Bell, label: "Notification", href: "/notification" },
   {
     icon: DollarSign,
     label: "Finance",
@@ -195,7 +194,7 @@ export default function Sidebar() {
           )}
         >
           <Link href="/" className="font-bold whitespace-nowrap">
-            <span className="text-gradient">fixyourspend</span>
+            <span className="text-gradient">Still</span>
           </Link>
         </div>
         {!mobile && (

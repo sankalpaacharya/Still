@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
+import localFont from "next/font/local";
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument",
@@ -15,21 +16,27 @@ const instrumentSerif = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
+const satoshifont = localFont({
+  src: "../public/fonts/satoshi/Satoshi-Regular.woff2",
+  display: "swap",
+  variable: "--font-satoshi",
+});
+
 export default function Page() {
   return (
-    <>
+    <div className={satoshifont.className}>
       <Navbar></Navbar>
       <Hero></Hero>
-      <IntroducingSenku />
+      <IntroducingSanku />
       <HowItWroks />
       <Testimonials />
       <Pricing />
       <Footer />
-    </>
+    </div>
   );
 }
 
-const IntroducingSenku = () => {
+const IntroducingSanku = () => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -39,20 +46,20 @@ const IntroducingSenku = () => {
       className="wrapper flex justify-center flex-col items-center mt-10 px-4 md:px-6 space-y-3"
     >
       <h2 className="text-xl font-bold uppercase gradient-text">
-        What Sanku want&rsquo;s to say
+        What Sanku wants to say
       </h2>
       <h1 className="text-2xl md:text-4xl text-center max-w-lg">
-        Hey, I can understand{" "}
+        Tracking spending sucks.
+        <br />
         <span className="text-[#4D4D4D]">
-          Tracking workouts, pushing PRs, and staying consistent isn&rsquo;t
-          easy.
+          Forget complicated budgets and guilt trips.
         </span>{" "}
         <span className="text-[#4D4D4D]">
-          Your AI-powered training partner keeps you on track, motivated, and
-          making real progress with every rep and set.
+          I call out dumb spends, keep you sharp, and help you save without the
+          drama.
         </span>
         <br />
-        That&rsquo;s where Gymbro comes in.
+        Ready to fix those bad habits and take control?
       </h1>
     </motion.div>
   );
@@ -62,12 +69,12 @@ const HowItWroks = () => {
   const content = [
     {
       id: 1,
-      title: "Create Your Routine",
+      title: "Create Your Budget Plan",
       description: "this is random text",
     },
     {
       id: 2,
-      title: "Start Workout",
+      title: "Add your Expense",
       description: "this is random text",
     },
     {

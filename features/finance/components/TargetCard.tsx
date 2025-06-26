@@ -7,7 +7,6 @@ import { TargetForm } from "./targetform";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDate } from "date-fns";
 
 type TargetCardProps = {
   title: string;
@@ -74,7 +73,7 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
   const targetDisplay = formatTargetDisplay();
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md hidden md:block">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
           <Target className="h-5 w-5" />
