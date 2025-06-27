@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import React from "react";
+import { motion } from "framer-motion";
 
 type Props = {
   className?: string;
@@ -8,7 +9,7 @@ type Props = {
 
 export default function MessageBubble({ className, message }: Props) {
   return (
-    <div
+    <motion.div
       className={cn(
         "relative max-w-xs md:max-w-sm p-3 text-white rounded-xl shadow-md",
         "bg-white/10 backdrop-blur-sm self-start",
@@ -22,6 +23,6 @@ export default function MessageBubble({ className, message }: Props) {
           "left-[-8px] border-r-8 border-r-white/10 border-t-transparent border-b-transparent"
         )}
       />
-    </div>
+    </motion.div>
   );
 }
