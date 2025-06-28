@@ -33,7 +33,7 @@ export function AccountCard({
 
   const getAccountTypeIcon = () => {
     switch (accountType.toLowerCase()) {
-      case "savings":
+      case "saving":
         return "💰";
       case "credit":
         return "💳";

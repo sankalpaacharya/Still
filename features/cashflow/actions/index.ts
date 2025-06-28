@@ -36,3 +36,17 @@ export async function updateExpenseAction(data:any){
     if(error) return {error:true,message:error.message}
     return {error:false,message:"updated successfully"}
 }
+
+
+export async function recalculateAmount({accountID}:{accountID:string}){
+    const supabase = await createClient()
+    const {data:{user}} = await supabase.auth.getUser()
+    if (!user) return {error:true,message:"user not found"} 
+    const {data:expenses,error} = await supabase.from("expenses").select("amount").eq("account_id",accountID)
+    if(error) return {error:true,message:error.message}
+    if(expenses===null) return {error:true,message:"expenses not found"}
+    console.log(expenses);
+    return ""
+    // const totalExpensesAmount = expenses.reduce((prev)=>prev+expenses["amount"])
+
+}

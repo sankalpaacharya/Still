@@ -6,8 +6,10 @@ import TopSpentCategories from "@/features/dashboard/components/mostspent";
 import WelcomeText from "@/features/dashboard/components/welcometext";
 import { Suspense } from "react";
 import { WelcomeTextSkeleton } from "@/components/skeleton/welcometext-skeleton";
+import { recalculateAmount } from "@/features/cashflow/actions";
 
 export default async function page() {
+  const expenses = await recalculateAmount({ accountID: "something here" });
   return (
     <div>
       <div className="mb-6 flex justify-between items-center">

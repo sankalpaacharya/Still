@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -19,10 +20,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { addAccountAction } from "./actions";
+import toast from "react-hot-toast";
 
 type Props = {};
 
 export default function AddAccountModal({}: Props) {
+  const [accountType, setAccountType] = useState("saving");
+  const [amount, setAmount] = useState(0);
+  const [name, setName] = useState("");
+  const createAccount = async () => {
+    const result = await addAccountAction({ amount, type: accountType, name });
+    if (result.error) return toast.error(result.message);
+    toast.success(result.message);
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -44,28 +55,37 @@ export default function AddAccountModal({}: Props) {
             account and remove your data from our servers.
           </DialogDescription>
         </DialogHeader>
-        <form className="space-y-3">
-          <Input type="text" placeholder="Account Name" />
-          <Input type="number" placeholder="Balance" />
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Account Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Accounts</SelectLabel>
-                <SelectItem value="apple">Savings</SelectItem>
-                <SelectItem value="banana">Investments</SelectItem>
-                <SelectItem value="blueberry">Credit</SelectItem>
-                <SelectItem value="grapes">Debit</SelectItem>
-                <SelectItem value="pineapple">Loans</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button type="submit" className="bg-purple-400 hover:bg-purple-500">
-            Add Account
-          </Button>
-        </form>
+        <Input
+          onChange={(e) => setName(e.target.value)}
+          type="text"
+          placeholder="Account Name"
+        />
+        <Input
+          onChange={(e) => setAmount(parseInt(e.target.value))}
+          type="number"
+          placeholder="Balance"
+        />
+        <Select onValueChange={(e) => setAccountType(e)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select Account Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Accounts</SelectLabel>
+              <SelectItem value="saving">Savings</SelectItem>
+              <SelectItem value="investment">Investments</SelectItem>
+              <SelectItem value="credit">Credit</SelectItem>
+              <SelectItem value="debit">Debit</SelectItem>
+              <SelectItem value="loan">Loans</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button
+          onClick={createAccount}
+          className="bg-purple-400 hover:bg-purple-500"
+        >
+          Add Account
+        </Button>
       </DialogContent>
     </Dialog>
   );

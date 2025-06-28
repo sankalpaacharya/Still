@@ -4,7 +4,8 @@ An AI-powered spending tracker that doesn't just track — it **roasts** your du
 
 Built with [Next.js](https://nextjs.org), [TypeScript](https://www.typescriptlang.org/), and a little too much love ☕.
 
-![FixYourSpend Screenshot](https://i.ibb.co/r2h1jgY9/still.png)
+<img src="https://i.ibb.co/r2h1jgY9/still.png"/>
+
 
 ---
 

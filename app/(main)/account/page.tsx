@@ -1,6 +1,6 @@
 import React from "react";
-import { AccountCard } from "@/features/account/component/account-card";
 import AddAccountModal from "@/features/account/add-account-modal";
+import AccountsGroup from "@/features/account/component/accounts-group";
 
 export default function Page() {
   return (
@@ -19,8 +19,7 @@ export default function Page() {
       </div>
 
       <div className="grid grid-cols-3 gap-10">
-        <AccountCard name="SBI Bank" accountType="investment" balance={200} />
-        <AccountCard name="SBI Bank" accountType="savings" balance={200} />
+        <AccountsGroup />
         <AddAccountModal />
       </div>
     </div>
