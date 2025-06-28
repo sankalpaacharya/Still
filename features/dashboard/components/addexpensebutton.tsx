@@ -18,6 +18,7 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { addExpenseAction } from "../actions";
 import { useBudgetStore } from "@/lib/store";
 import toast from "react-hot-toast";
+import { AccountSelect } from "./account-select";
 
 export default function AddExpenseModalButton() {
   const { addActivity } = useBudgetStore((state) => state);
@@ -27,22 +28,26 @@ export default function AddExpenseModalButton() {
   const [categoryGroup, setCategoryGroup] = useState("");
   const [categoryChange, setCategoryChange] = useState<any>({});
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [account, setAccount] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!description || !amount || !category) {
       toast.error("Fill all details");
     }
-    addExpenseAction({
+    const result = await addExpenseAction({
       category,
       categoryGroup,
       amount: parseInt(amount),
       description,
       date,
       categoryId: categoryChange.categoryID,
+      accountID: account,
     });
+    if (result.error) {
+      toast.error(result.message);
+    }
     addActivity(categoryGroup, category, parseInt(amount));
-
     setDescription("");
     setAmount("");
     setCategory("");
@@ -94,6 +99,10 @@ export default function AddExpenseModalButton() {
                 setCategoryGroup={setCategoryGroup}
                 setSelectedCategory={setCategory}
               />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="date">Account</Label>
+              <AccountSelect selected={account} setSelected={setAccount} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="date">Date</Label>

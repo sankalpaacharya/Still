@@ -15,6 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { CategoryGroupCombobox } from "@/features/dashboard/components/addexpenseselect";
+import { AccountSelect } from "@/features/dashboard/components/account-select";
 import { dataURLtoBlob } from "@/lib/utils";
 import toast from "react-hot-toast";
 
@@ -30,6 +31,7 @@ export default function SnapUpload() {
   const [isUploading, setIsUploading] = useState(false);
   const [category, setCategory] = useState("");
   const [categoryGroup, setCategoryGroup] = useState("");
+  const [account, setAccount] = useState("");
   const [name, setName] = useState("");
   const [amount, setAmount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -120,6 +122,7 @@ export default function SnapUpload() {
       category: category,
       categoryGroup: categoryGroup,
       categoryId: CategoryChange.categoryID,
+      accountID: account,
     });
     if (result?.error) return toast.error(result.message);
     setIsOpen(false);
@@ -223,6 +226,10 @@ export default function SnapUpload() {
                   setCategoryGroup={setCategoryGroup}
                   onChange={setCategoryChange}
                 />
+              </div>
+              <div className="grid w-full items-center gap-3">
+                <Label htmlFor="expense-category">Account</Label>
+                <AccountSelect selected={account} setSelected={setAccount} />
               </div>
             </CardContent>
             <CardFooter className="flex">

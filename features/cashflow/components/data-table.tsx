@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CategoryGroupCombobox } from "@/features/dashboard/components/addexpenseselect";
+import { AccountSelect } from "@/features/dashboard/components/account-select";
 import { updateExpenseAction } from "../actions";
 import toast from "react-hot-toast";
 
@@ -36,6 +37,7 @@ export default function DataTable<TData, TValue>({
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [category, setCategory] = useState("");
   const [categoryGroup, setCategoryGroup] = useState("");
+  const [account, setAccount] = useState("");
 
   const table = useReactTable({
     data,
@@ -46,7 +48,7 @@ export default function DataTable<TData, TValue>({
   const handleRowClick = (row: any) => {
     const cells = row.getVisibleCells();
     const expenseData = {
-      id: row.id,
+      id: row.original["id"],
       date: cells[0]?.getValue() || "",
       description: cells[1]?.getValue() || "",
       category: cells[2]?.getValue() || "",
@@ -54,6 +56,7 @@ export default function DataTable<TData, TValue>({
       categoryID: row.original["category_id"],
     };
     setEditingExpense(expenseData);
+    setAccount(row.original["account_id"]);
     setIsSheetOpen(true);
     setCategory(category);
   };
@@ -63,8 +66,10 @@ export default function DataTable<TData, TValue>({
     if (onUpdateExpense && editingExpense) {
       onUpdateExpense(editingExpense);
     }
-    console.log("before submitting", editingExpense);
-    const result = await updateExpenseAction(editingExpense);
+    const result = await updateExpenseAction({
+      ...editingExpense,
+      accountID: account,
+    });
     if (result.error) {
       toast.error(result.message);
     }
@@ -201,6 +206,13 @@ export default function DataTable<TData, TValue>({
                         }
                         placeholder="0.00"
                         required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="amount">Account</Label>
+                      <AccountSelect
+                        selected={account}
+                        setSelected={setAccount}
                       />
                     </div>
 

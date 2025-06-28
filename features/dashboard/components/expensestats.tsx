@@ -1,13 +1,7 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { CreditCard, Flame, Landmark, HandCoins } from "lucide-react";
+import { getUserAccounts } from "@/features/account/actions";
 import { cn } from "@/lib/utils";
 
 type Props = {};
@@ -19,12 +13,14 @@ interface StatCardProps {
   icon: React.ReactNode;
   className?: string;
 }
-export default function ExpenseStats({}: Props) {
+export default async function ExpenseStats({}: Props) {
+  const accounts = await getUserAccounts();
+  const total = accounts.reduce((sum, acc) => sum + acc.amount, 0);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 animate-fade-in">
       <StatCard
-        title="💸 Total Spent"
-        value="₹1,240.56"
+        title="💸 Total Balance"
+        value={`₹${total}`}
         change="12.3%"
         isPositive={false}
         icon={<CreditCard />}

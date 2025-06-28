@@ -4,8 +4,10 @@ import { format } from "date-fns";
 
 export type Expense = {
   category_id: string;
+  account_id: string;
   created_at: string;
   amount: number;
+  id: string;
   category: string;
   categoryGroup: string;
   description: string;
