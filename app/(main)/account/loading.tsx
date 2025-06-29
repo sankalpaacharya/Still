@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 
-const Page = () => {
+const Loading = () => {
   return (
     <div className="min-h-screen  text-white p-6">
       <div className=" mx-auto">
@@ -65,4 +65,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default Loading;
