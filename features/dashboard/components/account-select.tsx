@@ -21,12 +21,12 @@ type Account = {
 
 export function AccountSelect({ selected, setSelected }: Props) {
   const [accounts, setAccounts] = useState<Account[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
         const res = await getUserAccounts();
+        console.log("these are accounts", res);
         setAccounts(res);
         if (res.length > 0 && !selected) {
           setSelected(res[0].id);
@@ -34,7 +34,6 @@ export function AccountSelect({ selected, setSelected }: Props) {
       } catch (err) {
         console.error("Error fetching accounts", err);
       } finally {
-        setLoading(false);
       }
     };
     fetchAccounts();
@@ -42,7 +41,7 @@ export function AccountSelect({ selected, setSelected }: Props) {
 
   return (
     <Select
-      value={selected == "" ? accounts[0].name : selected}
+      value={selected == "" ? (accounts[0] ? accounts[0].name : "") : selected}
       onValueChange={setSelected}
     >
       <SelectTrigger className="w-full">

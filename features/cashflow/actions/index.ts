@@ -1,6 +1,7 @@
 "use server"
 import { createClient } from "@/utils/supabase/server";
 import { Expense } from "../components/columns";
+import { revalidatePath } from "next/cache";
 
 export type GroupExpense = Record<string,Expense[]>
 
@@ -10,7 +11,7 @@ export async function getExpenses():Promise<GroupExpense | {}>{
 
     if (!user) return {error:true,message:"user not found"}
 
-    const {data,error} = await supabase.from("expenses").select("*").eq("user_id",user.id)
+    const {data,error} = await supabase.from("expenses").select("*").order("created_at",{ascending:true}).eq("user_id",user.id)
     if(!data) return {error:true,message:error.message}
 
     const expenseData:any = {}    
@@ -141,7 +142,7 @@ export async function updateExpenseAction(data: any) {
     if (updateExpenseError) {
       return { error: true, message: `Failed to update expense: ${updateExpenseError.message}` };
     }
-  
+    revalidatePath("cashflow")
     return { error: false, message: "Expense updated successfully" };
   }
   

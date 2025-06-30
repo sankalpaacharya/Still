@@ -1,75 +1,100 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import {
-  TrendingUp,
-  ShoppingCart,
-  Car,
-  Home,
-  Coffee,
-  Gamepad2,
-} from "lucide-react";
 
 const TopSpentCategories = ({ data = [] }) => {
   const mockData = [
     {
       category: "Food & Dining",
-      amount: 850.25,
-      percentage: 45,
-      icon: "coffee",
+      spent: 8450,
+      budget: 10000,
+      change: 15,
+      emoji: "🍕",
+      barColor: "bg-yellow-500",
     },
-    { category: "Transportation", amount: 620.5, percentage: 35, icon: "car" },
-    { category: "Shopping", amount: 485.75, percentage: 25, icon: "shopping" },
+    {
+      category: "Transportation",
+      spent: 3200,
+      budget: 4000,
+      change: -5,
+      emoji: "🚗",
+      barColor: "bg-yellow-500",
+    },
+    {
+      category: "Shopping",
+      spent: 2800,
+      budget: 3000,
+      change: 25,
+      emoji: "🛍️",
+      barColor: "bg-red-500",
+    },
+    {
+      category: "Entertainment",
+      spent: 1500,
+      budget: 2000,
+      change: -10,
+      emoji: "🎮",
+      barColor: "bg-green-500",
+    },
+    {
+      category: "Utilities",
+      spent: 2500,
+      budget: 2500,
+      change: 0,
+      emoji: "⚡",
+      barColor: "bg-red-500",
+    },
   ];
 
   const categories = data.length > 0 ? data : mockData;
-
-  const getIcon = (iconType: any) => {
-    const iconProps = { size: 16, className: "text-muted-foreground" };
-    switch (iconType) {
-      case "coffee":
-        return <Coffee {...iconProps} />;
-      case "car":
-        return <Car {...iconProps} />;
-      case "shopping":
-        return <ShoppingCart {...iconProps} />;
-      case "home":
-        return <Home {...iconProps} />;
-      case "gaming":
-        return <Gamepad2 {...iconProps} />;
-      default:
-        return <TrendingUp {...iconProps} />;
-    }
-  };
 
   return (
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <TrendingUp size={16} />
-          Top Categories
+          📊 Spending by Category
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {categories.slice(0, 3).map((item, index) => (
-          <div key={index} className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-muted">
-              {getIcon(item.icon)}
-            </div>
-            <div className="flex-1 space-y-1">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium leading-none">
-                  {item.category}
-                </p>
-                <Badge variant="secondary" className="text-xs">
-                  ₹{item.amount.toLocaleString()}
-                </Badge>
+      <CardContent className="space-y-5">
+        {categories.map((item, index) => {
+          const percentUsed = Math.round((item.spent / item.budget) * 100);
+          return (
+            <div key={index} className="space-y-1">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-8 h-8 rounded-md bg-muted text-lg">
+                  {item.emoji}
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm font-medium">{item.category}</p>
+                    <p className="text-sm font-semibold">
+                      ₹{item.spent.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-muted-foreground">
+                    <span>
+                      ₹{item.budget.toLocaleString()} budget • {percentUsed}%
+                      used
+                    </span>
+                    <span
+                      className={`${
+                        item.change > 0
+                          ? "text-red-500"
+                          : item.change < 0
+                          ? "text-green-500"
+                          : "text-muted-foreground"
+                      }`}
+                    >
+                      {item.change > 0 ? "+" : ""}
+                      {item.change}%
+                    </span>
+                  </div>
+                </div>
               </div>
-              <Progress value={item.percentage} className="h-1" />
+              <Progress value={percentUsed} className="h-1" />
             </div>
-          </div>
-        ))}
+          );
+        })}
       </CardContent>
     </Card>
   );
