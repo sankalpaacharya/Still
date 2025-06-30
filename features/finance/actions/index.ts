@@ -1,5 +1,6 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 import { Target } from "@/lib/store";
 
 type CategoryGroup = {
@@ -51,9 +52,10 @@ export async function addCategoryGroupAction({
     .from("category_groups")
     .insert({ user_id: user.id, name: title });
 
-  return error
+  const resposne = error
     ? { error: true, message: error.message }
     : { error: false, message: "category group added" };
+  return resposne;
 }
 
 export async function addCategoryAction({

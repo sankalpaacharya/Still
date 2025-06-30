@@ -42,7 +42,7 @@ export function CategoryTable({
         {displayCategories.map((category: Category) => (
           <CategoryItem
             id={category.id || ""}
-            key={category.id}
+            key={category.name}
             name={category.name}
             assigned={category.assign}
             spent={category.activity}

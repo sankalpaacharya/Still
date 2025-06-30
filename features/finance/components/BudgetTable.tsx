@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { hydrateBudgetStore } from "@/lib/zustand-sync";
 
 type BudgetCategory = {
   id: string;
@@ -48,6 +49,7 @@ export function BudgetTable({}: BudgetTableProps) {
 
       if (!result.error) {
         console.log(`Created new category: ${categoryName}`);
+        await hydrateBudgetStore();
         toast.success("Category created successfully");
       } else {
         toast.error(result.message);

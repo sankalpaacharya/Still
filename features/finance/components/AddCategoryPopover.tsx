@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useBudgetStore } from "@/lib/store";
 import toast from "react-hot-toast";
 import { addCategoryAction } from "../actions";
+import { hydrateBudgetStore } from "@/lib/zustand-sync";
 
 type AddCategoryPopoverProps = {
   className?: string;
@@ -61,6 +62,7 @@ export function AddCategoryPopover({
       if (result.error) {
         toast.error(result.message);
       } else {
+        await hydrateBudgetStore();
         toast.success(result.message);
       }
     } catch (error) {
