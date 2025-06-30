@@ -40,10 +40,6 @@ export function AccountSelect({ selected, setSelected }: Props) {
     fetchAccounts();
   }, []);
 
-  if (loading) return <p className="text-sm text-muted">Loading accounts...</p>;
-  if (accounts.length === 0)
-    return <p className="text-sm text-muted">No accounts found</p>;
-
   return (
     <Select
       value={selected == "" ? accounts[0].name : selected}

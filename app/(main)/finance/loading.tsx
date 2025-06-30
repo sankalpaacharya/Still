@@ -1,13 +1,5 @@
 import React from "react";
-
-const Skeleton = ({ className = "", ...props }) => {
-  return (
-    <div
-      className={`animate-pulse rounded-md bg-muted ${className}`}
-      {...props}
-    />
-  );
-};
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Loading = () => {
   return (
@@ -108,7 +100,6 @@ const Loading = () => {
             </div>
           </div>
 
-          {/* Third section */}
           <div className="border border-zinc-800 rounded-lg p-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -138,15 +129,12 @@ const Loading = () => {
             </div>
           </div>
 
-          {/* Add Category button */}
           <div className="flex justify-center">
             <Skeleton className="h-10 w-32" />
           </div>
         </div>
 
-        {/* Sidebar */}
         <div className="w-80 space-y-6">
-          {/* Target section */}
           <div className="border border-zinc-800 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-4">
               <Skeleton className="h-4 w-4" />
@@ -162,7 +150,6 @@ const Loading = () => {
             <Skeleton className="h-10 w-full" />
           </div>
 
-          {/* Info section */}
           <div className="p-4">
             <div className="flex items-start gap-2">
               <Skeleton className="h-4 w-4 rounded-full mt-0.5" />

@@ -1,5 +1,7 @@
 "use server"
 import { createClient } from "@/utils/supabase/server"
+import {cache} from "react"
+import { revalidatePath } from "next/cache"
 
 type Account = {
     name:string,
@@ -19,16 +21,28 @@ export async function addAccountAction({name,type,amount}:Account) {
     }
     const {error} = await supabase.from("accounts").insert(insertData)
     if(error)return {error:true, message:error.message}
+    revalidatePath("/account")
     return {error:false, message:"account has been added"} 
 }
 
-
-export async function getUserAccounts():Promise<any[]>{
+export const getUserAccounts = cache(async (): Promise<any[]> => {
     const supabase = await createClient()
-    const {data:{user}} = await supabase.auth.getUser()
+    const { data: { user } } = await supabase.auth.getUser()
     if (!user) return []
-    const {data,error} = await supabase.from("accounts").select("*").eq("user_id",user.id)
+    const { data, error } = await supabase.from("accounts").select("*").eq("user_id", user.id)
     if (error) return []
-    return data ?? [] 
-}
+    return data ?? []
+})
 
+
+
+export async function deleteAccountAction({accountID}:{accountID:string}){
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if(!user) return {error:true,message:"User not found"}
+    const {error} =  await supabase.from("accounts").delete().eq("id",accountID)
+    if(error)return {error:true,message: error.message}
+    revalidatePath("/account")
+    return {error:false,message:"Deleted Successfully"}
+
+}

@@ -62,7 +62,6 @@ export async function addExpenseAction(data: Expense) {
   
     return { error: false, message: "Expense added successfully" };
   }
-  
 
 
 export async function mostSpentCategory(){
