@@ -12,7 +12,7 @@ export default async function AccountsGroup() {
     <>
       {accounts.map((item) => (
         <AccountCard
-          id={item.id}
+          id={item.id || ""}
           key={item.id}
           name={item.name}
           balance={item.amount}
