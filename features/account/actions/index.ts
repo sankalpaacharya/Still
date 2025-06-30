@@ -10,7 +10,15 @@ type Account = {
   amount: number;
 };
 
-export async function addAccountAction({ name, type, amount }: Account) {
+export async function addAccountAction({
+  name,
+  type,
+  amount,
+}: {
+  name: string;
+  type: string;
+  amount: number;
+}) {
   const supabase = await createClient();
   const {
     data: { user },

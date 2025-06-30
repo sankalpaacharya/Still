@@ -20,7 +20,7 @@ type Account = {
 };
 
 export function AccountSelect({ selected, setSelected }: Props) {
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [accounts, setAccounts] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -29,7 +29,7 @@ export function AccountSelect({ selected, setSelected }: Props) {
         console.log("these are accounts", res);
         setAccounts(res);
         if (res.length > 0 && !selected) {
-          setSelected(res[0].id);
+          setSelected(res[0].id || "");
         }
       } catch (err) {
         console.error("Error fetching accounts", err);
