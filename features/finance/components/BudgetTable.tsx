@@ -3,7 +3,7 @@ import { CategoryGroup } from "./CategoryGroup";
 import { useBudgetStore } from "@/lib/store";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Plus } from "lucide-react";
-import { addCategoryGroupAction } from "../actions/categories";
+import { addCategoryGroupAction } from "../actions";
 import {
   Popover,
   PopoverTrigger,
@@ -77,6 +77,7 @@ export function BudgetTable({}: BudgetTableProps) {
         <div className="space-y-3 mb-5 flex-1">
           {groups.map((category) => (
             <CategoryGroup
+              id={category.id || ""}
               key={category.name}
               name={category.name}
               categories={category.categories}

@@ -291,3 +291,33 @@ export async function assignMoney({
     ? { error: true, message: "error while assigning money" }
     : { error: false, message: "money assigned successfully" };
 }
+
+export async function deleteCategoryGroupAction({
+  categoryID,
+}: {
+  categoryID: string;
+}) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("category_groups")
+    .delete()
+    .eq("id", categoryID);
+  if (error) return { error: true, message: error.message };
+
+  return { error: false, message: "Deleted Successfully" };
+}
+
+export async function deleteCategoryAction({
+  categoryID,
+}: {
+  categoryID: string;
+}) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("categories")
+    .delete()
+    .eq("id", categoryID);
+  if (error) return { error: true, message: error.message };
+
+  return { error: false, message: "Deleted Successfully" };
+}

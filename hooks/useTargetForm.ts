@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useBudgetStore } from "@/lib/store";
 import { Target } from "@/lib/store";
 import toast from "react-hot-toast";
-import { saveCategoryTargetAction } from "@/features/finance/actions/categories";
+import { saveCategoryTargetAction } from "@/features/finance/actions";
 
 export type TargetFormData = {
   weekly: { amount: number; schedule: string };

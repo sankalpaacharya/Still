@@ -8,10 +8,15 @@ import { Trash, Edit3, Check, X } from "lucide-react";
 import CategoryProgressBar from "./category-progress-bar";
 import { categoryNeedText } from "@/utils/categoryNeedText";
 import { Target } from "@/lib/store";
-import { updateCategoryAction, assignMoney } from "../actions/categories";
+import {
+  updateCategoryAction,
+  assignMoney,
+  deleteCategoryAction,
+} from "../actions";
 import toast from "react-hot-toast";
 
 type CategoryItemProps = {
+  id: string;
   name: string;
   assigned: number;
   spent: number;
@@ -22,6 +27,7 @@ type CategoryItemProps = {
 };
 
 export function CategoryItem({
+  id,
   name,
   assigned,
   spent,
@@ -135,9 +141,11 @@ export function CategoryItem({
     setIsEditingName(false);
   };
 
-  const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleDelete = async () => {
     deleteCategory(groupName, name);
+    const result = await deleteCategoryAction({ categoryID: id });
+    if (result.error) return toast.error(result.message);
+    return toast.success(result.message);
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {

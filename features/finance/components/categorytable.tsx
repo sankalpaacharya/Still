@@ -41,6 +41,7 @@ export function CategoryTable({
       <TableBody>
         {displayCategories.map((category: Category) => (
           <CategoryItem
+            id={category.id || ""}
             key={category.id}
             name={category.name}
             assigned={category.assign}

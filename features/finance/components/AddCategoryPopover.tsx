@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBudgetStore } from "@/lib/store";
 import toast from "react-hot-toast";
-import { addCategoryAction } from "../actions/categories";
+import { addCategoryAction } from "../actions";
 
 type AddCategoryPopoverProps = {
   className?: string;

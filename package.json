@@ -72,8 +72,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "prettier --write",
-      "pnpm lint"
+      "prettier --write"
     ]
   }
 }

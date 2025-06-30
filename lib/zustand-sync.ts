@@ -75,6 +75,7 @@ export async function getHydrateData(
 
   const forZustand: BudgetStoreData = {
     groups: data.map((categoryGroup) => ({
+      id: categoryGroup.id,
       name: categoryGroup.name,
       categories: categoryGroup.categories.map((category) => {
         const categoryMonth = category.category_months?.[0] || {
@@ -119,7 +120,7 @@ export async function getHydrateData(
     })),
     totalAmount: 5000,
   };
-
+  console.log(forZustand);
   return forZustand;
 }
 

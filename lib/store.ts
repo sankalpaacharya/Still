@@ -37,6 +37,7 @@ export type Category = {
 };
 
 export type CategoryGroup = {
+  id?: string;
   name: string;
   categories: Category[];
 };

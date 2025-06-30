@@ -18,10 +18,14 @@ import { CategoryTable } from "./categorytable";
 import { Category, useBudgetStore } from "@/lib/store";
 import { AddCategoryPopover } from "./AddCategoryPopover";
 import toast from "react-hot-toast";
-import { updateCategoryGroupAction } from "../actions/categories";
+import {
+  updateCategoryGroupAction,
+  deleteCategoryGroupAction,
+} from "../actions";
 import { Trash } from "lucide-react";
 
 type CategoryGroupProps = {
+  id?: string;
   icon?: React.ReactNode;
   name: string;
   defaultOpen?: boolean;
@@ -29,6 +33,7 @@ type CategoryGroupProps = {
 };
 
 export function CategoryGroup({
+  id,
   icon = <Blinds size={18} />,
   name,
   categories,
@@ -84,6 +89,13 @@ export function CategoryGroup({
     }
   };
 
+  const handleDelete = async (name: string, id: string) => {
+    deleteCategoryGroup(name);
+    const result = await deleteCategoryGroupAction({ categoryID: id });
+    if (result.error) return toast.error(result.message);
+    toast.success(result.message);
+  };
+
   return (
     <Accordion
       type="multiple"
@@ -114,7 +126,7 @@ export function CategoryGroup({
                     <div className="flex justify-between items-center mt-5">
                       <Button
                         variant={"secondary"}
-                        onClick={() => deleteCategoryGroup(name)}
+                        onClick={() => handleDelete(name, id || "")}
                       >
                         <Trash />
                         Delete
