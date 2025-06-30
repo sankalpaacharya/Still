@@ -60,7 +60,7 @@ export function CategoryGroupCombobox({
                     value={category.name}
                     onSelect={(currentValue) => {
                       setSelectedCategory(
-                        currentValue === selectedCategory ? "" : currentValue
+                        currentValue === selectedCategory ? "" : currentValue,
                       );
                       setOpen(false);
                       setCategoryGroup(group.name);
@@ -76,7 +76,7 @@ export function CategoryGroupCombobox({
                         "ml-auto h-4 w-4",
                         selectedCategory === category.name
                           ? "opacity-100"
-                          : "opacity-0"
+                          : "opacity-0",
                       )}
                     />
                   </CommandItem>

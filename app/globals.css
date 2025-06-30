@@ -6,7 +6,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -46,10 +45,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-
-
   /* custom colors */
-
 }
 
 :root {
@@ -121,78 +117,77 @@
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
-
 @theme {
   --color-glass: #474060;
 }
-
 
 @layer base {
   * {
     font-family: var(--font-satoshi);
     @apply border-border outline-ring/50;
 
-  body {
-    @apply bg-background text-foreground;
-
+    body {
+      @apply bg-background text-foreground;
+    }
+    .wrapper {
+      @apply max-w-[1400px] mx-auto;
+    }
+    .glass-effect {
+      @apply bg-indigo-900/20 backdrop-blur-sm border border-indigo-500/20 rounded-xl p-4 hover:bg-indigo-900/30 transition-all duration-300;
+    }
+    .line-gradient {
+      @apply bg-gradient-to-r from-indigo-500 to-purple-500 mt-2 rounded-full;
+    }
+    .bg-gradient {
+      @apply bg-gradient-to-r from-indigo-600/50 to-indigo-500/30;
+    }
   }
-  .wrapper{
-    @apply max-w-[1400px] mx-auto
+
+  .glassmorphism {
+    backdrop-filter: blur(16px);
+    opacity: 1;
   }
-  .glass-effect{
-    @apply bg-indigo-900/20 backdrop-blur-sm border border-indigo-500/20 rounded-xl p-4 hover:bg-indigo-900/30 transition-all duration-300
+
+  .prose code {
+    background-color: #2e2e2e;
+    padding: 0.1em 0.3em;
+    font-weight: normal;
+    margin: 0.1em 0;
+    display: inline-block;
+    border-radius: 7px;
+    font-size: 0.9em;
   }
-  .line-gradient{
-    @apply bg-gradient-to-r from-indigo-500 to-purple-500 mt-2 rounded-full
+
+  .gradient-text {
+    background: linear-gradient(90deg, #6366f1 0%, #9f7aea 50%, #f472b6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
   }
-  .bg-gradient {
-    @apply bg-gradient-to-r from-indigo-600/50 to-indigo-500/30
+
+  .gradient-bg {
+    width: 200px;
+    height: 200px;
+    background: rgb(2, 0, 36);
+    background: linear-gradient(
+      90deg,
+      rgba(2, 0, 36, 1) 0%,
+      rgb(1, 21, 152) 53%,
+      rgba(255, 0, 140, 1) 100%
+    );
+    position: absolute;
+    z-index: -1;
+    filter: blur(100px);
+    opacity: 0.7;
+    pointer-events: none;
   }
-}
 
-
-
-.glassmorphism {
-  backdrop-filter: blur(16px);
-  opacity: 1;
-}
-
-.prose code {
-  background-color: #2e2e2e;
-  padding: 0.1em 0.3em;
-  font-weight: normal;
-  margin: 0.1em 0;
-  display: inline-block;
-  border-radius: 7px;
-  font-size: 0.9em;
-}
-
-.gradient-text {
-  background: linear-gradient(90deg, #6366F1 0%, #9F7AEA 50%, #F472B6 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-weight: bold;
-}
-
-.gradient-bg {
-  width: 200px;
-  height: 200px;
-  background: rgb(2,0,36);
-  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgb(1, 21, 152) 53%, rgba(255,0,140,1) 100%);
-  position: absolute;
-  z-index: -1;
-  filter: blur(100px);
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-
-.chatbox {
-  position: relative;
-  padding: 1px;
-  border-radius: 16px;
-  background: linear-gradient(
+  .chatbox {
+    position: relative;
+    padding: 1px;
+    border-radius: 16px;
+    background: linear-gradient(
       45deg,
       #ff0055,
       #ff8800,
@@ -200,10 +195,10 @@
       #00ff88,
       #00ffff,
       #8800ff
-  );
-}
+    );
+  }
 
-.chatbox::before{
+  .chatbox::before {
     content: "";
     position: absolute;
     top: -5px;
@@ -212,24 +207,22 @@
     bottom: -5px;
     z-index: -1;
     background: linear-gradient(
-        45deg,
-        #ff0055,
-        #ff8800,
-        #ffee00,
-        #00ff88,
-        #00ffff,
-        #8800ff
+      45deg,
+      #ff0055,
+      #ff8800,
+      #ffee00,
+      #00ff88,
+      #00ffff,
+      #8800ff
     );
     border-radius: 20px;
     filter: blur(15px);
     opacity: 0.6;
-}
+  }
 
-
-.prose-ul{
-  list-style: circle;
-  color: pink;
-  @apply text-pink-500
-}
-
+  .prose-ul {
+    list-style: circle;
+    color: pink;
+    @apply text-pink-500;
+  }
 }

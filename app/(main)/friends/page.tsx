@@ -60,7 +60,7 @@ export default function FriendsPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredFriends = friends.filter((friend) =>
-    friend.name.toLowerCase().includes(searchQuery.toLowerCase())
+    friend.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (

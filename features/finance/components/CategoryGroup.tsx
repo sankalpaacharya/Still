@@ -37,7 +37,7 @@ export function CategoryGroup({
   const [categoryName, setCategoryName] = useState<string>("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { updateCategoryGroup, groups, deleteCategoryGroup } = useBudgetStore(
-    (state) => state
+    (state) => state,
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

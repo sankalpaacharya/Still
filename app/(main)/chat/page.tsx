@@ -75,7 +75,7 @@ export default function Page() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ query: message }),
-        }
+        },
       );
     } catch (error) {
       console.error("Error sending message:", error);

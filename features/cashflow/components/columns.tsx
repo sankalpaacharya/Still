@@ -100,7 +100,7 @@ export const columns: ColumnDef<Expense>[] = [
         <div className="flex flex-col space-y-1">
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getGroupColor(
-              group
+              group,
             )} w-fit`}
           >
             {group}

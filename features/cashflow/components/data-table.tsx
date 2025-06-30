@@ -117,7 +117,7 @@ export default function DataTable<TData, TValue>({
                         <div key={cell.id} className={colSpan}>
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </div>
                       );
@@ -131,13 +131,13 @@ export default function DataTable<TData, TValue>({
                         <div className="font-medium text-zinc-900 dark:text-zinc-100 mb-1">
                           {flexRender(
                             row.getVisibleCells()[1].column.columnDef.cell,
-                            row.getVisibleCells()[1].getContext()
+                            row.getVisibleCells()[1].getContext(),
                           )}
                         </div>
                         <div className="text-sm text-zinc-600 dark:text-zinc-400">
                           {flexRender(
                             row.getVisibleCells()[2].column.columnDef.cell,
-                            row.getVisibleCells()[2].getContext()
+                            row.getVisibleCells()[2].getContext(),
                           )}
                         </div>
                       </div>
@@ -145,13 +145,13 @@ export default function DataTable<TData, TValue>({
                         <div className="font-semibold text-zinc-900 dark:text-zinc-100">
                           {flexRender(
                             row.getVisibleCells()[3].column.columnDef.cell,
-                            row.getVisibleCells()[3].getContext()
+                            row.getVisibleCells()[3].getContext(),
                           )}
                         </div>
                         <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
                           {flexRender(
                             row.getVisibleCells()[0].column.columnDef.cell,
-                            row.getVisibleCells()[0].getContext()
+                            row.getVisibleCells()[0].getContext(),
                           )}
                         </div>
                       </div>

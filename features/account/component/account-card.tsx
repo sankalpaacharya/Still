@@ -105,7 +105,7 @@ export function AccountCard({
         className={cn(
           "relative overflow-hidden w-full max-w-md rounded-xl backdrop-blur-sm border border-white/20 shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer group",
           "bg-gradient-to-br",
-          getCardBackground()
+          getCardBackground(),
         )}
       >
         <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

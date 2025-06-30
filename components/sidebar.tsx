@@ -150,7 +150,7 @@ export default function Sidebar() {
     <aside
       className={cn(
         "hidden md:flex h-screen sticky top-0 bg-background border-r border-white/10 transition-all duration-300 flex-col",
-        expanded ? "w-64" : "w-16"
+        expanded ? "w-64" : "w-16",
       )}
     >
       <SidebarContent />
@@ -190,7 +190,7 @@ export default function Sidebar() {
         <div
           className={cn(
             "overflow-hidden transition-all duration-300",
-            expanded || mobile ? "w-36" : "w-0"
+            expanded || mobile ? "w-36" : "w-0",
           )}
         >
           <Link href="/" className="font-bold whitespace-nowrap">
@@ -221,25 +221,25 @@ export default function Sidebar() {
                 className={cn(
                   "flex items-center p-2 rounded-md transition-colors hover:bg-white/5",
                   isActive && "bg-white/10",
-                  !expanded && !mobile && "justify-center"
+                  !expanded && !mobile && "justify-center",
                 )}
               >
                 <IconComponent
                   size={20}
                   className={cn(
-                    isActive ? "text-indigo-400" : "text-muted-foreground"
+                    isActive ? "text-indigo-400" : "text-muted-foreground",
                   )}
                 />
                 <div
                   className={cn(
                     "overflow-hidden transition-all duration-300 whitespace-nowrap",
-                    expanded || mobile ? "w-40 ml-3" : "w-0 ml-0"
+                    expanded || mobile ? "w-40 ml-3" : "w-0 ml-0",
                   )}
                 >
                   <span
                     className={cn(
                       "text-sm",
-                      isActive ? "text-white" : "text-muted-foreground"
+                      isActive ? "text-white" : "text-muted-foreground",
                     )}
                   >
                     {item.label}
@@ -256,14 +256,14 @@ export default function Sidebar() {
         variant="ghost"
         className={cn(
           "w-full mt-3 flex items-center justify-start text-muted-foreground hover:text-white hover:bg-white/5",
-          !expanded && !mobile && "justify-center"
+          !expanded && !mobile && "justify-center",
         )}
       >
         <LogOut size={18} />
         <span
           className={cn(
             "ml-2 text-sm whitespace-nowrap transition-all duration-300 overflow-hidden",
-            expanded || mobile ? "w-24" : "w-0 ml-0"
+            expanded || mobile ? "w-24" : "w-0 ml-0",
           )}
         >
           Logout
@@ -274,7 +274,7 @@ export default function Sidebar() {
         <div
           className={cn(
             "flex items-center gap-3",
-            !expanded && !mobile && "justify-center"
+            !expanded && !mobile && "justify-center",
           )}
         >
           <Avatar>
@@ -284,7 +284,7 @@ export default function Sidebar() {
           <div
             className={cn(
               "overflow-hidden transition-all duration-300",
-              expanded || mobile ? "w-36" : "w-0"
+              expanded || mobile ? "w-36" : "w-0",
             )}
           >
             <p className="text-sm font-medium whitespace-nowrap">

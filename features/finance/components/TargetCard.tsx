@@ -24,7 +24,7 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
   } = useTargetForm();
 
   const [activeTab, setActiveTab] = useState<"weekly" | "monthly" | "yearly">(
-    "weekly"
+    "weekly",
   );
   const [isEditing, setIsEditing] = useState(false);
 

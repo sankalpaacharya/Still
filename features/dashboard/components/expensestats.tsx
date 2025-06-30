@@ -67,7 +67,7 @@ const StatCard = ({
           <div
             className={cn(
               "text-xs flex items-center mt-1",
-              isPositive ? "text-green-500" : "text-red-500"
+              isPositive ? "text-green-500" : "text-red-500",
             )}
           ></div>
         </div>

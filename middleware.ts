@@ -1,26 +1,24 @@
-import { type NextRequest } from 'next/server'
-import { updateSession } from '@/utils/supabase/middleware'
-import { NextResponse } from 'next/server'
+import { type NextRequest } from "next/server";
+import { updateSession } from "@/utils/supabase/middleware";
+import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
-const publicRoutes = ["/", "/login","/auth/callback"]
-
+const publicRoutes = ["/", "/login", "/auth/callback"];
 
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname
-  const supabase = await createClient()
-  const { data } = await supabase.auth.getUser()
+  const pathname = request.nextUrl.pathname;
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
 
-  const isPublicRoute = publicRoutes.includes(pathname)
-  
+  const isPublicRoute = publicRoutes.includes(pathname);
+
   if (!isPublicRoute) {
-    
     // Redirect to login if user is not authenticated
-    if (data.user===null) {
-      return NextResponse.redirect(new URL("/login", request.url))
+    if (data.user === null) {
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
-  return await updateSession(request)
+  return await updateSession(request);
 }
 
 export const config = {
@@ -32,6 +30,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * Feel free to modify this pattern to include more paths.
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
-}
+};

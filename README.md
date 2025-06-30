@@ -6,7 +6,6 @@ Built with [Next.js](https://nextjs.org), [TypeScript](https://www.typescriptlan
 
 <img src="https://i.ibb.co/r2h1jgY9/still.png"/>
 
-
 ---
 
 ## 🚀 Getting Started
@@ -16,3 +15,4 @@ Clone the repo and run the dev server:
 ```bash
 pnpm install
 pnpm dev
+```

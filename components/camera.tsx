@@ -59,7 +59,7 @@ export default function SnapUpload() {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       if (!response.ok) {

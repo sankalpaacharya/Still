@@ -6,7 +6,7 @@ import debounce from "lodash/debounce";
 
 export function MonthSelector() {
   const { selectedMonth, updateSelectedMonth } = useBudgetStore(
-    (state) => state
+    (state) => state,
   );
 
   const debounceUpdateMonth = useCallback(
@@ -14,10 +14,10 @@ export function MonthSelector() {
       const newMonthString = `2025-${month.toString().padStart(2, "0")}-01`;
       updateSelectedMonth(newMonthString);
     }, 300),
-    []
+    [],
   );
   const [currentSelectedMonth, setCurrentSelectedMonth] = useState(
-    parseInt(selectedMonth.split("-")[1])
+    parseInt(selectedMonth.split("-")[1]),
   );
 
   const [isPrevDisable, setIsPrevDisable] = useState(false);
@@ -48,7 +48,6 @@ export function MonthSelector() {
 
   const handlePrevMonth = () => {
     const newMonth = currentSelectedMonth > 1 ? currentSelectedMonth - 1 : 1;
-    const newMonthString = `2025-${newMonth.toString().padStart(2, "0")}-01`;
 
     setCurrentSelectedMonth(newMonth);
     debounceUpdateMonth(newMonth);

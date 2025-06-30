@@ -1,4 +1,4 @@
-import { Target, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -62,8 +62,8 @@ export function TargetForm({
     return type === "weekly"
       ? "Every"
       : type === "monthly"
-      ? "On the"
-      : "Target Date";
+        ? "On the"
+        : "Target Date";
   };
 
   const renderScheduleInput = () => {

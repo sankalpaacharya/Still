@@ -22,7 +22,7 @@ export default function ExpenseRoastChat() {
 
   const toggleReviewed = (id: number) => {
     setExpenses((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, isReviewed: !e.isReviewed } : e))
+      prev.map((e) => (e.id === id ? { ...e, isReviewed: !e.isReviewed } : e)),
     );
   };
 
@@ -30,13 +30,13 @@ export default function ExpenseRoastChat() {
     const lower = desc.toLowerCase();
     if (lower.includes("snack"))
       return `Bruh, another snack binge? Dropped $${amt.toFixed(
-        2
+        2,
       )} like it’s nothing 🍟🔥`;
     if (lower.includes("netflix"))
       return `Netflix and broke? $${amt.toFixed(2)} well wasted, no cap 📺💸`;
     if (lower.includes("uber"))
       return `Yo, walked for free but nah, $${amt.toFixed(
-        2
+        2,
       )} Uber flex? Lazy much? 🚶‍♂️💀`;
     return `$${amt.toFixed(2)} gone? Chill, but don’t make it a habit 🔥`;
   };

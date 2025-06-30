@@ -2,18 +2,18 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  experimental:{
-    useCache:true
+  experimental: {
+    useCache: true,
   },
-  devIndicators:false,
-  images:{
-    remotePatterns:[
+  devIndicators: false,
+  images: {
+    remotePatterns: [
       {
-        protocol:"https",
-        hostname:"*"
-      }
-    ]
-  }
+        protocol: "https",
+        hostname: "*",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

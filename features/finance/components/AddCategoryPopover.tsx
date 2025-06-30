@@ -29,7 +29,7 @@ export function AddCategoryPopover({
     const group = groups.find((g) => g.name === categoryGroupName);
     return (
       group?.categories.some(
-        (category) => category.name.toLowerCase() === name.toLowerCase()
+        (category) => category.name.toLowerCase() === name.toLowerCase(),
       ) ?? false
     );
   };
@@ -64,6 +64,7 @@ export function AddCategoryPopover({
         toast.success(result.message);
       }
     } catch (error) {
+      console.log(error);
       toast.error("Failed to add category");
     }
   };
