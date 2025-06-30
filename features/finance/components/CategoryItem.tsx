@@ -8,6 +8,7 @@ import { Trash, Edit3, Check, X } from "lucide-react";
 import CategoryProgressBar from "./category-progress-bar";
 import { categoryNeedText } from "@/utils/categoryNeedText";
 import { Target } from "@/lib/store";
+import { getCategoryEmoji } from "@/lib/utils";
 import {
   updateCategoryAction,
   assignMoney,
@@ -208,8 +209,16 @@ export function CategoryItem({
               </div>
             ) : (
               <div className="flex items-center justify-between flex-1">
-                <div className="flex w-full justify-between">
-                  <p className="font-medium">{name}</p>
+                <div className="flex w-full justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="text-lg transition-transform duration-300 ease-in-out group-hover:rotate-12 group-hover:scale-110"
+                      style={{ transformOrigin: "center" }}
+                    >
+                      {getCategoryEmoji(name)}
+                    </span>
+                    <p className="font-medium">{name}</p>
+                  </div>
                   <p className="pr-5 md:pr-10 text-muted-foreground">
                     {categoryNeedText({
                       target,

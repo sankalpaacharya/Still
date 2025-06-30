@@ -1,6 +1,8 @@
+"use client";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { motion } from "framer-motion";
 
 const TopSpentCategories = ({ data = [] }) => {
   const mockData = [
@@ -61,9 +63,12 @@ const TopSpentCategories = ({ data = [] }) => {
           return (
             <div key={index} className="space-y-1">
               <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-8 h-8 rounded-md bg-muted text-lg">
+                <motion.div
+                  whileHover={{ rotate: 20 }}
+                  className="flex items-center justify-center w-8 h-8 rounded-md bg-muted text-lg cursor-pointer"
+                >
                   {item.emoji}
-                </div>
+                </motion.div>
                 <div className="flex-1">
                   <div className="flex justify-between items-center">
                     <p className="text-sm font-medium">{item.category}</p>
