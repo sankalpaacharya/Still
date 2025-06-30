@@ -4,7 +4,7 @@ import { cache } from "react";
 import { revalidatePath } from "next/cache";
 
 type Account = {
-  id: string;
+  id?: string;
   name: string;
   type: string;
   amount: number;
