@@ -8,6 +8,7 @@ type Expense = {
   amount: number;
   date?: string;
   userId?: string;
+  type: string;
   categoryId: string;
   accountID: string;
 };
@@ -40,7 +41,7 @@ export async function addExpenseAction(data: Expense) {
     };
   }
 
-  const { error: insertError } = await supabase.from("expenses").insert({
+  const { error: insertError } = await supabase.from("transactions").insert({
     user_id: user.id,
     category_group: data.categoryGroup,
     category: data.category,
@@ -48,6 +49,7 @@ export async function addExpenseAction(data: Expense) {
     description: data.description,
     category_id: data.categoryId,
     account_id: data.accountID,
+    type: data.type,
   });
 
   if (insertError) {

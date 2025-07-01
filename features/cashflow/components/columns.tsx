@@ -3,11 +3,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
 export type Expense = {
+  id: string;
   category_id: string;
   account_id: string;
   created_at: string;
   amount: number;
-  id: string;
   category: string;
   categoryGroup: string;
   description: string;

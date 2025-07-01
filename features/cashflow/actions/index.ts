@@ -14,7 +14,7 @@ export async function getExpenses(): Promise<GroupExpense | {}> {
   if (!user) return { error: true, message: "user not found" };
 
   const { data, error } = await supabase
-    .from("expenses")
+    .from("transactions")
     .select("*")
     .order("created_at", { ascending: true })
     .eq("user_id", user.id);

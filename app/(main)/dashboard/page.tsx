@@ -1,11 +1,12 @@
 import React from "react";
 import ExpenseStats from "@/features/dashboard/components/expensestats";
-import AddExpenseModalButton from "@/features/dashboard/components/addexpensebutton";
+// import AddExpenseModalButton from "@/features/dashboard/components/addexpensebutton";
 import SnapUpload from "@/components/camera";
 import TopSpentCategories from "@/features/dashboard/components/mostspent";
 import WelcomeText from "@/features/dashboard/components/welcometext";
 import { Suspense } from "react";
 import { WelcomeTextSkeleton } from "@/components/skeleton/welcometext-skeleton";
+import NewAddExpenseModalButton from "@/features/dashboard/components/newModal";
 
 export default async function page() {
   return (
@@ -14,7 +15,7 @@ export default async function page() {
         <Suspense fallback={<WelcomeTextSkeleton />}>
           <WelcomeText />
         </Suspense>
-        <AddExpenseModalButton />
+        <NewAddExpenseModalButton />
       </div>
       <ExpenseStats />
       <TopSpentCategories />

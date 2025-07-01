@@ -65,7 +65,6 @@ export function MonthSelector() {
     setCurrentSelectedMonth(newMonth);
     debounceUpdateMonth(newMonth);
 
-    // Update button states
     setIsNextDisable(newMonth >= new Date().getMonth() + 1);
     setIsPrevDisable(false);
   };
