@@ -123,6 +123,7 @@ export default function SnapUpload() {
       categoryGroup: categoryGroup,
       categoryId: CategoryChange.categoryID,
       accountID: account,
+      type: "expense",
     });
     if (result?.error) return toast.error(result.message);
     setIsOpen(false);
