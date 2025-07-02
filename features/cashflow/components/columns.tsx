@@ -8,6 +8,7 @@ export type Expense = {
   account_id: string;
   created_at: string;
   amount: number;
+  type: string; // income or epxense
   category: string;
   categoryGroup: string;
   description: string;
