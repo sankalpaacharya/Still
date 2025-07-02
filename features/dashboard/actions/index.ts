@@ -20,10 +20,12 @@ export async function addExpenseAction(data: Expense) {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
+
   if (userError || !user) {
     return { error: true, message: "User not found" };
   }
 
+  // Fetch account
   const { data: accountData, error: accountError } = await supabase
     .from("accounts")
     .select("amount")
@@ -34,13 +36,15 @@ export async function addExpenseAction(data: Expense) {
     return { error: true, message: "Account not found" };
   }
 
-  if (accountData.amount < data.amount) {
+  // Handle logic based on type
+  if (data.type === "expense" && accountData.amount < data.amount) {
     return {
       error: true,
       message: "Insufficient balance in the selected account",
     };
   }
 
+  // Insert into transactions
   const { error: insertError } = await supabase.from("transactions").insert({
     user_id: user.id,
     category_group: data.categoryGroup,
@@ -56,25 +60,41 @@ export async function addExpenseAction(data: Expense) {
     return { error: true, message: insertError.message };
   }
 
+  // Calculate new balance
+  const updatedAmount =
+    data.type === "income"
+      ? accountData.amount + data.amount
+      : accountData.amount - data.amount;
+
+  // Update account balance
   const { error: updateError } = await supabase
     .from("accounts")
     .update({
-      amount: accountData.amount - data.amount,
+      amount: updatedAmount,
     })
     .eq("id", data.accountID);
 
   if (updateError) {
     return {
       error: true,
-      message: "Expense added but failed to update account balance",
+      message: `${
+        data.type === "income"
+          ? "Income added but failed to update account balance"
+          : "Expense added but failed to update account balance"
+      }`,
     };
   }
 
-  return { error: false, message: "Expense added successfully" };
+  return {
+    error: false,
+    message:
+      data.type === "income"
+        ? "Income added successfully"
+        : "Expense added successfully",
+  };
 }
 
 export async function mostSpentCategory() {
-  // sending 5 most spending category of user
   const supabase = await createClient();
   const {
     data: { user },

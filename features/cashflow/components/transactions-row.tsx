@@ -3,29 +3,17 @@ import { flexRender } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getCategoryEmoji } from "@/lib/utils";
 
 interface ExpenseRowProps {
   row: any;
 }
 
-const getCategoryIcon = (category: string) => {
-  const icons = {
-    Food: "🍽️",
-    Transport: "🚗",
-    Shopping: "🛍️",
-    Entertainment: "🎬",
-    Bills: "⚡",
-    Health: "🏥",
-    Utilities: "⚡",
-  };
-  return icons[category as keyof typeof icons] || "💳";
-};
-
 export const ExpenseRow: React.FC<ExpenseRowProps> = ({ row }) => {
   const cells = row.getVisibleCells();
   const amount = row.original.amount;
   const isExpense = row.original.type == "expense";
-  const categoryGroup = row.original.categoryGroup;
+  const categoryGroup = row.original.category;
   const description = row.original.description;
 
   return (
@@ -34,7 +22,9 @@ export const ExpenseRow: React.FC<ExpenseRowProps> = ({ row }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 flex-1 min-w-0">
             <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-              <span className="text-lg">{getCategoryIcon(categoryGroup)}</span>
+              <span className="text-lg transition-transform duration-300 ease-in-out group-hover:rotate-12 group-hover:scale-110">
+                {getCategoryEmoji(categoryGroup || "")}
+              </span>
             </div>
 
             <div className="flex-1 min-w-0">

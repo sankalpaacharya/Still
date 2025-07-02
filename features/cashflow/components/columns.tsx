@@ -10,7 +10,7 @@ export type Expense = {
   amount: number;
   type: string; // income or epxense
   category: string;
-  categoryGroup: string;
+  category_group: string;
   description: string;
   status?: string;
 };
@@ -76,7 +76,7 @@ export const columns: ColumnDef<Expense>[] = [
     header: "Category",
     cell: ({ row }) => {
       const category = row.original.category;
-      const group = row.original.categoryGroup;
+      const group = row.original.category_group;
 
       const getGroupColor = (group: string) => {
         const colors = {

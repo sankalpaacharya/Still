@@ -6,19 +6,7 @@ import {
   getCoreRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { CategoryGroupCombobox } from "@/features/dashboard/components/addexpenseselect";
-import { AccountSelect } from "@/features/dashboard/components/account-select";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { updateExpenseAction } from "../actions";
 import toast from "react-hot-toast";
 import { ExpenseRow } from "./transactions-row";
