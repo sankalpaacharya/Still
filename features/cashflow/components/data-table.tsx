@@ -4,7 +4,6 @@ import {
   ColumnDef,
   useReactTable,
   getCoreRowModel,
-  flexRender,
 } from "@tanstack/react-table";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { updateExpenseAction } from "../actions";
@@ -111,6 +110,7 @@ export default function DataTable<TData, TValue>({
           </SheetTrigger>
           <EditExpenseSheet
             editingExpense={editingExpense}
+            onDelete={() => {}}
             account={account}
             setAccount={setAccount}
             category={category}

@@ -6,10 +6,9 @@ import { columns } from "@/features/cashflow/components/columns";
 export default async function DisplayTable() {
   const expenses = await getExpenses();
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 mb-10">
       {Object.entries(expenses).map(([groupName, expenseList]) => (
         <div key={groupName} className="space-y-4">
-          {/* Group Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">

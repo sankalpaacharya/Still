@@ -1,5 +1,6 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 
 type Expense = {
   categoryGroup: string;
@@ -36,7 +37,6 @@ export async function addExpenseAction(data: Expense) {
     return { error: true, message: "Account not found" };
   }
 
-  // Handle logic based on type
   if (data.type === "expense" && accountData.amount < data.amount) {
     return {
       error: true,
@@ -44,7 +44,6 @@ export async function addExpenseAction(data: Expense) {
     };
   }
 
-  // Insert into transactions
   const { error: insertError } = await supabase.from("transactions").insert({
     user_id: user.id,
     category_group: data.categoryGroup,
@@ -60,13 +59,11 @@ export async function addExpenseAction(data: Expense) {
     return { error: true, message: insertError.message };
   }
 
-  // Calculate new balance
   const updatedAmount =
     data.type === "income"
       ? accountData.amount + data.amount
       : accountData.amount - data.amount;
 
-  // Update account balance
   const { error: updateError } = await supabase
     .from("accounts")
     .update({
@@ -85,6 +82,7 @@ export async function addExpenseAction(data: Expense) {
     };
   }
 
+  revalidatePath("/dashboard");
   return {
     error: false,
     message:
@@ -100,14 +98,21 @@ export async function mostSpentCategory() {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-  if (!user && userError) {
-    return { error: true, message: "user not authenticated" };
+  if (!user || userError) {
+    return [];
   }
   const { data, error } = await supabase
-    .from("categories")
-    .select("*, category_groups(user_id)")
-    .eq("category_groups.user_id", user?.id);
-  console.log(error);
-  if (error) return { error: true, message: "can't fetch categories" };
-  return data;
+    .from("transactions")
+    .select("id,category,category_id,amount")
+    .eq("user_id", user.id)
+    .eq("type", "expense")
+    .limit(5);
+  const expenses: any = {};
+  data?.forEach((expense) => {
+    if (expenses[expense.category] != undefined) {
+      expenses[expense.category] += expense.amount;
+    }
+    expenses[expense.category] = expense.amount;
+  });
+  return expenses;
 }

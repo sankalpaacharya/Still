@@ -1,22 +1,15 @@
 "use client";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { useBudgetStore } from "@/lib/store";
-import { Input } from "@/components/ui/input";
-import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Trash, Edit3, Check, X } from "lucide-react";
-import CategoryProgressBar from "./category-progress-bar";
 import { categoryNeedText } from "@/utils/categoryNeedText";
-import { Target } from "@/lib/store";
 import { getCategoryEmoji } from "@/lib/utils";
-import {
-  updateCategoryAction,
-  assignMoney,
-  deleteCategoryAction,
-} from "../actions";
-import toast from "react-hot-toast";
+import CategoryProgressBar from "./category-progress-bar";
+import { Button } from "@/components/ui/button";
+import { Edit3, Trash, Check, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useCategoryItemLogic } from "@/hooks/useCategoryItem";
+import type { Target } from "@/lib/store";
 
-type CategoryItemProps = {
+export type CategoryItemProps = {
   id: string;
   name: string;
   assigned: number;
@@ -37,163 +30,46 @@ export function CategoryItem({
   groupName = "",
   onAssignedChange,
 }: CategoryItemProps) {
-  const { updateCategory, deleteCategory, setSelectedCategory, selectedMonth } =
-    useBudgetStore((state) => state);
-
-  const [assignedValue, setAssignedValue] = useState(assigned);
-  const [inputValue, setInputValue] = useState(assigned.toString());
-  const [isEditingAmount, setIsEditingAmount] = useState(false);
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [nameValue, setNameValue] = useState(name);
-  const [isSaving, setIsSaving] = useState(false);
-  const amountInputRef = useRef<HTMLInputElement>(null);
-  const nameInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    setAssignedValue(assigned);
-    setInputValue(assigned.toString());
-  }, [assigned]);
-
-  useEffect(() => {
-    if (isEditingAmount && amountInputRef.current) {
-      amountInputRef.current.focus();
-      amountInputRef.current.select();
-    }
-  }, [isEditingAmount]);
-
-  useEffect(() => {
-    if (isEditingName && nameInputRef.current) {
-      nameInputRef.current.focus();
-      nameInputRef.current.select();
-    }
-  }, [isEditingName]);
+  const logic = useCategoryItemLogic({
+    id,
+    name,
+    assigned,
+    groupName,
+    target,
+    onAssignedChange,
+  });
 
   const handleRowClick = () => {
-    if (!isEditingAmount && !isEditingName) {
-      setSelectedCategory(name, groupName);
-    }
-  };
-
-  const handleAmountEdit = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsEditingAmount(true);
-  };
-
-  const handleNameEdit = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsEditingName(true);
-  };
-
-  const handleAmountSave = async () => {
-    const numValue = parseFloat(inputValue) || 0;
-    setIsSaving(true);
-
-    try {
-      const result = await assignMoney({
-        month: new Date(),
-        assign: numValue,
-        selectedGroup: groupName,
-        selectedCategory: name,
-      });
-
-      if (result.error) {
-        toast.error(result.message);
-      } else {
-        toast.success(result.message);
-        setAssignedValue(numValue);
-        updateCategory(groupName, name, { assign: numValue });
-
-        if (onAssignedChange) {
-          onAssignedChange(numValue);
-        }
-      }
-    } catch (error) {
-      toast.error("Failed to save assignment");
-    } finally {
-      setIsSaving(false);
-      setIsEditingAmount(false);
-    }
-  };
-
-  const handleAmountCancel = () => {
-    setInputValue(assignedValue.toString());
-    setIsEditingAmount(false);
-  };
-
-  const handleNameSave = async () => {
-    if (nameValue.trim() && nameValue !== name) {
-      const result = await updateCategoryAction({
-        title: name,
-        categoryGroupName: groupName,
-        newTitle: nameValue,
-      });
-      if (result.error) {
-        toast.error(result.message);
-      } else {
-        toast.success(result.message);
-      }
-      updateCategory(groupName, name, { name: nameValue.trim() });
-    }
-    setIsEditingName(false);
-  };
-
-  const handleNameCancel = () => {
-    setNameValue(name);
-    setIsEditingName(false);
-  };
-
-  const handleDelete = async () => {
-    deleteCategory(groupName, name);
-    const result = await deleteCategoryAction({ categoryID: id });
-    if (result.error) return toast.error(result.message);
-    return toast.success(result.message);
-  };
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value === "" || /^\d*\.?\d*$/.test(value)) {
-      setInputValue(value);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent, action: "amount" | "name") => {
-    if (e.key === "Enter") {
-      if (action === "amount") {
-        handleAmountSave();
-      } else {
-        handleNameSave();
-      }
-    } else if (e.key === "Escape") {
-      if (action === "amount") {
-        handleAmountCancel();
-      } else {
-        handleNameCancel();
-      }
+    if (!logic.isEditingAmount && !logic.isEditingName) {
+      logic.setSelectedCategory(name, groupName);
     }
   };
 
   return (
     <TableRow
-      className={`group hover:bg-muted/50 cursor-pointer transition-colors`}
+      className="group hover:bg-muted/50 cursor-pointer transition-colors"
       onClick={handleRowClick}
     >
       <TableCell className="w-[61%] p-4">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            {isEditingName ? (
+            {logic.isEditingName ? (
               <div className="flex items-center gap-2 flex-1">
                 <Input
-                  ref={nameInputRef}
-                  value={nameValue}
-                  onChange={(e) => setNameValue(e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(e, "name")}
+                  ref={logic.nameInputRef}
+                  value={logic.nameValue}
+                  onChange={(e) => logic.setNameValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") logic.saveName();
+                    else if (e.key === "Escape") logic.cancelNameEdit();
+                  }}
                   className="flex-1 h-8"
                   onClick={(e) => e.stopPropagation()}
                 />
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={handleNameSave}
+                  onClick={logic.saveName}
                   className="h-8 w-8 p-0"
                 >
                   <Check className="h-3 w-3" />
@@ -201,7 +77,7 @@ export function CategoryItem({
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={handleNameCancel}
+                  onClick={logic.cancelNameEdit}
                   className="h-8 w-8 p-0"
                 >
                   <X className="h-3 w-3" />
@@ -222,8 +98,8 @@ export function CategoryItem({
                   <p className="pr-5 md:pr-10 text-muted-foreground">
                     {categoryNeedText({
                       target,
-                      assign: assignedValue,
-                      selectedMonth,
+                      assign: logic.assignedValue,
+                      selectedMonth: logic.selectedMonth,
                     })}
                   </p>
                 </div>
@@ -231,7 +107,10 @@ export function CategoryItem({
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={handleNameEdit}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      logic.setIsEditingName(true);
+                    }}
                     className="h-7 w-7 p-0"
                   >
                     <Edit3 className="h-3 w-3" />
@@ -239,7 +118,10 @@ export function CategoryItem({
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={handleDelete}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      logic.deleteCategoryFn();
+                    }}
                     className="h-7 w-7 p-0 text-destructive hover:text-destructive"
                   >
                     <Trash className="h-3 w-3" />
@@ -248,52 +130,59 @@ export function CategoryItem({
               </div>
             )}
           </div>
+
           <CategoryProgressBar
             activity={spent}
-            assign={assignedValue}
+            assign={logic.assignedValue}
             target={target}
           />
         </div>
       </TableCell>
 
       <TableCell className="w-[13%] text-right p-4">
-        {isEditingAmount ? (
+        {logic.isEditingAmount ? (
           <div className="flex items-center justify-end gap-2">
             <Input
-              ref={amountInputRef}
-              value={inputValue}
-              onChange={handleAmountChange}
-              onKeyDown={(e) => handleKeyDown(e, "amount")}
+              ref={logic.amountInputRef}
+              value={logic.inputValue}
+              onChange={(e) => logic.setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") logic.saveAmount();
+                if (e.key === "Escape") logic.cancelAmountEdit();
+              }}
               className="w-20 text-right h-8"
               onClick={(e) => e.stopPropagation()}
-              disabled={isSaving}
+              disabled={logic.isSaving}
             />
             <Button
               size="sm"
               variant="ghost"
-              onClick={handleAmountSave}
+              onClick={logic.saveAmount}
               className="h-8 w-8 p-0"
-              disabled={isSaving}
+              disabled={logic.isSaving}
             >
               <Check className="h-3 w-3" />
             </Button>
             <Button
               size="sm"
               variant="ghost"
-              onClick={handleAmountCancel}
+              onClick={logic.cancelAmountEdit}
               className="h-8 w-8 p-0"
-              disabled={isSaving}
+              disabled={logic.isSaving}
             >
               <X className="h-3 w-3" />
             </Button>
           </div>
         ) : (
           <div className="flex items-center justify-end gap-2">
-            <span className="text-sm font-medium">₹{assignedValue}</span>
+            <span className="text-sm font-medium">₹{logic.assignedValue}</span>
             <Button
               size="sm"
               variant="ghost"
-              onClick={handleAmountEdit}
+              onClick={(e) => {
+                e.stopPropagation();
+                logic.setIsEditingAmount(true);
+              }}
               className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
             >
               <Edit3 className="h-3 w-3" />
@@ -308,11 +197,9 @@ export function CategoryItem({
 
       <TableCell className="w-[13%] text-right p-4">
         <span
-          className={`text-sm font-medium ${
-            available < 0 ? "text-destructive" : "text-green-600"
-          }`}
+          className={`text-sm font-medium ${available < 0 ? "text-destructive" : "text-green-600"}`}
         >
-          ₹{assignedValue - spent}
+          ₹{logic.assignedValue - spent}
         </span>
       </TableCell>
     </TableRow>

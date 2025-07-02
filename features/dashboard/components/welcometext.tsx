@@ -1,24 +1,29 @@
 import React from "react";
 import { createClient } from "@/utils/supabase/server";
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 
-type Props = {};
-
-export default async function WelcomeText({}: Props) {
+export default async function WelcomeText() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const welcomeText = `Welcome ${user?.user_metadata.full_name.split(" ")[0]} 👋`;
+
   return (
     <div>
       <div className="flex items-center">
-        <h2 className="text-3xl font-bold text-gradient capitalize">
-          Welcome {user?.user_metadata.full_name.split(" ")[0]}
-        </h2>
-        <span className="text-3xl">👋</span>
-      </div>{" "}
-      <p className="mt-1 text-muted-foreground">
-        Track your spending, build habits, save money
-      </p>
+        <TextGenerateEffect
+          className="text-3xl font-bold text-gradient capitalize"
+          words={welcomeText}
+          duration={0}
+        />
+      </div>
+      <TextGenerateEffect
+        words="Even ₹50 spent consciously can build a mindset of wealth. Let's stay intentional"
+        className="text-md font-medium text-muted-foreground mt-1 [animation-delay:1.2s]"
+        filter={false}
+        duration={2}
+      />
     </div>
   );
 }

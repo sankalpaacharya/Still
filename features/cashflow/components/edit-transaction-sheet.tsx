@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   SheetContent,
   SheetDescription,
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CategoryGroupCombobox } from "@/features/dashboard/components/addexpenseselect";
 import { AccountSelect } from "@/features/dashboard/components/account-select";
+import { Trash2 } from "lucide-react";
 
 interface EditExpenseSheetProps {
   editingExpense: any;
@@ -22,6 +23,7 @@ interface EditExpenseSheetProps {
   onSave: (e: React.FormEvent) => void;
   onInputChange: (field: string, value: string) => void;
   onCancel: () => void;
+  onDelete: () => void;
 }
 
 export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
@@ -33,20 +35,21 @@ export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
   onSave,
   onInputChange,
   onCancel,
+  onDelete,
 }) => {
   if (!editingExpense) return null;
+  const [categoryChange, setCategoryChange] = useState({});
 
   return (
-    <SheetContent className="w-full sm:max-w-lg px-5">
+    <SheetContent className="w-full sm:max-w-lg px-5 py-6">
       <SheetHeader>
         <SheetTitle>Edit Transaction</SheetTitle>
-        <SheetDescription>
-          Make changes to your transaction details below.
+        <SheetDescription className="text-sm text-muted-foreground">
+          Update the fields below to modify your transaction.
         </SheetDescription>
       </SheetHeader>
 
       <form onSubmit={onSave} className="space-y-6 mt-6">
-        {/* Description Field */}
         <div className="space-y-2">
           <Label htmlFor="description">Description</Label>
           <Input
@@ -58,18 +61,16 @@ export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
           />
         </div>
 
-        {/* Category Field */}
         <div className="space-y-2">
           <Label htmlFor="category">Category</Label>
           <CategoryGroupCombobox
-            onChange={() => {}}
+            onChange={setCategoryChange}
             selectedCategory={""}
             setCategoryGroup={setCategory}
             setSelectedCategory={setCategoryGroup}
           />
         </div>
 
-        {/* Amount Field */}
         <div className="space-y-2">
           <Label htmlFor="amount">Amount (NPR)</Label>
           <Input
@@ -83,13 +84,11 @@ export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
           />
         </div>
 
-        {/* Account Field */}
         <div className="space-y-2">
           <Label htmlFor="account">Account</Label>
           <AccountSelect selected={account} setSelected={setAccount} />
         </div>
 
-        {/* Date Field */}
         <div className="space-y-2">
           <Label htmlFor="date">Date</Label>
           <Input
@@ -101,8 +100,7 @@ export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
           />
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-3 pt-6">
+        <div className="flex flex-col sm:flex-row gap-3 pt-6">
           <Button type="submit" className="flex-1">
             Save Changes
           </Button>
@@ -113,6 +111,18 @@ export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
             className="flex-1"
           >
             Cancel
+          </Button>
+        </div>
+
+        <div className="pt-4 border-t">
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={onDelete}
+            className="w-full"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete Transaction
           </Button>
         </div>
       </form>
