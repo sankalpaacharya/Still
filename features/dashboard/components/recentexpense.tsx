@@ -16,7 +16,7 @@ export const TransactionCard = async () => {
           Recent Transactions
         </CardTitle>
         <Link
-          href="/transactions"
+          href="/cashflow"
           className="text-sm text-primary hover:underline flex items-center gap-1"
         >
           View All <ChevronRight size={14} />

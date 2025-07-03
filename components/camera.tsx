@@ -133,7 +133,10 @@ export default function SnapUpload() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Camera className="cursor-pointer" />
+        <Button variant="outline" className="flex items-center gap-2">
+          <Camera className="w-4 h-4" />
+          Snap
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl overflow-y-scroll max-h-screen">
         <DialogTitle className="">📷 Snap</DialogTitle>
