@@ -156,3 +156,22 @@ export async function mostSpentCategoryWithBudget() {
     assigned: assignMap[item.category_id] || 0,
   }));
 }
+
+export async function getRecentTransactions() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (!user || userError) return [];
+
+  const { data, error } = await supabase
+    .from("transactions")
+    .select("*")
+    .eq("user_id", user.id)
+    .limit(5);
+  if (error) return [];
+
+  return data;
+}

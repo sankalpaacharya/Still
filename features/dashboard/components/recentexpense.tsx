@@ -2,8 +2,13 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { TransactionItem } from "./transaction-items";
 import { ChevronRight } from "lucide-react";
+import { getRecentTransactions } from "../actions";
+import { getCategoryEmoji } from "@/lib/utils";
+import { timeSince } from "@/lib/utils";
 
-export const TransactionCard = () => {
+export const TransactionCard = async () => {
+  const transactions = await getRecentTransactions();
+  console.log("transactions", transactions);
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -18,46 +23,17 @@ export const TransactionCard = () => {
         </Link>
       </CardHeader>
       <CardContent className="space-y-2">
-        <TransactionItem
-          emoji="🍕"
-          title="Swiggy Food Delivery"
-          category="Food & Dining"
-          timeAgo="2 hours ago"
-          amount={485}
-          type="expense"
-        />
-        <TransactionItem
-          emoji="🚗"
-          title="Uber Ride"
-          category="Transportation"
-          timeAgo="5 hours ago"
-          amount={120}
-          type="expense"
-        />
-        <TransactionItem
-          emoji="💰"
-          title="Salary Bonus"
-          category="Income"
-          timeAgo="1 day ago"
-          amount={5000}
-          type="income"
-        />
-        <TransactionItem
-          emoji="📦"
-          title="Amazon Purchase"
-          category="Shopping"
-          timeAgo="2 days ago"
-          amount={1250}
-          type="expense"
-        />
-        <TransactionItem
-          emoji="🎬"
-          title="Netflix Subscription"
-          category="Entertainment"
-          timeAgo="3 days ago"
-          amount={199}
-          type="expense"
-        />
+        {transactions.map((tx) => (
+          <TransactionItem
+            key={tx.id}
+            emoji={getCategoryEmoji(tx.category)}
+            title={tx.description}
+            category={tx.category}
+            timeAgo={timeSince(tx.created_at)}
+            amount={tx.amount}
+            type={tx.type}
+          />
+        ))}
       </CardContent>
     </Card>
   );

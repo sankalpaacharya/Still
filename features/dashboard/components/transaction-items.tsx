@@ -33,8 +33,10 @@ export const TransactionItem = ({
           type === "income" ? "text-green-500" : "text-red-500"
         }`}
       >
-        {type === "income" ? "↓" : "↑"}{" "}
-        {type === "income" ? `+₹${amount.toLocaleString()}` : `₹${amount}`}
+        {type === "income" ? "↑" : "↓"}
+        {type === "income"
+          ? `+₹${amount.toLocaleString()}`
+          : `-₹${amount.toLocaleString()}`}
       </div>
     </div>
   );

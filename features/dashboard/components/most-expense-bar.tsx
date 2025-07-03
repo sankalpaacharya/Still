@@ -30,7 +30,6 @@ export default function MostExpenseContainer({ data }: Props) {
         {data.map((item, index) => {
           const percentage =
             item.assigned > 0 ? (item.amount / item.assigned) * 100 : 0;
-          console.log("this is percentage", percentage);
           const label =
             item.assigned === 0
               ? "Unassigned"

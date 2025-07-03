@@ -26,7 +26,6 @@ export function AccountSelect({ selected, setSelected }: Props) {
     const fetchAccounts = async () => {
       try {
         const res = await getUserAccounts();
-        console.log("these are accounts", res);
         setAccounts(res);
         if (res.length > 0 && !selected) {
           setSelected(res[0].id || "");

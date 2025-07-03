@@ -48,7 +48,6 @@ export function BudgetTable({}: BudgetTableProps) {
       const result = await addCategoryGroupAction({ title: categoryName });
 
       if (!result.error) {
-        console.log(`Created new category: ${categoryName}`);
         await hydrateBudgetStore();
         toast.success("Category created successfully");
       } else {
