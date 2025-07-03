@@ -6,12 +6,9 @@ import WelcomeText from "@/features/dashboard/components/welcometext";
 import { Suspense } from "react";
 import { WelcomeTextSkeleton } from "@/components/skeleton/welcometext-skeleton";
 import NewAddExpenseModalButton from "@/features/dashboard/components/newModal";
-import { mostSpentCategory } from "@/features/dashboard/actions";
+import { TransactionCard } from "@/features/dashboard/components/recentexpense";
 
 export default async function page() {
-  const expenses = await mostSpentCategory();
-  console.log("fucking expenses", expenses);
-
   return (
     <div>
       <div className="mb-6 flex justify-between items-center">
@@ -20,22 +17,12 @@ export default async function page() {
         </Suspense>
         <NewAddExpenseModalButton />
       </div>
-
       <ExpenseStats />
+      <div className="space-y-5">
+        <TransactionCard />
 
-      {/* Welcome Message */}
-      {/* <div className="mb-8">
-        <TextGenerateEffect
-          duration={2}
-          filter={false}
-          words={
-            "Even ₹50 spent consciously can build a mindset of wealth. Let’s stay intentional, Sankalpa"
-          }
-          className="text-2xl font-semibold text-gray-900 dark:text-gray-100"
-        />
-      </div> */}
-
-      <TopSpentCategories />
+        <TopSpentCategories />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SnapUpload />

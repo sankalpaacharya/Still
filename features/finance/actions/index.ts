@@ -260,8 +260,8 @@ export async function assignMoney({
     return { error: true, message: "category not found" };
   }
   // how im handling date is pretty messed up so fix that
-
-  const monthKey = "2025-06-01";
+  const today = new Date();
+  const monthKey = `${today.getFullYear()}-${today.getMonth() + 1}-01`;
 
   const { data: existingAssignment } = await supabase
     .from("category_months")
@@ -290,7 +290,7 @@ export async function assignMoney({
   }
 
   return error
-    ? { error: true, message: "error while assigning money" }
+    ? { error: true, message: error.message }
     : { error: false, message: "money assigned successfully" };
 }
 
