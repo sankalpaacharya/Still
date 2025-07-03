@@ -85,7 +85,7 @@ export default function NewAddExpenseModalButton() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          className="mt-4 md:mt-0 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
+          className=" md:mt-0 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
           onClick={() => setIsOpen(true)}
         >
           <Plus size={16} className="mr-2" />

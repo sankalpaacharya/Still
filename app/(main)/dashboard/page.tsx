@@ -11,13 +11,13 @@ export default async function page() {
   return (
     <div className="space-y-6">
       {/* Header Section */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center md:flex-row flex-col">
         <Suspense fallback={<WelcomeTextSkeleton />}>
           <WelcomeText />
         </Suspense>
 
         {/* Action Buttons Group */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 md:mt-0 mt-5 items-center">
           {/* Add Expense Button */}
           <NewAddExpenseModalButton />
 
