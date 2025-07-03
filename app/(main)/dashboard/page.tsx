@@ -6,8 +6,6 @@ import WelcomeText from "@/features/dashboard/components/welcometext";
 import { WelcomeTextSkeleton } from "@/components/skeleton/welcometext-skeleton";
 import NewAddExpenseModalButton from "@/features/dashboard/components/newModal";
 import { TransactionCard } from "@/features/dashboard/components/recentexpense";
-import { Button } from "@/components/ui/button";
-import { Camera } from "lucide-react";
 
 export default async function page() {
   return (
