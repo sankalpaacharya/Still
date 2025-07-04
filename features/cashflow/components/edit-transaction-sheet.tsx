@@ -41,7 +41,7 @@ export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
   const [categoryChange, setCategoryChange] = useState({});
 
   return (
-    <SheetContent className="w-full sm:max-w-lg px-5 py-6">
+    <SheetContent className="w-full sm:max-w-lg px-5 py-6 h-screen overflow-auto">
       <SheetHeader>
         <SheetTitle>Edit Transaction</SheetTitle>
         <SheetDescription className="text-sm text-muted-foreground">

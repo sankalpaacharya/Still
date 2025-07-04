@@ -2,9 +2,11 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { CreditCard, Flame, Landmark, HandCoins } from "lucide-react";
 import { getUserAccounts } from "@/features/account/actions";
+import { getTotalSpendingThisMonth } from "../actions";
 import { cn } from "@/lib/utils";
 
 type Props = {};
+
 interface StatCardProps {
   title: string;
   value: string;
@@ -13,43 +15,102 @@ interface StatCardProps {
   icon: React.ReactNode;
   className?: string;
 }
+
 export default async function ExpenseStats({}: Props) {
   const accounts = await getUserAccounts();
+  const totalSpending = await getTotalSpendingThisMonth();
   const total = accounts.reduce((sum, acc) => sum + acc.amount, 0);
+  const todayDate = new Date().getDate();
+  const avgDailySpending = totalSpending / todayDate;
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 animate-fade-in">
-      <StatCard
-        title="💸 Total Balance"
-        value={`₹${total}`}
-        change="12.3%"
-        isPositive={false}
-        icon={<CreditCard />}
-      />
-      <StatCard
-        title="🔥 Current Streak"
-        value="10 days"
-        change="12.3%"
-        isPositive={false}
-        icon={<Flame />}
-      />
-      <StatCard
-        title="Budget Left"
-        value="₹2340.23"
-        change="12.3%"
-        isPositive={false}
-        icon={<Landmark />}
-      />
-      <StatCard
-        title="💰 Saved Money"
-        value="₹1,240.56"
-        change="12.3%"
-        isPositive={false}
-        icon={<HandCoins />}
-      />
+    <div className="mb-6 animate-fade-in">
+      {/* Mobile: 2x2 grid with compact cards */}
+      <div className="grid grid-cols-2 gap-3 md:hidden">
+        <CompactStatCard
+          title="💸 Total Balance"
+          value={`₹${total}`}
+          icon={<CreditCard className="w-4 h-4" />}
+        />
+        <CompactStatCard
+          title="📈 Daily Average Spending"
+          value={`$${avgDailySpending}`}
+          icon={<Flame className="w-4 h-4" />}
+        />
+        <CompactStatCard
+          title="Budget Left"
+          value="₹2340.23"
+          icon={<Landmark className="w-4 h-4" />}
+        />
+        <CompactStatCard
+          title="💰 Saved Money"
+          value="₹1,240.56"
+          icon={<HandCoins className="w-4 h-4" />}
+        />
+      </div>
+
+      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          title="💸 Total Balance"
+          value={`₹${total}`}
+          change="12.3%"
+          isPositive={false}
+          icon={<CreditCard />}
+        />
+        <StatCard
+          title="📈 Daily Average Spending"
+          value={`$${avgDailySpending}`}
+          isPositive={false}
+          change="12.3%"
+          icon={<Flame />}
+        />
+        <StatCard
+          title="Budget Left"
+          value="₹2340.23"
+          change="12.3%"
+          isPositive={false}
+          icon={<Landmark />}
+        />
+        <StatCard
+          title="💰 Saved Money"
+          value="₹1,240.56"
+          change="12.3%"
+          isPositive={false}
+          icon={<HandCoins />}
+        />
+      </div>
     </div>
   );
 }
 
+// Compact version for mobile
+const CompactStatCard = ({
+  title,
+  value,
+  icon,
+  className,
+}: {
+  title: string;
+  value: string;
+  icon: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <Card className={cn("p-3 backdrop-blur-2xl", className)}>
+      <div className="flex items-center justify-between">
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-medium text-gray-400 truncate">{title}</p>
+          <h3 className="text-lg font-bold mt-0.5 truncate">{value}</h3>
+        </div>
+        <div className="p-2 rounded-full bg-white/10 ml-2 flex-shrink-0">
+          {icon}
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+// Original version for desktop
 const StatCard = ({
   title,
   value,

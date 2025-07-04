@@ -11,7 +11,6 @@ export default function CategoryProgressBar({ target, assign }: Props) {
     return <Progress value={0} className="mt-2 h-1 " />;
   }
   const getMonthlyNeed = getMonthlyNeedAmount(target);
-  console.log("monthly needed", getMonthlyNeed, assign);
   const fundProgress = (assign / getMonthlyNeed) * 100;
   return <Progress value={fundProgress} className="mt-2 h-1 " />;
 }

@@ -175,3 +175,29 @@ export async function getRecentTransactions() {
 
   return data;
 }
+
+export async function getTotalSpendingThisMonth() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (!user || userError) return 0;
+
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const { data, error } = await supabase
+    .from("transactions")
+    .select("amount")
+    .eq("user_id", user.id)
+    .eq("type", "expense")
+    .gte("created_at", startOfMonth.toISOString())
+    .lte("created_at", now.toISOString());
+
+  if (error || !data) return 0;
+
+  const total = data.reduce((sum, item) => sum + item.amount, 0);
+  return total;
+}

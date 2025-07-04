@@ -46,6 +46,8 @@ export const getCategoryEmoji = (name: string) => {
     return "🛍️";
   if (lowerName.includes("education") || lowerName.includes("book"))
     return "📚";
+  if (lowerName.includes("electric") || lowerName.includes("electronic"))
+    return "🔌";
   if (
     lowerName.includes("home") ||
     lowerName.includes("rent") ||

@@ -60,8 +60,6 @@ export function MonthSelector() {
     const newMonth = currentSelectedMonth < 12 ? currentSelectedMonth + 1 : 12;
     const newMonthString = `2025-${newMonth.toString().padStart(2, "0")}-01`;
 
-    console.log("📅 Next month clicked:", newMonthString);
-
     setCurrentSelectedMonth(newMonth);
     debounceUpdateMonth(newMonth);
 
