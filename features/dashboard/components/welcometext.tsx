@@ -19,7 +19,7 @@ export default async function WelcomeText() {
         />
       </div>
       <TextGenerateEffect
-        words="Even ₹50 spent consciously can build a mindset of wealth. Let's stay intentional"
+        words="Even $50 spent consciously can build a mindset of wealth. Let's stay intentional"
         className="text-md font-medium text-muted-foreground mt-1 [animation-delay:1.2s]"
         filter={false}
         duration={2}

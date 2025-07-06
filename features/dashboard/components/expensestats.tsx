@@ -21,7 +21,7 @@ export default async function ExpenseStats({}: Props) {
   const totalSpending = await getTotalSpendingThisMonth();
   const total = accounts.reduce((sum, acc) => sum + acc.amount, 0);
   const todayDate = new Date().getDate();
-  const avgDailySpending = totalSpending / todayDate;
+  const avgDailySpending = parseFloat((totalSpending / todayDate).toFixed(2));
 
   return (
     <div className="mb-6 animate-fade-in">
@@ -29,7 +29,7 @@ export default async function ExpenseStats({}: Props) {
       <div className="grid grid-cols-2 gap-3 md:hidden">
         <CompactStatCard
           title="💸 Total Balance"
-          value={`₹${total}`}
+          value={`$${total}`}
           icon={<CreditCard className="w-4 h-4" />}
         />
         <CompactStatCard
@@ -39,12 +39,12 @@ export default async function ExpenseStats({}: Props) {
         />
         <CompactStatCard
           title="Budget Left"
-          value="₹2340.23"
+          value="$2340.23"
           icon={<Landmark className="w-4 h-4" />}
         />
         <CompactStatCard
           title="💰 Saved Money"
-          value="₹1,240.56"
+          value="$1,240.56"
           icon={<HandCoins className="w-4 h-4" />}
         />
       </div>
@@ -52,7 +52,7 @@ export default async function ExpenseStats({}: Props) {
       <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="💸 Total Balance"
-          value={`₹${total}`}
+          value={`$${total}`}
           change="12.3%"
           isPositive={false}
           icon={<CreditCard />}
@@ -66,14 +66,14 @@ export default async function ExpenseStats({}: Props) {
         />
         <StatCard
           title="Budget Left"
-          value="₹2340.23"
+          value="$2340.23"
           change="12.3%"
           isPositive={false}
           icon={<Landmark />}
         />
         <StatCard
           title="💰 Saved Money"
-          value="₹1,240.56"
+          value="$1,240.56"
           change="12.3%"
           isPositive={false}
           icon={<HandCoins />}

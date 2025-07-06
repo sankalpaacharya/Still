@@ -175,7 +175,7 @@ export function CategoryItem({
           </div>
         ) : (
           <div className="flex items-center justify-end gap-2">
-            <span className="text-sm font-medium">₹{logic.assignedValue}</span>
+            <span className="text-sm font-medium">${logic.assignedValue}</span>
             <Button
               size="sm"
               variant="ghost"
@@ -192,14 +192,14 @@ export function CategoryItem({
       </TableCell>
 
       <TableCell className="w-[13%] text-right p-4">
-        <span className="text-sm">₹{spent}</span>
+        <span className="text-sm">${spent}</span>
       </TableCell>
 
       <TableCell className="w-[13%] text-right p-4">
         <span
           className={`text-sm font-medium ${available < 0 ? "text-destructive" : "text-green-600"}`}
         >
-          ₹{logic.assignedValue - spent}
+          ${logic.assignedValue - spent}
         </span>
       </TableCell>
     </TableRow>

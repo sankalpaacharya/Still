@@ -55,7 +55,7 @@ export default function MostExpenseContainer({ data }: Props) {
                       {item.category}
                     </p>
                     <p className="text-sm font-semibold">
-                      ₹{item.amount.toLocaleString("en-IN")}
+                      ${item.amount.toLocaleString("en-IN")}
                     </p>
                   </div>
 
@@ -66,7 +66,7 @@ export default function MostExpenseContainer({ data }: Props) {
                         : `${label} • ${Math.round(percentage)}% used`}
                     </span>
                     <span className="text-muted-foreground">
-                      Budget: ₹{item.assigned.toLocaleString("en-IN")}
+                      Budget: ${item.assigned.toLocaleString("en-IN")}
                     </span>
                   </div>
                 </div>

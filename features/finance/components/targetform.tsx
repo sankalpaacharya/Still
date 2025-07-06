@@ -99,7 +99,7 @@ export function TargetForm({
   return (
     <div className="space-y-4 mt-2">
       <div className="grid w-full items-center gap-1.5">
-        <Label>I need (₹)</Label>
+        <Label>I need ($)</Label>
         <Input
           type="number"
           value={amount}
