@@ -15,10 +15,9 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onUpdateExpense?: (updatedExpense: any) => void;
-  groupName?: string; // Add group name for the header
+  groupName?: string;
 }
 
-// Individual row component to manage its own sheet state
 const ExpenseRowWithSheet: React.FC<{
   row: any;
   onUpdateExpense?: (updatedExpense: any) => void;
@@ -33,10 +32,10 @@ const ExpenseRowWithSheet: React.FC<{
     const cells = row.getVisibleCells();
     const expenseData = {
       id: row.original["id"],
-      date: cells[0]?.getValue() || "",
-      description: cells[1]?.getValue() || "",
-      category: cells[2]?.getValue() || "",
-      amount: cells[3]?.getValue() || "",
+      date: row.original["created_at"] || "",
+      description: row.original["description"] || "",
+      category: row.original["category"] || "",
+      amount: row.original["amount"] || "",
       categoryID: row.original["category_id"],
     };
     setEditingExpense(expenseData);
@@ -141,7 +140,6 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden">
-      {/* Table Header - Only visible on larger screens */}
       <div className="hidden md:flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-border text-xs font-medium text-muted-foreground uppercase tracking-wider">
         <div className="flex-1">Transaction</div>
         <div className="w-24 text-right">Amount</div>

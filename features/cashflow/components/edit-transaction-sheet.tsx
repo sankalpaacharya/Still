@@ -1,5 +1,6 @@
 "use client";
 import React, { Dispatch, SetStateAction, useState } from "react";
+import { format } from "date-fns";
 import {
   SheetContent,
   SheetDescription,
@@ -39,6 +40,7 @@ export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
   onDelete,
 }) => {
   if (!editingExpense) return null;
+  console.log("this is editing expense", editingExpense);
   const [categoryChange, setCategoryChange] = useState({});
 
   return (
@@ -95,7 +97,11 @@ export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
           <Input
             id="date"
             type="date"
-            value={editingExpense.date}
+            value={
+              editingExpense?.date
+                ? format(new Date(editingExpense.date), "yyyy-MM-dd")
+                : ""
+            }
             onChange={(e) => onInputChange("date", e.target.value)}
             required
           />
