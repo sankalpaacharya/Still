@@ -1,128 +1,86 @@
-"use client";
-import React, { useState } from "react";
-import {
-  ColumnDef,
-  useReactTable,
-  getCoreRowModel,
-} from "@tanstack/react-table";
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import { updateExpenseAction } from "../actions";
-import toast from "react-hot-toast";
+import React from "react";
+import { getExpenses } from "../actions";
 import { ExpenseRow } from "./transactions-row";
-import { EditExpenseSheet } from "./edit-transaction-sheet";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  onUpdateExpense?: (updatedExpense: any) => void;
-}
-
-export default function DataTable<TData, TValue>({
-  columns,
-  data,
-  onUpdateExpense,
-}: DataTableProps<TData, TValue>) {
-  const [editingExpense, setEditingExpense] = useState<any>(null);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [category, setCategory] = useState("");
-  const [categoryGroup, setCategoryGroup] = useState("");
-  const [account, setAccount] = useState("");
-
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
-  const handleRowClick = (row: any) => {
-    const cells = row.getVisibleCells();
-    const expenseData = {
-      id: row.original["id"],
-      date: cells[0]?.getValue() || "",
-      description: cells[1]?.getValue() || "",
-      category: cells[2]?.getValue() || "",
-      amount: cells[3]?.getValue() || "",
-      categoryID: row.original["category_id"],
-    };
-    setEditingExpense(expenseData);
-    setAccount(row.original["account_id"]);
-    setIsSheetOpen(true);
-    setCategory(category);
-  };
-
-  const handleSaveExpense = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (onUpdateExpense && editingExpense) {
-      onUpdateExpense(editingExpense);
-    }
-    const result = await updateExpenseAction({
-      ...editingExpense,
-      accountID: account,
-    });
-    if (result.error) {
-      toast.error(result.message);
-    }
-    setIsSheetOpen(false);
-    setEditingExpense(null);
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    setEditingExpense((prev: any) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  if (!table.getRowModel().rows.length) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 px-6">
-        <div className="w-20 h-20 mb-6 bg-muted/50 rounded-2xl flex items-center justify-center">
-          <svg
-            className="w-10 h-10 text-muted-foreground"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-        </div>
-        <h3 className="text-xl font-semibold mb-2">No transactions yet</h3>
-        <p className="text-muted-foreground text-center max-w-sm">
-          Your recent transactions will appear here once you start adding them.
-        </p>
-      </div>
-    );
-  }
+export default async function DisplayTable() {
+  const expenses = await getExpenses();
 
   return (
-    <div className="space-y-3">
-      {table.getRowModel().rows.map((row) => (
-        <Sheet key={row.id} open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetTrigger asChild>
-            <div onClick={() => handleRowClick(row)}>
-              <ExpenseRow row={row} />
+    <div className="space-y-6 mb-10">
+      {Object.entries(expenses).map(([groupName, expenseList]) => (
+        <div key={groupName} className="space-y-3">
+          {/* Group Header */}
+          <div className="flex items-center justify-between px-4">
+            <div className="flex items-center space-x-3">
+              <h2 className="text-lg font-semibold text-foreground">
+                {groupName}
+              </h2>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+                {expenseList.length}
+              </span>
             </div>
-          </SheetTrigger>
-          <EditExpenseSheet
-            editingExpense={editingExpense}
-            onDelete={() => {}}
-            account={account}
-            setAccount={setAccount}
-            category={category}
-            setCategory={setCategory}
-            categoryGroup={categoryGroup}
-            setCategoryGroup={setCategoryGroup}
-            onSave={handleSaveExpense}
-            onInputChange={handleInputChange}
-            onCancel={() => setIsSheetOpen(false)}
-          />
-        </Sheet>
+            <div className="text-right">
+              <div className="font-semibold text-sm text-muted-foreground">
+                NPR{" "}
+                {expenseList
+                  .reduce((sum, expense) => sum + Math.abs(expense.amount), 0)
+                  .toLocaleString("en-NP", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}
+              </div>
+            </div>
+          </div>
+
+          {/* Compact Table */}
+          <div className="bg-card border border-border rounded-lg overflow-hidden">
+            {/* Table Header - Only visible on larger screens */}
+            <div className="hidden md:flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-border text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <div className="flex-1">Transaction</div>
+              <div className="w-24 text-right">Amount</div>
+            </div>
+
+            {/* Table Body */}
+            <div className="divide-y divide-border">
+              {expenseList.map((expense) => (
+                <ExpenseRow
+                  key={expense.id}
+                  row={{
+                    original: expense,
+                    getVisibleCells: () => [],
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       ))}
+
+      {Object.keys(expenses).length === 0 && (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded-2xl flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-muted-foreground"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-foreground mb-2">
+            No expenses yet
+          </h3>
+          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+            Start tracking your expenses by adding your first transaction.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,8 +1,4 @@
 import React from "react";
-import { flexRender } from "@tanstack/react-table";
-import { ChevronRight } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { getCategoryEmoji } from "@/lib/utils";
 
 interface ExpenseRowProps {
@@ -12,61 +8,57 @@ interface ExpenseRowProps {
 export const ExpenseRow: React.FC<ExpenseRowProps> = ({ row }) => {
   const cells = row.getVisibleCells();
   const amount = row.original.amount;
-  const isExpense = row.original.type == "expense";
+  const isExpense = row.original.type === "expense";
   const categoryGroup = row.original.category;
   const description = row.original.description;
+  const date = new Date(row.original.created_at);
+  const formattedDate = date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
 
   return (
-    <Card className="group cursor-pointer hover:shadow-md transition-all duration-200">
-      <CardContent className="px-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4 flex-1 min-w-0">
-            <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-              <span className="text-lg transition-transform duration-300 ease-in-out group-hover:rotate-12 group-hover:scale-110">
-                {getCategoryEmoji(categoryGroup || "")}
-              </span>
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <h3 className="font-medium truncate mb-1">{description}</h3>
-              <div className="flex items-center space-x-2">
-                <Badge variant="secondary" className="text-xs">
-                  {categoryGroup}
-                </Badge>
-                <span className="text-xs text-muted-foreground">
-                  {flexRender(
-                    cells[0].column.columnDef.cell,
-                    cells[0].getContext(),
-                  )}
-                </span>
-              </div>
-            </div>
+    <div className="group flex items-center justify-between py-3 px-4 hover:bg-muted/50 transition-colors duration-150 border-b border-border/50 last:border-b-0">
+      {/* Left section - Icon, Description, Category */}
+      <div className="flex items-center space-x-3 flex-1 min-w-0">
+        <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+          <span className="text-sm transition-transform duration-200 group-hover:scale-110">
+            {getCategoryEmoji(categoryGroup || "")}
+          </span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="font-medium text-sm truncate mb-0.5">
+            {description}
           </div>
-
-          <div className="flex items-center space-x-3 flex-shrink-0">
-            <div className="text-right">
-              <div
-                className={`font-semibold text-lg ${
-                  isExpense
-                    ? "text-destructive"
-                    : "text-green-600 dark:text-green-400"
-                }`}
-              >
-                {isExpense ? "-" : "+"}NPR{" "}
-                {Math.abs(amount).toLocaleString("en-NP", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </div>
-              <div className="text-xs text-muted-foreground">
-                {isExpense ? "Expense" : "Income"}
-              </div>
-            </div>
-
-            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors duration-200" />
+          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+            <span className="bg-muted px-2 py-0.5 rounded-full">
+              {categoryGroup}
+            </span>
+            <span className="hidden sm:inline">•</span>
+            <span className="hidden sm:inline">{formattedDate}</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      {/* Right section - Amount and Date (mobile) */}
+      <div className="flex flex-col items-end space-y-0.5 flex-shrink-0">
+        <div
+          className={`font-semibold text-sm ${
+            isExpense
+              ? "text-destructive"
+              : "text-green-600 dark:text-green-400"
+          }`}
+        >
+          {isExpense ? "-" : "+"}NPR{" "}
+          {Math.abs(amount).toLocaleString("en-NP", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+          })}
+        </div>
+        <div className="text-xs text-muted-foreground sm:hidden">
+          {formattedDate}
+        </div>
+      </div>
+    </div>
   );
 };

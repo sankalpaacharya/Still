@@ -8,7 +8,7 @@ export type Expense = {
   account_id: string;
   created_at: string;
   amount: number;
-  type: string; // income or epxense
+  type: string;
   category: string;
   category_group: string;
   description: string;
@@ -17,66 +17,16 @@ export type Expense = {
 
 export const columns: ColumnDef<Expense>[] = [
   {
-    accessorKey: "created_at",
-    header: "Date",
-    cell: ({ getValue }) => {
-      const date = new Date(getValue() as string);
+    accessorKey: "description",
+    header: "Transaction",
+    cell: ({ getValue, row }) => {
+      const description = getValue() as string;
+      const category = row.original.category;
+      const categoryGroup = row.original.category_group;
+      const date = new Date(row.original.created_at);
       const formatted = format(date, "MMM d");
       const year = format(date, "yyyy");
       const currentYear = new Date().getFullYear().toString();
-
-      return (
-        <div className="flex flex-col">
-          <span className="font-medium text-zinc-900 dark:text-zinc-100">
-            {formatted}
-          </span>
-          {year !== currentYear && (
-            <span className="text-xs text-zinc-500 dark:text-zinc-400">
-              {year}
-            </span>
-          )}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ getValue, row }) => {
-      const description = getValue() as string;
-      const merchant = description;
-      return (
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg flex items-center justify-center flex-shrink-0">
-            <div className="w-6 h-6 bg-blue-500 rounded-md flex items-center justify-center">
-              <span className="text-white text-xs font-bold">
-                {merchant.charAt(0).toUpperCase()}
-              </span>
-            </div>
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <div className="font-medium text-zinc-900 dark:text-zinc-100 truncate">
-              {description}
-            </div>
-            <div className="text-sm text-zinc-500 dark:text-zinc-400">
-              {row.original.status && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
-                  {row.original.status}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "category",
-    header: "Category",
-    cell: ({ row }) => {
-      const category = row.original.category;
-      const group = row.original.category_group;
 
       const getGroupColor = (group: string) => {
         const colors = {
@@ -98,17 +48,38 @@ export const columns: ColumnDef<Expense>[] = [
       };
 
       return (
-        <div className="flex flex-col space-y-1">
-          <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getGroupColor(
-              group,
-            )} w-fit`}
-          >
-            {group}
-          </span>
-          <span className="text-sm text-zinc-600 dark:text-zinc-400">
-            {category}
-          </span>
+        <div className="flex items-center space-x-3 py-1">
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-5 h-5 bg-blue-500 rounded-md flex items-center justify-center">
+              <span className="text-white text-xs font-bold">
+                {description.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <div className="font-medium text-sm text-zinc-900 dark:text-zinc-100 truncate mb-0.5">
+              {description}
+            </div>
+            <div className="flex items-center space-x-2 text-xs">
+              <span
+                className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium ${getGroupColor(categoryGroup)} flex-shrink-0`}
+              >
+                {categoryGroup}
+              </span>
+              <span className="text-zinc-500 dark:text-zinc-400 hidden sm:inline">
+                •
+              </span>
+              <span className="text-zinc-500 dark:text-zinc-400 hidden sm:inline">
+                {formatted}
+                {year !== currentYear && (
+                  <span className="ml-1 text-zinc-400 dark:text-zinc-500">
+                    {year}
+                  </span>
+                )}
+              </span>
+            </div>
+          </div>
         </div>
       );
     },
@@ -116,30 +87,37 @@ export const columns: ColumnDef<Expense>[] = [
   {
     accessorKey: "amount",
     header: "Amount",
-    cell: ({ getValue }) => {
+    cell: ({ getValue, row }) => {
       const amount = getValue() as number;
-      const isNegative = amount < 0;
+      const isExpense = row.original.type === "expense";
+      const date = new Date(row.original.created_at);
+      const formatted = format(date, "MMM d");
+      const year = format(date, "yyyy");
+      const currentYear = new Date().getFullYear().toString();
 
       return (
         <div className="text-right">
           <div
-            className={`font-semibold text-lg ${
-              isNegative
+            className={`font-semibold text-sm ${
+              isExpense
                 ? "text-red-600 dark:text-red-400"
-                : "text-zinc-900 dark:text-zinc-100"
+                : "text-green-600 dark:text-green-400"
             }`}
           >
-            NPR{" "}
+            {isExpense ? "-" : "+"}NPR{" "}
             {Math.abs(amount).toLocaleString("en-NP", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
             })}
           </div>
-          {isNegative && (
-            <div className="text-xs text-red-500 dark:text-red-400">
-              Expense
-            </div>
-          )}
+          <div className="text-xs text-zinc-500 dark:text-zinc-400 sm:hidden mt-0.5">
+            {formatted}
+            {year !== currentYear && (
+              <span className="ml-1 text-zinc-400 dark:text-zinc-500">
+                {year}
+              </span>
+            )}
+          </div>
         </div>
       );
     },
