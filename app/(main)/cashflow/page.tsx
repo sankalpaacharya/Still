@@ -1,7 +1,7 @@
 import React from "react";
 import { Suspense } from "react";
 import { ExpenseGroupSkeleton } from "@/components/skeleton/expenses-skeleton";
-import DisplayTable from "@/features/cashflow/components/data-table";
+import DisplayTable from "@/features/cashflow/components/data-tables";
 
 export default async function Page() {
   return (

@@ -19,7 +19,6 @@ export const ExpenseRow: React.FC<ExpenseRowProps> = ({ row }) => {
 
   return (
     <div className="group flex items-center justify-between py-3 px-4 hover:bg-muted/50 transition-colors duration-150 border-b border-border/50 last:border-b-0">
-      {/* Left section - Icon, Description, Category */}
       <div className="flex items-center space-x-3 flex-1 min-w-0">
         <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
           <span className="text-sm transition-transform duration-200 group-hover:scale-110">
@@ -40,8 +39,7 @@ export const ExpenseRow: React.FC<ExpenseRowProps> = ({ row }) => {
         </div>
       </div>
 
-      {/* Right section - Amount and Date (mobile) */}
-      <div className="flex flex-col items-end space-y-0.5 flex-shrink-0">
+      <div className="flex flex-col items-end space-y1.5 flex-shrink-0">
         <div
           className={`font-semibold text-sm ${
             isExpense
