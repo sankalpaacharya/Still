@@ -33,6 +33,7 @@ export async function getExpenses(): Promise<GroupExpense | {}> {
   return expenseData;
 }
 
+// this is little messedup so when amount is change only do all these
 export async function updateExpenseAction(data: any) {
   const supabase = await createClient();
 
@@ -43,9 +44,10 @@ export async function updateExpenseAction(data: any) {
 
   // Fetch original expense
   const { data: oldExpense, error: fetchError } = await supabase
-    .from("expenses")
+    .from("transactions")
     .select("*")
     .eq("id", data.id)
+    .eq("user_id", user.id)
     .single();
 
   if (fetchError || !oldExpense) {
@@ -132,7 +134,7 @@ export async function updateExpenseAction(data: any) {
       await supabase
         .from("accounts")
         .update({
-          amount: oldAccount.amount, // Revert back to original
+          amount: oldAccount.amount,
         })
         .eq("id", oldExpense.account_id);
 
@@ -145,7 +147,7 @@ export async function updateExpenseAction(data: any) {
 
   // Finally, update the expense
   const { error: updateExpenseError } = await supabase
-    .from("expenses")
+    .from("transactions")
     .update({
       category_id: data.categoryID,
       category: data.category,

@@ -178,7 +178,6 @@ export async function getRecentTransactions() {
 
 export async function getTotalSpendingThisMonth() {
   const supabase = await createClient();
-
   const {
     data: { user },
     error: userError,

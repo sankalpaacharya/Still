@@ -41,7 +41,9 @@ export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
 }) => {
   if (!editingExpense) return null;
   console.log("this is editing expense", editingExpense);
-  const [categoryChange, setCategoryChange] = useState({});
+  const [categoryChange, setCategoryChange] = useState<any>({
+    categoryName: editingExpense.category,
+  });
 
   return (
     <SheetContent className="w-full sm:max-w-lg px-5 py-6 h-screen overflow-auto">
@@ -68,7 +70,7 @@ export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
           <Label htmlFor="category">Category</Label>
           <CategoryGroupCombobox
             onChange={setCategoryChange}
-            selectedCategory={""}
+            selectedCategory={categoryChange.categoryName}
             setCategoryGroup={setCategory}
             setSelectedCategory={setCategoryGroup}
           />
