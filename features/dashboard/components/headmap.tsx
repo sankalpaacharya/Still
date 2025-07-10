@@ -17,7 +17,7 @@ export async function SpendingHeatmap() {
   const currentMonth = format(today, "MMMM yyyy");
 
   return (
-    <Card className="w-full border max-w-2xl mx-auto shadow-lg border-0 bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
+    <Card className="w-full max-w-[720px] shadow-lg bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
       <CardHeader className="pb-6 px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-2">

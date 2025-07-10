@@ -24,17 +24,18 @@ export default async function page() {
       <Suspense fallback={<WelcomeTextSkeleton />}>
         <ExpenseStats />
       </Suspense>
-      <Suspense fallback={<WelcomeTextSkeleton />}>
-        <SpendingHeatmap />
-      </Suspense>
+      <div className="flex gap-4 md:flex-row flex-col">
+        <Suspense fallback={<WelcomeTextSkeleton />}>
+          <SpendingHeatmap />
+        </Suspense>
+        <div className="grow flex gap-4 flex-col">
+          <div className="">
+            <TopSpentCategories />
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="order-1 md:order-none">
-          <TopSpentCategories />
-        </div>
-
-        <div className="order-2 md:order-none md:col-span-2 space-y-4">
-          <TransactionCard />
+          <div className="">
+            <TransactionCard />
+          </div>
         </div>
       </div>
     </div>
