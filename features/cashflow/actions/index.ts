@@ -166,3 +166,31 @@ export async function updateExpenseAction(data: any) {
   revalidatePath("cashflow");
   return { error: false, message: "Expense updated successfully" };
 }
+
+export async function getTotalAmountByType(type: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { error: true, message: "User not found" };
+
+  const { data, error } = await supabase
+    .from("transactions")
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("type", type);
+
+  if (error) {
+    return { error: true, message: error.message };
+  }
+
+  const amount =
+    data?.reduce((acc, transaction) => acc + transaction.amount, 0) ?? 0;
+
+  return {
+    error: false,
+    amount,
+  };
+}

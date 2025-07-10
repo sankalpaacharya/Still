@@ -4,6 +4,7 @@ import { CreditCard, Flame, Landmark, HandCoins } from "lucide-react";
 import { getUserAccounts } from "@/features/account/actions";
 import { getTotalSpendingThisMonth } from "../actions";
 import { cn } from "@/lib/utils";
+import { getTotalAmountByType } from "@/features/cashflow/actions";
 
 type Props = {};
 
@@ -19,6 +20,8 @@ interface StatCardProps {
 export default async function ExpenseStats({}: Props) {
   const accounts = await getUserAccounts();
   const totalSpending = await getTotalSpendingThisMonth();
+  const totalIncome = await getTotalAmountByType("income");
+  const totalExpense = await getTotalAmountByType("expense");
   const total = accounts.reduce((sum, acc) => sum + acc.amount, 0);
   const todayDate = new Date().getDate();
   const avgDailySpending = parseFloat((totalSpending / todayDate).toFixed(2));
@@ -38,13 +41,13 @@ export default async function ExpenseStats({}: Props) {
           icon={<Flame className="w-4 h-4" />}
         />
         <CompactStatCard
-          title="Budget Left"
-          value="$2340.23"
+          title="Income"
+          value={`$${totalIncome.amount}`}
           icon={<Landmark className="w-4 h-4" />}
         />
         <CompactStatCard
-          title="💰 Saved Money"
-          value="$1,240.56"
+          title="Expense"
+          value={`$${totalExpense.amount}`}
           icon={<HandCoins className="w-4 h-4" />}
         />
       </div>
@@ -65,15 +68,15 @@ export default async function ExpenseStats({}: Props) {
           icon={<Flame />}
         />
         <StatCard
-          title="Budget Left"
-          value="$2340.23"
+          title="Income"
+          value={`$${totalIncome.amount}`}
           change="12.3%"
           isPositive={false}
           icon={<Landmark />}
         />
         <StatCard
-          title="💰 Saved Money"
-          value="$1,240.56"
+          title="Expense"
+          value={`$${totalExpense.amount}`}
           change="12.3%"
           isPositive={false}
           icon={<HandCoins />}

@@ -6,6 +6,7 @@ import WelcomeText from "@/features/dashboard/components/welcometext";
 import { WelcomeTextSkeleton } from "@/components/skeleton/welcometext-skeleton";
 import NewAddExpenseModalButton from "@/features/dashboard/components/newModal";
 import { TransactionCard } from "@/features/dashboard/components/recentexpense";
+import SpendingHeatmap from "@/features/dashboard/components/headmap";
 
 export default async function page() {
   return (
@@ -22,6 +23,7 @@ export default async function page() {
       </div>
 
       <ExpenseStats />
+      <SpendingHeatmap />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="order-1 md:order-none">
