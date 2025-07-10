@@ -1,6 +1,7 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { getDaysInMonth, getDay } from "date-fns";
 
 type Expense = {
   categoryGroup: string;
@@ -157,6 +158,7 @@ export async function mostSpentCategoryWithBudget() {
   }));
 }
 
+// put limit here
 export async function getRecentTransactions() {
   const supabase = await createClient();
 
@@ -199,4 +201,38 @@ export async function getTotalSpendingThisMonth() {
 
   const total = data.reduce((sum, item) => sum + item.amount, 0);
   return total;
+}
+
+export async function getTransactionOfMonth() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (!user || userError) return {};
+
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const { data } = await supabase
+    .from("transactions")
+    .select("amount, created_at")
+    .eq("user_id", user.id)
+    .eq("type", "expense")
+    .gte("created_at", startOfMonth.toISOString())
+    .lte("created_at", endOfMonth.toISOString());
+
+  const numberOfDays = getDaysInMonth(now);
+  const spentInDay: Record<number, number> = {};
+  for (let i = 1; i <= numberOfDays; i++) {
+    spentInDay[i] = 0;
+  }
+
+  data?.forEach((tx) => {
+    const day = new Date(tx.created_at).getDate();
+    spentInDay[day] += tx.amount;
+  });
+
+  return spentInDay;
 }
