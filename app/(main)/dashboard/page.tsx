@@ -21,9 +21,12 @@ export default async function page() {
           <SnapUpload />
         </div>
       </div>
-
-      <ExpenseStats />
-      <SpendingHeatmap />
+      <Suspense fallback={<WelcomeTextSkeleton />}>
+        <ExpenseStats />
+      </Suspense>
+      <Suspense fallback={<WelcomeTextSkeleton />}>
+        <SpendingHeatmap />
+      </Suspense>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="order-1 md:order-none">
