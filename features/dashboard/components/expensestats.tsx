@@ -99,7 +99,12 @@ const CompactStatCard = ({
   className?: string;
 }) => {
   return (
-    <Card className={cn("p-3 backdrop-blur-2xl", className)}>
+    <Card
+      className={cn(
+        "p-3 bg-gradient-to-t from-primary/5 to-card shadow-xs dark:bg-card rounded-xl",
+        className,
+      )}
+    >
       <div className="flex items-center justify-between">
         <div className="flex-1 min-w-0">
           <p className="text-xs font-medium text-gray-400 truncate">{title}</p>
@@ -123,7 +128,13 @@ const StatCard = ({
   className,
 }: StatCardProps) => {
   return (
-    <Card className={cn("p-4", className, "backdrop-blur-2xl")}>
+    <Card
+      className={cn(
+        "p-4",
+        className,
+        "p-4 bg-gradient-to-t from-primary/5 to-card shadow-xs dark:bg-card rounded-xl",
+      )}
+    >
       <div className="flex justify-between items-start">
         <div>
           <p className="text-sm font-medium text-gray-400">{title}</p>
