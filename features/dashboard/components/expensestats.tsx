@@ -17,7 +17,7 @@ interface StatCardProps {
   className?: string;
 }
 
-export default async function ExpenseStats({}: Props) {
+export default async function ExpenseStats() {
   const accounts = await getUserAccounts();
   const totalSpending = await getTotalSpendingThisMonth();
   const totalIncome = await getTotalAmountByType("income");
