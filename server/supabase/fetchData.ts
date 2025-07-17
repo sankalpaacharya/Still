@@ -45,16 +45,23 @@ export interface Target {
   }>;
 }
 
-export const USER_ID = "3606243d-0256-4f84-ba2c-72496badf883";
-
 export async function getCategories(): Promise<
   [{ [key: string]: Array<[string, string]> }, CategoryGroup[]]
 > {
   const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
   const response = await supabase
     .from("category_groups")
     .select("name, categories(id,name), id")
-    .eq("user_id", USER_ID);
+    .eq("user_id", user.id);
 
   const result: { [key: string]: Array<[string, string]> } = {};
 
@@ -74,8 +81,20 @@ export async function storeFinance(data: string) {
     const parsed: Transaction = JSON.parse(data);
     const supabase = await createClient();
 
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
     const response = await supabase.from("transactions").insert({
-      user_id: USER_ID,
+      user_id: user.id,
       created_at: new Date().toISOString(),
       ...parsed,
     });
@@ -95,14 +114,23 @@ export async function storeFinance(data: string) {
 export async function getFullUserInfo() {
   const supabase = await createClient();
 
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
   const accountsResp = await supabase
     .from("accounts")
     .select("id, name, amount, type")
-    .eq("user_id", USER_ID);
+    .eq("user_id", user.id);
   const transactionsResp = await supabase
     .from("transactions")
     .select("amount, category_group, category, description")
-    .eq("user_id", USER_ID);
+    .eq("user_id", user.id);
 
   const [, categoryGroups] = await getCategories();
 

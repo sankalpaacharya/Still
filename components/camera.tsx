@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import { Camera, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import { CategoryGroupCombobox } from "@/features/dashboard/components/addexpens
 import { AccountSelect } from "@/features/dashboard/components/account-select";
 import { dataURLtoBlob } from "@/lib/utils";
 import toast from "react-hot-toast";
-import { USER_ID } from "@/server/supabase/fetchData";
+import { createClient } from "@/utils/supabase/client";
 
 type CategoryChange = {
   categoryID: string;
@@ -36,11 +36,30 @@ export default function SnapUpload() {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const [CategoryChange, setCategoryChange] = useState<CategoryChange>({
     categoryID: "",
   });
 
+  useEffect(() => {
+    const getUser = async () => {
+      const supabase = await createClient();
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error getting user:", error);
+        return;
+      }
+      setUser(data.user);
+    };
+    getUser();
+  }, []);
+
   const capture = async () => {
+    if (!user) {
+      toast.error("Please sign in to capture expenses");
+      return;
+    }
+
     const screenshot = webcamRef.current?.getScreenshot();
     if (!screenshot) {
       toast.error("Failed to capture image");
@@ -54,7 +73,6 @@ export default function SnapUpload() {
       const formData = new FormData();
       const blob = dataURLtoBlob(screenshot);
       formData.append("image", blob);
-      formData.append("user_id", USER_ID);
       const response = await fetch(`/api/upload-snap`, {
         method: "POST",
         body: formData,
@@ -131,7 +149,11 @@ export default function SnapUpload() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          className="flex items-center gap-2"
+          disabled={!user}
+        >
           <Camera className="w-4 h-4" />
           Snap
         </Button>
@@ -180,7 +202,11 @@ export default function SnapUpload() {
             </Button>
           )}
           {!hasCaptured && (
-            <Button onClick={capture} className="gap-2" disabled={isUploading}>
+            <Button
+              onClick={capture}
+              className="gap-2"
+              disabled={isUploading || !user}
+            >
               <Camera className="w-4 h-4" />
               {isUploading ? "Processing..." : "Capture"}
             </Button>
