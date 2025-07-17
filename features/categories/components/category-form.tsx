@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { HexColorPicker } from "react-colorful";
+import { HslStringColorPicker } from "react-colorful";
 import { cn } from "@/lib/utils";
 
 const categoryFormSchema = z.object({
@@ -126,7 +126,7 @@ export default function CategoryForm({
                 <FormControl>
                   <div className="space-y-3">
                     <div className="flex justify-center">
-                      <HexColorPicker
+                      <HslStringColorPicker
                         color={field.value}
                         onChange={field.onChange}
                         className="!w-48 !h-48"

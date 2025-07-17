@@ -20,7 +20,7 @@ export default function Page() {
           currentAmount={1240}
           budgetAmount={1800}
           transactionCount={14}
-          trend={{ direction: "up", percentage: 12 }}
+          trend={{ direction: "up", percentage: 60 }}
           gradient="from-blue-500 to-blue-400"
         />
         <CategoryCardSheet>

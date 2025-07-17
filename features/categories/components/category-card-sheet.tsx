@@ -10,6 +10,7 @@ import {
 import CategoryForm from "./category-form";
 import CategoryCard from "./category-card";
 import { CategoryFormType } from "./category-form";
+import { getCssHslGradient } from "@/lib/utils";
 
 type Props = { children: ReactNode };
 
@@ -32,9 +33,10 @@ export default function CategoryCardSheet({ children }: Props) {
             currentAmount={0}
             budgetAmount={formValues?.budget || 0}
             transactionCount={0}
-            trend={{ direction: "up", percentage: 12 }}
-            gradient="from-blue-500 to-blue-400"
-            className=""
+            trend={{ direction: "up", percentage: 50 }}
+            gradient={getCssHslGradient(
+              formValues?.color || "hsl(233,36%,26%)",
+            )}
           />
           <CategoryForm
             setWatchValues={setFormValues}
@@ -42,7 +44,7 @@ export default function CategoryCardSheet({ children }: Props) {
             className="w-full"
             defaultValues={{
               username: "",
-              color: "#265d98",
+              color: "hsl(233,36%,26%)",
               budget: 0,
               icon: "🇳🇵",
             }}

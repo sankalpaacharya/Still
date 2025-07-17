@@ -91,3 +91,17 @@ export function timeSince(dateStr: string): string {
 
   return "just now";
 }
+
+export function getCssHslGradient(hsl: string): string {
+  const match = hsl.match(/hsl\((\d+),\s*(\d+)%?,\s*(\d+)%?\)/);
+
+  if (!match) return "";
+
+  const [_, h, s, l] = match;
+  const hue = h;
+  const sat = s;
+  const light = Number(l);
+  const lighter = Math.min(light + 15, 95);
+
+  return `linear-gradient(to bottom right, hsl(${hue},${sat}%,${light}%), hsl(${hue},${sat}%,${lighter}%))`;
+}
