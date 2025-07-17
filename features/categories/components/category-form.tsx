@@ -40,6 +40,7 @@ type Props = {
   onSubmit: (data: any) => void;
   defaultValues: CategoryFormType;
   className?: string;
+  type: string;
   setWatchValues: Dispatch<
     SetStateAction<Partial<CategoryFormType> | undefined>
   >;
@@ -49,6 +50,7 @@ export default function CategoryForm({
   onSubmit,
   defaultValues,
   className,
+  type,
   setWatchValues,
 }: Props) {
   const form = useForm({

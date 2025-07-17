@@ -102,6 +102,6 @@ export function getCssHslGradient(hsl: string): string {
   const sat = s;
   const light = Number(l);
   const lighter = Math.min(light + 15, 95);
-
+  console.log(_);
   return `linear-gradient(to bottom right, hsl(${hue},${sat}%,${light}%), hsl(${hue},${sat}%,${lighter}%))`;
 }

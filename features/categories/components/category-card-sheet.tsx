@@ -24,7 +24,7 @@ export default function CategoryCardSheet({ children }: Props) {
         style={{ maxWidth: "40%" }}
       >
         <SheetHeader>
-          <SheetTitle>Are you absolutely sure?</SheetTitle>
+          <SheetTitle>Add new category</SheetTitle>
         </SheetHeader>
         <div className="space-y-5 px-10">
           <CategoryCard
@@ -42,6 +42,7 @@ export default function CategoryCardSheet({ children }: Props) {
             setWatchValues={setFormValues}
             onSubmit={(data) => console.log("this is the data", data)}
             className="w-full"
+            type="expense"
             defaultValues={{
               username: "",
               color: "hsl(233,36%,26%)",

@@ -1,6 +1,5 @@
 "use client";
 import CategoryCard from "@/features/categories/components/category-card";
-import CategoryForm from "@/features/categories/components/category-form";
 import CategoryCardSheet from "@/features/categories/components/category-card-sheet";
 import { Plus } from "lucide-react";
 
