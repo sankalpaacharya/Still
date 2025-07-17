@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface CategoryCardProps {
   name: string;
@@ -14,6 +15,7 @@ interface CategoryCardProps {
   };
   gradient: string;
   onClick?: () => void;
+  className?: string;
 }
 
 export default function CategoryCard({
@@ -23,20 +25,28 @@ export default function CategoryCard({
   budgetAmount,
   transactionCount,
   trend,
+  className,
   gradient,
   onClick,
 }: CategoryCardProps) {
   const progress = (currentAmount / budgetAmount) * 100;
   const remaining = budgetAmount - currentAmount;
   const average = Math.round(currentAmount / transactionCount);
-
+  console.log("this is gradient", gradient);
   return (
-    <Card className="bg-card/50 to-card w-md" onClick={onClick}>
+    <Card
+      className={cn(
+        "bg-card/50 to-card border shadow-xl cursor-pointer",
+        className,
+      )}
+      onClick={onClick}
+    >
       <CardContent className="p-7">
         <div className="flex justify-between items-start mb-6">
           <div>
             <div
-              className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shadow-lg transition-transform duration-300 hover:scale-110`}
+              className={`w-12 h-12 rounded-xl bg-gradient-to-br  flex items-center justify-center text-2xl shadow-lg transition-transform duration-300 hover:scale-110`}
+              style={{ backgroundImage: gradient }}
             >
               {icon}
             </div>
@@ -77,7 +87,10 @@ export default function CategoryCard({
           <div className="w-full  rounded-full h-2 overflow-hidden">
             <div
               className={`h-2 rounded-full bg-gradient-to-r ${gradient} transition-all duration-500 relative`}
-              style={{ width: `${Math.min(progress, 100)}%` }}
+              style={{
+                width: `${Math.min(trend.percentage, 100)}%`,
+                backgroundImage: gradient,
+              }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
             </div>
