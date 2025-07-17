@@ -19,7 +19,7 @@ type Props = {
 
 export default function MostExpenseContainer({ data }: Props) {
   return (
-    <Card>
+    <Card className="bg-card/50">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           📊 Spending by Category

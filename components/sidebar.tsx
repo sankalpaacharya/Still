@@ -12,6 +12,7 @@ import {
   LogOut,
   CreditCard,
   BanknoteArrowDown,
+  Layers,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,11 @@ const navItems: NavItem[] = [
     icon: DollarSign,
     label: "Finance",
     href: "/finance",
+  },
+  {
+    icon: Layers,
+    label: "Categories",
+    href: "/categories",
   },
   {
     icon: BanknoteArrowDown,
@@ -71,10 +77,10 @@ export default function Sidebar() {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       if (!mobile) {
-        setExpanded(true); // Auto-expand on desktop
-        setMobileMenuOpen(false); // Close mobile menu on desktop
+        setExpanded(true);
+        setMobileMenuOpen(false);
       } else {
-        setExpanded(false); // Auto-collapse on mobile
+        setExpanded(false);
       }
     };
 

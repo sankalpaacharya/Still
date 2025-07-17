@@ -10,7 +10,7 @@ export const TransactionCard = async () => {
   const transactions = await getRecentTransactions();
   console.log("transactions", transactions);
   return (
-    <Card>
+    <Card className="bg-card/50">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-base font-semibold">
           Recent Transactions
