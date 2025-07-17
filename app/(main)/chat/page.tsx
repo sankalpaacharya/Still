@@ -40,43 +40,40 @@ export default function Page() {
     scrollToCurrentExchange();
 
     try {
-      await fetchEventSource(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/chat-stream`,
-        {
-          onmessage(ev) {
-            if (ev.data === "") {
-              setResponse((prev) => prev + "\n");
-              responseRef.current += "\n";
-            } else {
-              setResponse((prev) => prev + ev.data);
-              responseRef.current += ev.data;
-            }
-          },
-          onclose() {
-            setChatHistory((prev) => [
-              ...prev,
-              { role: "ai", message: responseRef.current },
-            ]);
-            setIsStreaming(false);
-          },
-          onerror(err) {
-            console.error("EventSource error:", err);
-            setIsStreaming(false);
-            setChatHistory((prev) => [
-              ...prev,
-              {
-                role: "ai",
-                message: "Sorry, there was an error processing your request.",
-              },
-            ]);
-          },
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ query: message }),
+      await fetchEventSource(`/api/chat-stream`, {
+        onmessage(ev) {
+          if (ev.data === "") {
+            setResponse((prev) => prev + "\n");
+            responseRef.current += "\n";
+          } else {
+            setResponse((prev) => prev + ev.data);
+            responseRef.current += ev.data;
+          }
         },
-      );
+        onclose() {
+          setChatHistory((prev) => [
+            ...prev,
+            { role: "ai", message: responseRef.current },
+          ]);
+          setIsStreaming(false);
+        },
+        onerror(err) {
+          console.error("EventSource error:", err);
+          setIsStreaming(false);
+          setChatHistory((prev) => [
+            ...prev,
+            {
+              role: "ai",
+              message: "Sorry, there was an error processing your request.",
+            },
+          ]);
+        },
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: message }),
+      });
     } catch (error) {
       console.error("Error sending message:", error);
       setIsStreaming(false);

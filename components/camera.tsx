@@ -18,6 +18,7 @@ import { CategoryGroupCombobox } from "@/features/dashboard/components/addexpens
 import { AccountSelect } from "@/features/dashboard/components/account-select";
 import { dataURLtoBlob } from "@/lib/utils";
 import toast from "react-hot-toast";
+import { USER_ID } from "@/server/supabase/fetchData";
 
 type CategoryChange = {
   categoryID: string;
@@ -53,14 +54,11 @@ export default function SnapUpload() {
       const formData = new FormData();
       const blob = dataURLtoBlob(screenshot);
       formData.append("image", blob);
-      formData.append("user_id", "123");
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL!}/upload-snap`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
+      formData.append("user_id", USER_ID);
+      const response = await fetch(`/api/upload-snap`, {
+        method: "POST",
+        body: formData,
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
