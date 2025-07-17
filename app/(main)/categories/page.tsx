@@ -1,11 +1,8 @@
 "use client";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  EmojiPicker,
-  EmojiPickerSearch,
-  EmojiPickerContent,
-} from "@/components/ui/emoji-picker";
 import CategoryCard from "@/features/categories/components/category-card";
+import CategoryForm from "@/features/categories/components/category-form";
+import CategoryCardSheet from "@/features/categories/components/category-card-sheet";
+import { Plus } from "lucide-react";
 
 export default function Page() {
   return (
@@ -16,26 +13,37 @@ export default function Page() {
           A summary of all your expense categories with budget usage and trends.
         </p>
       </div>
-
-      <CategoryCard
-        name="Food & Dining"
-        icon="🍔"
-        currentAmount={1240}
-        budgetAmount={1800}
-        transactionCount={14}
-        trend={{ direction: "up", percentage: 12 }}
-        gradient="from-blue-500 to-blue-400"
-      />
-
-      {/* <EmojiPicker
-        className="h-[326px] rounded-lg border shadow-md"
-        onEmojiSelect={({ emoji }) => {
-          console.log(emoji);
+      <div className="grid grid-cols-3 gap-10">
+        <CategoryCard
+          name="Food & Dining"
+          icon="🍔"
+          currentAmount={1240}
+          budgetAmount={1800}
+          transactionCount={14}
+          trend={{ direction: "up", percentage: 12 }}
+          gradient="from-blue-500 to-blue-400"
+        />
+        <CategoryCardSheet>
+          <button className="flex flex-col cursor-pointer items-center justify-center  p-6 border-2 border-dashed border-white/20 rounded-xl transition-all hover:bg-white/5">
+            <div className="p-4 rounded-full bg-white/10 mb-4">
+              <Plus className="h-6 w-6" />
+            </div>
+            <p className="text-lg font-medium">Add New Category</p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Track another financial account
+            </p>
+          </button>
+        </CategoryCardSheet>
+      </div>
+      {/* <CategoryForm
+        onSubmit={(data) => console.log("this is the data", data)}
+        defaultValues={{
+          username: "",
+          color: "#265d98",
+          budget: 0,
+          icon: "🇳🇵",
         }}
-      >
-        <EmojiPickerSearch />
-        <EmojiPickerContent />
-      </EmojiPicker> */}
+      /> */}
     </main>
   );
 }

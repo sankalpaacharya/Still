@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface CategoryCardProps {
   name: string;
@@ -14,6 +15,7 @@ interface CategoryCardProps {
   };
   gradient: string;
   onClick?: () => void;
+  className?: string;
 }
 
 export default function CategoryCard({
@@ -23,6 +25,7 @@ export default function CategoryCard({
   budgetAmount,
   transactionCount,
   trend,
+  className,
   gradient,
   onClick,
 }: CategoryCardProps) {
@@ -31,7 +34,13 @@ export default function CategoryCard({
   const average = Math.round(currentAmount / transactionCount);
 
   return (
-    <Card className="bg-card/50 to-card w-md" onClick={onClick}>
+    <Card
+      className={cn(
+        "bg-card/50 to-card border shadow-xl cursor-pointer",
+        className,
+      )}
+      onClick={onClick}
+    >
       <CardContent className="p-7">
         <div className="flex justify-between items-start mb-6">
           <div>
