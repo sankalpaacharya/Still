@@ -38,5 +38,6 @@
     "typescript",
     "javascriptreact",
     "typescriptreact"
-  ]
+  ],
+  "deno.enable": true
 }
