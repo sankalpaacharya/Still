@@ -28,7 +28,7 @@ export default function CategoryCardSheet({ children }: Props) {
         </SheetHeader>
         <div className="space-y-5 px-10">
           <CategoryCard
-            name={formValues?.username || ""}
+            name={formValues?.username || "Title"}
             icon={formValues?.icon || "✅"}
             currentAmount={0}
             budgetAmount={formValues?.budget || 0}

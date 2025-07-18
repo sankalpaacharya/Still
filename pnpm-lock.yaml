@@ -89,12 +89,12 @@ importers:
       framer-motion:
         specifier: ^12.16.0
         version: 12.16.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      groq-sdk:
-        specifier: ^0.27.0
-        version: 0.27.0
       frimousse:
         specifier: ^0.3.0
         version: 0.3.0(react@19.1.0)(typescript@5.8.3)
+      groq-sdk:
+        specifier: ^0.27.0
+        version: 0.27.0
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
