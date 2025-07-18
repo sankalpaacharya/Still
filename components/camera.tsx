@@ -36,7 +36,7 @@ export default function SnapUpload() {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>();
   const [CategoryChange, setCategoryChange] = useState<CategoryChange>({
     categoryID: "",
   });
