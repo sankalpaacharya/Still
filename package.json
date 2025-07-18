@@ -10,6 +10,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@google/genai": "^1.10.0",
     "@hookform/resolvers": "^5.0.1",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@radix-ui/react-accordion": "^1.2.10",

@@ -1,11 +1,17 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { SendHorizontal, Search, Lightbulb } from "lucide-react";
+import { SendHorizontal, Search, Lightbulb, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ChatInputProps {
   className?: string;
-  onMessageSend: (message: string) => void;
+  onMessageSend: (message: string, provider?: string) => void;
   disabled?: boolean;
 }
 
@@ -16,7 +22,14 @@ export default function ChatInput({
 }: ChatInputProps) {
   const [message, setMessage] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [selectedModel, setSelectedModel] = useState("groq");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const models = [
+    { id: "groq", name: "Meta Llama 4", provider: "groq" },
+    { id: "openai", name: "GPT-4.0", provider: "openai" },
+    { id: "google", name: "Gemini 2.5 Pro", provider: "google" },
+  ];
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -28,8 +41,8 @@ export default function ChatInput({
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      onMessageSend(message);
-      console.log("Message sent:", message);
+      onMessageSend(message, selectedModel);
+      console.log("Message sent:", message, "Provider:", selectedModel);
       setMessage("");
     }
   };
@@ -65,6 +78,32 @@ export default function ChatInput({
             <button className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-indigo-400 rounded-full hover:bg-white/5 transition-colors">
               <Lightbulb size={18} />
             </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center space-x-2 px-3 py-2 text-gray-400 hover:text-indigo-400 rounded-full hover:bg-white/5 transition-colors text-sm">
+                  <span>
+                    {models.find((m) => m.id === selectedModel)?.name}
+                  </span>
+                  <ChevronDown size={14} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="start"
+                className="w-48 bg-gray-500/10 border border-gray-800/50 backdrop-blur-sm"
+              >
+                {models.map((model) => (
+                  <DropdownMenuItem
+                    key={model.id}
+                    onClick={() => setSelectedModel(model.id)}
+                    className={`cursor-pointer text-white hover:bg-white/5 ${
+                      selectedModel === model.id ? "bg-white/10" : ""
+                    }`}
+                  >
+                    {model.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <button
             onClick={handleSendMessage}

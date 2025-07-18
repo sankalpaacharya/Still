@@ -1,4 +1,5 @@
-import { system_prompt } from "./prompts/prompts";
+// import { system_prompt } from "./prompts/prompts";
+import { system_prompt } from "./prompts/prompt2";
 import { buildImagePrompt } from "./prompts/image_prompt";
 import {
   getFullUserInfo,
@@ -7,6 +8,7 @@ import {
 } from "./supabase/fetchData";
 import { OpenAI } from "openai";
 import Groq from "groq-sdk";
+import { GoogleGenAI, Type } from "@google/genai";
 import { Readable } from "stream";
 
 export const FINANCE_TOOLS = [
@@ -29,7 +31,22 @@ export const FINANCE_TOOLS = [
   },
 ];
 
-function getLLMClientAndModel(provider: "groq" | "openai") {
+const FINANCE_TOOLS_GEMINI = {
+  name: "storeFinance",
+  description: "Store data from LLM to supabase",
+  parameters: {
+    type: Type.OBJECT,
+    properties: {
+      data: {
+        type: Type.STRING,
+        description: "Data to be stored in supabase",
+      },
+    },
+    required: ["data"],
+  },
+};
+
+function getLLMClientAndModel(provider: "groq" | "openai" | "google") {
   if (provider === "openai") {
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
     return { client, model: "gpt-4o" };
@@ -37,6 +54,12 @@ function getLLMClientAndModel(provider: "groq" | "openai") {
   if (provider === "groq") {
     const client = new Groq({ apiKey: process.env.GROQ_API_KEY! });
     return { client, model: "meta-llama/llama-4-scout-17b-16e-instruct" };
+  }
+  if (provider === "google") {
+    const client = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY!,
+    });
+    return { client, model: "gemini-2.5-pro" };
   }
   throw new Error(`Unsupported provider: ${provider}`);
 }
@@ -65,7 +88,7 @@ function streamGroqOrOpenAI(streamResponse: any): Readable {
 }
 
 export async function chatWithStream(
-  provider: "groq" | "openai",
+  provider: "groq" | "openai" | "google",
   query: string,
 ): Promise<Readable> {
   const { client, model } = getLLMClientAndModel(provider);
@@ -76,7 +99,7 @@ export async function chatWithStream(
     query,
   });
 
-  const messages: any[] = [
+  let messages: any[] = [
     { role: "system", content: prompt },
     { role: "user", content: query },
   ];
@@ -183,6 +206,108 @@ export async function chatWithStream(
     });
 
     return streamGroqOrOpenAI(streamResponse);
+  } else if (provider === "google") {
+    const googleClient = client as GoogleGenAI;
+
+    const googleMessages = messages.map((msg) => ({
+      role: msg.role === "system" ? "user" : msg.role,
+      parts: [{ text: msg.content }],
+    }));
+
+    const config = {
+      tools: [{ functionDeclarations: [FINANCE_TOOLS_GEMINI] }],
+    };
+
+    try {
+      const result = await googleClient.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: googleMessages,
+        config: config,
+      });
+
+      const toolCalls = result.functionCalls;
+
+      let function_response_parts: any[] = [];
+
+      if (toolCalls && toolCalls.length > 0) {
+        for (const toolCall of toolCalls) {
+          if (toolCall.name === "storeFinance") {
+            const args = toolCall.args as { data: string };
+            const response = await storeFinance(args.data);
+            function_response_parts.push({
+              functionResponse: {
+                name: toolCall.name,
+                response: { content: JSON.stringify(response) },
+              },
+            });
+          }
+        }
+
+        const finalStreamGenerator =
+          await googleClient.models.generateContentStream({
+            model: "gemini-2.5-flash",
+            contents: [
+              ...googleMessages,
+              {
+                role: "model",
+                parts: function_response_parts,
+              },
+            ],
+          });
+
+        const stream = new Readable({
+          read() {},
+        });
+
+        const processGoogleStream = async () => {
+          try {
+            for await (const chunk of finalStreamGenerator) {
+              const chunkText = chunk.text;
+              if (chunkText) {
+                stream.push(chunkText);
+              }
+            }
+            stream.push(null);
+          } catch (error) {
+            stream.destroy(error as Error);
+          }
+        };
+
+        processGoogleStream();
+        return stream;
+      } else {
+        const streamGenerator = await googleClient.models.generateContentStream(
+          {
+            model: "gemini-2.5-flash",
+            contents: googleMessages,
+          },
+        );
+
+        const stream = new Readable({
+          read() {},
+        });
+
+        const processGoogleStream = async () => {
+          try {
+            for await (const chunk of streamGenerator) {
+              const chunkText = chunk.text;
+              if (chunkText) {
+                stream.push(chunkText);
+              }
+            }
+            stream.push(null);
+          } catch (error) {
+            stream.destroy(error as Error);
+          }
+        };
+
+        processGoogleStream();
+        return stream;
+      }
+    } catch (error) {
+      console.error("Google AI API error:", error);
+      throw error;
+    }
   }
 
   throw new Error(`Unsupported provider: ${provider}`);

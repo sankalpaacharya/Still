@@ -55,11 +55,6 @@ export default function SnapUpload() {
   }, []);
 
   const capture = async () => {
-    if (!user) {
-      toast.error("Please sign in to capture expenses");
-      return;
-    }
-
     const screenshot = webcamRef.current?.getScreenshot();
     if (!screenshot) {
       toast.error("Failed to capture image");

@@ -12,7 +12,10 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const stream = await chatWithStream(provider as "groq" | "openai", query);
+    const stream = await chatWithStream(
+      provider as "groq" | "openai" | "google",
+      query,
+    );
 
     const encoder = new TextEncoder();
     const readableStream = new ReadableStream({

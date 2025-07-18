@@ -30,7 +30,10 @@ export default function Page() {
     }, 100);
   };
 
-  const handleMessageSend = async (message: string) => {
+  const handleMessageSend = async (
+    message: string,
+    provider: string = "groq",
+  ) => {
     setResponse("");
     responseRef.current = "";
     setIsStreaming(true);
@@ -72,7 +75,7 @@ export default function Page() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query: message }),
+        body: JSON.stringify({ query: message, provider }),
       });
     } catch (error) {
       console.error("Error sending message:", error);
