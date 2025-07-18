@@ -13,13 +13,20 @@ export default function Page() {
           A summary of all your expense categories with budget usage and trends.
         </p>
       </div>
-
-      <Tabs defaultValue="account" className="w-full bg-transparent">
-        <TabsList className="w-full bg-transparent mb-2">
-          <TabsTrigger value="expense" className="">
+      <Tabs defaultValue="expense" className="w-full bg-transparent">
+        <TabsList className="w-full bg-transparent mb-2 border-b border-border h-auto p-0 rounded-none">
+          <TabsTrigger
+            value="expense"
+            className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2 h-auto"
+          >
             Expense
           </TabsTrigger>
-          <TabsTrigger value="income">Income</TabsTrigger>
+          <TabsTrigger
+            value="income"
+            className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2 h-auto"
+          >
+            Income
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="expense">
           <div className="grid grid-cols-3 gap-10">
