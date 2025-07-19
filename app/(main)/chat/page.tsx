@@ -41,7 +41,6 @@ export default function Page() {
     setChatHistory((prev) => [...prev, { role: "user", message }]);
 
     scrollToCurrentExchange();
-
     try {
       const aiResponse = await streamChatAction(
         message,

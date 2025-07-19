@@ -21,8 +21,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { HslStringColorPicker } from "react-colorful";
 import { cn } from "@/lib/utils";
 
+export enum CategoryType {
+  Income = "income",
+  Expense = "expense",
+}
+
 const categoryFormSchema = z.object({
-  username: z.string().min(2, {
+  name: z.string().min(2, {
     message: "Username must be atleast 2 characters.",
   }),
   color: z.string().min(1, {
@@ -32,12 +37,13 @@ const categoryFormSchema = z.object({
   icon: z.string().min(1, {
     message: "Please pick an emoji.",
   }),
+  type: z.nativeEnum(CategoryType),
 });
 
 export type CategoryFormType = z.infer<typeof categoryFormSchema>;
 
 type Props = {
-  onSubmit: (data: any) => void;
+  onFormSubmit: (data: any) => void;
   defaultValues: CategoryFormType;
   className?: string;
   type: string;
@@ -47,7 +53,7 @@ type Props = {
 };
 
 export default function CategoryForm({
-  onSubmit,
+  onFormSubmit,
   defaultValues,
   className,
   type,
@@ -66,10 +72,13 @@ export default function CategoryForm({
 
   return (
     <Form {...form}>
-      <div className={cn("space-y-6 w-2xl", className)}>
+      <form
+        onSubmit={(data) => onFormSubmit(data)}
+        className={cn("space-y-6 w-2xl", className)}
+      >
         <FormField
           control={form.control}
-          name="username"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category Name</FormLabel>
@@ -188,14 +197,8 @@ export default function CategoryForm({
           />
         </div>
 
-        {/* Submit Button */}
-        <Button
-          onClick={form.handleSubmit((data) => onSubmit(data))}
-          className="w-full"
-        >
-          Submit
-        </Button>
-      </div>
+        <Button className="w-full">Submit</Button>
+      </form>
     </Form>
   );
 }

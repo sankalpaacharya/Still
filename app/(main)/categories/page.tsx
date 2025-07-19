@@ -3,6 +3,7 @@ import CategoryCard from "@/features/categories/components/category-card";
 import CategoryCardSheet from "@/features/categories/components/category-card-sheet";
 import { Plus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { createCategoryAction } from "@/features/categories/actions";
 
 export default function Page() {
   return (
@@ -39,7 +40,7 @@ export default function Page() {
               trend={{ direction: "up", percentage: 60 }}
               gradient="from-blue-500 to-blue-400"
             />
-            <CategoryCardSheet>
+            <CategoryCardSheet onSubmit={createCategoryAction}>
               <button className="flex flex-col cursor-pointer items-center justify-center  p-6 border-2 border-dashed border-white/20 rounded-xl transition-all hover:bg-white/5">
                 <div className="p-4 rounded-full bg-white/10 mb-4">
                   <Plus className="h-6 w-6" />
@@ -63,7 +64,7 @@ export default function Page() {
               trend={{ direction: "up", percentage: 60 }}
               gradient="from-blue-500 to-blue-400"
             />
-            <CategoryCardSheet>
+            <CategoryCardSheet onSubmit={createCategoryAction}>
               <button className="flex flex-col cursor-pointer items-center justify-center  p-6 border-2 border-dashed border-white/20 rounded-xl transition-all hover:bg-white/5">
                 <div className="p-4 rounded-full bg-white/10 mb-4">
                   <Plus className="h-6 w-6" />
@@ -77,15 +78,6 @@ export default function Page() {
           </div>
         </TabsContent>
       </Tabs>
-      {/* <CategoryForm
-        onSubmit={(data) => console.log("this is the data", data)}
-        defaultValues={{
-          username: "",
-          color: "#265d98",
-          budget: 0,
-          icon: "🇳🇵",
-        }}
-      /> */}
     </main>
   );
 }

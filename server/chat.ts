@@ -1,4 +1,3 @@
-// import { system_prompt } from "./prompts/prompts";
 import { system_prompt } from "./prompts/prompt2";
 import { buildImagePrompt } from "./prompts/image_prompt";
 import {
