@@ -1,71 +1,23 @@
-import { system_prompt } from "./prompts/prompts";
+// import { system_prompt } from "./prompts/prompts";
+import { system_prompt } from "./prompts/prompt2";
 import { buildImagePrompt } from "./prompts/image_prompt";
 import {
   getFullUserInfo,
   storeFinance,
   getCategories,
 } from "./supabase/fetchData";
-import { OpenAI } from "openai";
 import Groq from "groq-sdk";
+import { GoogleGenAI } from "@google/genai";
 import { Readable } from "stream";
-
-export const FINANCE_TOOLS = [
-  {
-    type: "function" as const,
-    function: {
-      name: "storeFinance",
-      description: "Store data from LLM to supabase",
-      parameters: {
-        type: "object",
-        properties: {
-          data: {
-            type: "string",
-            description: "Data to be stored in supabase",
-          },
-        },
-        required: ["data"],
-      },
-    },
-  },
-];
-
-function getLLMClientAndModel(provider: "groq" | "openai") {
-  if (provider === "openai") {
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
-    return { client, model: "gpt-4o" };
-  }
-  if (provider === "groq") {
-    const client = new Groq({ apiKey: process.env.GROQ_API_KEY! });
-    return { client, model: "meta-llama/llama-4-scout-17b-16e-instruct" };
-  }
-  throw new Error(`Unsupported provider: ${provider}`);
-}
-
-function streamGroqOrOpenAI(streamResponse: any): Readable {
-  const stream = new Readable({
-    read() {},
-  });
-
-  const processStream = async () => {
-    try {
-      for await (const chunk of streamResponse) {
-        const delta = chunk.choices[0]?.delta;
-        if (delta?.content) {
-          stream.push(delta.content);
-        }
-      }
-      stream.push(null);
-    } catch (error) {
-      stream.destroy(error as Error);
-    }
-  };
-
-  processStream();
-  return stream;
-}
+import { FINANCE_TOOLS, FINANCE_TOOLS_GEMINI } from "./utils/tools";
+import {
+  getLLMClientAndModel,
+  handleGroqOrOpenAIResponse,
+  handleGoogleResponse,
+} from "./service/llm_service";
 
 export async function chatWithStream(
-  provider: "groq" | "openai",
+  provider: "groq" | "openai" | "google",
   query: string,
 ): Promise<Readable> {
   const { client, model } = getLLMClientAndModel(provider);
@@ -76,7 +28,7 @@ export async function chatWithStream(
     query,
   });
 
-  const messages: any[] = [
+  let messages: any[] = [
     { role: "system", content: prompt },
     { role: "user", content: query },
   ];
@@ -85,104 +37,38 @@ export async function chatWithStream(
     storeFinance: storeFinance,
   };
 
-  if (provider === "openai") {
-    const openaiClient = client as OpenAI;
-
-    const response = await openaiClient.chat.completions.create({
+  if (provider === "openai" || provider === "groq") {
+    return await handleGroqOrOpenAIResponse({
+      client,
       model,
       messages,
       tools: FINANCE_TOOLS,
-      tool_choice: "auto",
-      stream: false,
+      availableFunctions,
     });
+  } else if (provider === "google") {
+    const googleClient = client as GoogleGenAI;
 
-    const responseMessage = response.choices[0].message;
-    const toolCalls = responseMessage.tool_calls;
+    const googleMessages = messages.map((msg) => ({
+      role: msg.role === "system" ? "user" : msg.role,
+      parts: [{ text: msg.content }],
+    }));
 
-    if (toolCalls && toolCalls.length > 0) {
-      messages.push(responseMessage);
+    const config = {
+      tools: [{ functionDeclarations: [FINANCE_TOOLS_GEMINI] }],
+    };
 
-      for (const toolCall of toolCalls) {
-        const functionName = toolCall.function.name;
-        const func = availableFunctions[functionName];
-        const args = JSON.parse(toolCall.function.arguments);
-
-        if (func) {
-          const result = await func(args.data);
-          messages.push({
-            tool_call_id: toolCall.id,
-            role: "tool",
-            name: functionName,
-            content: JSON.stringify(result),
-          });
-        }
-      }
-    } else {
-      return streamGroqOrOpenAI(
-        await openaiClient.chat.completions.create({
-          model,
-          messages,
-          stream: true,
-        }),
-      );
+    try {
+      const result = await handleGoogleResponse({
+        client: googleClient,
+        model,
+        messages: googleMessages,
+        config,
+      });
+      return result;
+    } catch (error) {
+      console.error("Google AI API error:", error);
+      throw error;
     }
-
-    const streamResponse = await openaiClient.chat.completions.create({
-      model,
-      messages,
-      stream: true,
-    });
-
-    return streamGroqOrOpenAI(streamResponse);
-  } else if (provider === "groq") {
-    const groqClient = client as Groq;
-
-    const response = await groqClient.chat.completions.create({
-      model,
-      messages,
-      tools: FINANCE_TOOLS,
-      tool_choice: "auto",
-      stream: false,
-    });
-
-    const responseMessage = response.choices[0].message;
-    const toolCalls = responseMessage.tool_calls;
-
-    if (toolCalls && toolCalls.length > 0) {
-      messages.push(responseMessage);
-
-      for (const toolCall of toolCalls) {
-        const functionName = toolCall.function.name;
-        const func = availableFunctions[functionName];
-        const args = JSON.parse(toolCall.function.arguments);
-
-        if (func) {
-          const result = await func(args.data);
-          messages.push({
-            tool_call_id: toolCall.id,
-            role: "tool",
-            name: functionName,
-            content: JSON.stringify(result),
-          });
-        }
-      }
-    } else {
-      return streamGroqOrOpenAI(
-        await groqClient.chat.completions.create({
-          model,
-          messages,
-          stream: true,
-        }),
-      );
-    }
-
-    const streamResponse = await groqClient.chat.completions.create({
-      model,
-      messages,
-      stream: true,
-    });
-
-    return streamGroqOrOpenAI(streamResponse);
   }
 
   throw new Error(`Unsupported provider: ${provider}`);

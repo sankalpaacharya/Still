@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import ChatInput from "@/features/chat/components/chat-input";
 import Message from "@/features/chat/components/message";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { streamChatAction } from "@/lib/chat-actions";
 import { ShootingStars } from "@/components/ui/shooting-stars";
 import { StarsBackground } from "@/components/ui/stars-background";
 
@@ -30,7 +30,10 @@ export default function Page() {
     }, 100);
   };
 
-  const handleMessageSend = async (message: string) => {
+  const handleMessageSend = async (
+    message: string,
+    provider: string = "groq",
+  ) => {
     setResponse("");
     responseRef.current = "";
     setIsStreaming(true);
@@ -40,40 +43,16 @@ export default function Page() {
     scrollToCurrentExchange();
 
     try {
-      await fetchEventSource(`/api/chat-stream`, {
-        onmessage(ev) {
-          if (ev.data === "") {
-            setResponse((prev) => prev + "\n");
-            responseRef.current += "\n";
-          } else {
-            setResponse((prev) => prev + ev.data);
-            responseRef.current += ev.data;
-          }
-        },
-        onclose() {
-          setChatHistory((prev) => [
-            ...prev,
-            { role: "ai", message: responseRef.current },
-          ]);
-          setIsStreaming(false);
-        },
-        onerror(err) {
-          console.error("EventSource error:", err);
-          setIsStreaming(false);
-          setChatHistory((prev) => [
-            ...prev,
-            {
-              role: "ai",
-              message: "Sorry, there was an error processing your request.",
-            },
-          ]);
-        },
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query: message }),
-      });
+      const aiResponse = await streamChatAction(
+        message,
+        provider as "groq" | "openai" | "google",
+      );
+
+      setResponse(aiResponse);
+      responseRef.current = aiResponse;
+
+      setChatHistory((prev) => [...prev, { role: "ai", message: aiResponse }]);
+      setIsStreaming(false);
     } catch (error) {
       console.error("Error sending message:", error);
       setIsStreaming(false);
@@ -81,7 +60,7 @@ export default function Page() {
         ...prev,
         {
           role: "ai",
-          message: "Sorry, there was an error connecting to the server.",
+          message: "Sorry, there was an error processing your request.",
         },
       ]);
     }

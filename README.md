@@ -1,6 +1,6 @@
 <div align="center">
 
-![logo](https://i.postimg.cc/VLttbG31/Whats-App-Image-2025-07-11-at-09-22-48-removebg-preview.png)
+![Still logo](https://i.postimg.cc/fW37cnyS/logo-black-1.png)
 
 </div>
 
