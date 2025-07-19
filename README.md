@@ -1,6 +1,6 @@
 <div align="center">
 
-![logo-black-1.png](https://i.postimg.cc/fW37cnyS/logo-black-1.png)
+![Still logo](https://i.postimg.cc/fW37cnyS/logo-black-1.png)
 
 </div>
 
