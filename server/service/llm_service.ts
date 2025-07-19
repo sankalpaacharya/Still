@@ -30,7 +30,7 @@ export function getLLMClientAndModel(provider: "groq" | "openai" | "google") {
   }
   if (provider === "google") {
     const client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
-    return { client, model: "gemini-2.5-pro" };
+    return { client, model: "gemini-2.5-flash" };
   }
   throw new Error(`Unsupported provider: ${provider}`);
 }

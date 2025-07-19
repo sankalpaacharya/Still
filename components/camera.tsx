@@ -19,6 +19,7 @@ import { AccountSelect } from "@/features/dashboard/components/account-select";
 import { dataURLtoBlob } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { createClient } from "@/utils/supabase/client";
+import { uploadImageSnap } from "@/lib/chat-utils";
 
 type CategoryChange = {
   categoryID: string;
@@ -65,25 +66,10 @@ export default function SnapUpload() {
     setIsUploading(true);
 
     try {
-      const formData = new FormData();
       const blob = dataURLtoBlob(screenshot);
-      formData.append("image", blob);
-      const response = await fetch(`/api/upload-snap`, {
-        method: "POST",
-        body: formData,
-      });
+      const file = new File([blob], "capture.png", { type: "image/png" });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.error) {
-        toast.error("Can't process the image");
-        resetSnap();
-        return;
-      }
+      const data = await uploadImageSnap(file);
 
       console.log("Upload successful:", data);
       setAmount(data["amount"] || 0);
