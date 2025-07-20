@@ -2,10 +2,11 @@
 import React, { useRef, useState } from "react";
 import ChatInput from "@/features/chat/components/chat-input";
 import Message from "@/features/chat/components/message";
+import StreamingMessage from "@/features/chat/components/streaming-message";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { streamChatAction } from "@/lib/chat-actions";
 import { ShootingStars } from "@/components/ui/shooting-stars";
 import { StarsBackground } from "@/components/ui/stars-background";
+import { streamChatAction } from "@/lib/chat-actions";
 
 type ChatHistory = {
   role: "user" | "ai";
@@ -19,6 +20,7 @@ export default function Page() {
   const [isStreaming, setIsStreaming] = useState(false);
 
   const currentUserMessageRef = useRef<HTMLDivElement>(null);
+  const streamingMessageRef = useRef<HTMLDivElement>(null);
 
   const scrollToCurrentExchange = () => {
     setTimeout(() => {
@@ -28,6 +30,16 @@ export default function Page() {
         inline: "nearest",
       });
     }, 100);
+  };
+
+  const scrollToStreamingMessage = () => {
+    setTimeout(() => {
+      streamingMessageRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest",
+      });
+    }, 50);
   };
 
   const handleMessageSend = async (
@@ -48,8 +60,24 @@ export default function Page() {
         provider as "groq" | "openai" | "google",
       );
 
-      setResponse(aiResponse);
-      responseRef.current = aiResponse;
+      let displayedText = "";
+      const words = aiResponse.split(" ");
+
+      for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+        displayedText += word;
+
+        if (i < words.length - 1) {
+          displayedText += " ";
+        }
+
+        setResponse(displayedText);
+        responseRef.current = displayedText;
+
+        scrollToStreamingMessage();
+
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
 
       setChatHistory((prev) => [...prev, { role: "ai", message: aiResponse }]);
       setIsStreaming(false);
@@ -114,7 +142,12 @@ export default function Page() {
                 })}
 
                 {isStreaming && (
-                  <Message isUser={false} message={response || "Thinking..."} />
+                  <div ref={streamingMessageRef}>
+                    <StreamingMessage
+                      isUser={false}
+                      message={response || "Thinking..."}
+                    />
+                  </div>
                 )}
               </div>
             </ScrollArea>
