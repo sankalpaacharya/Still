@@ -5,10 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createCategoryAction } from "@/features/categories/actions";
 import { getUserCategories } from "@/features/categories/query";
 import { getCssHslGradient } from "@/lib/utils";
+import { CategoryType } from "@/features/categories/components/category-form";
 
 export default async function Page() {
   const categories = await getUserCategories();
-  console.log(categories);
   return (
     <main className="p-6 space-y-6">
       <div className="space-y-1">
@@ -35,20 +35,40 @@ export default async function Page() {
         <TabsContent value="expense">
           <div className="grid grid-cols-3 gap-10">
             {categories.map((category) => (
-              <CategoryCard
+              <CategoryCardSheet
                 key={category.id}
-                name={category.name}
-                icon={category.icon}
-                currentAmount={4000}
-                budgetAmount={category.budget}
-                transactionCount={14}
-                trend={{ direction: "up", percentage: 60 }}
-                gradient={getCssHslGradient(
-                  category.color || "hsl(233,36%,26%)",
-                )}
-              />
+                defaultValues={{
+                  name: category.name,
+                  budget: category.budget,
+                  type: category.type,
+                  icon: category.icon,
+                  color: category.color,
+                }}
+                onSubmit={createCategoryAction}
+              >
+                <CategoryCard
+                  name={category.name}
+                  icon={category.icon}
+                  currentAmount={4000}
+                  budgetAmount={category.budget}
+                  transactionCount={14}
+                  trend={{ direction: "up", percentage: 60 }}
+                  gradient={getCssHslGradient(
+                    category.color || "hsl(233,36%,26%)",
+                  )}
+                />
+              </CategoryCardSheet>
             ))}
-            <CategoryCardSheet onSubmit={createCategoryAction}>
+            <CategoryCardSheet
+              defaultValues={{
+                name: "sankalpa",
+                budget: 100,
+                type: CategoryType.Expense,
+                icon: "a",
+                color: "sa",
+              }}
+              onSubmit={createCategoryAction}
+            >
               <button className="flex flex-col cursor-pointer items-center justify-center  p-6 border-2 border-dashed border-white/20 rounded-xl transition-all hover:bg-white/5">
                 <div className="p-4 rounded-full bg-white/10 mb-4">
                   <Plus className="h-6 w-6" />
@@ -72,7 +92,16 @@ export default async function Page() {
               trend={{ direction: "up", percentage: 60 }}
               gradient="from-blue-500 to-blue-400"
             />
-            <CategoryCardSheet onSubmit={createCategoryAction}>
+            <CategoryCardSheet
+              defaultValues={{
+                name: "sankalpa",
+                budget: 100,
+                type: CategoryType.Expense,
+                icon: "a",
+                color: "sa",
+              }}
+              onSubmit={createCategoryAction}
+            >
               <button className="flex flex-col cursor-pointer items-center justify-center  p-6 border-2 border-dashed border-white/20 rounded-xl transition-all hover:bg-white/5">
                 <div className="p-4 rounded-full bg-white/10 mb-4">
                   <Plus className="h-6 w-6" />

@@ -1,3 +1,4 @@
+"use client";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import {
@@ -48,6 +49,7 @@ type Props = {
   defaultValues: CategoryFormType;
   className?: string;
   type: string;
+  closeSheet: Dispatch<SetStateAction<boolean>>;
   setWatchValues: Dispatch<
     SetStateAction<Partial<CategoryFormType> | undefined>
   >;
@@ -57,6 +59,7 @@ export default function CategoryForm({
   onFormSubmit,
   defaultValues,
   className,
+  closeSheet,
   type,
   setWatchValues,
 }: Props) {
@@ -72,10 +75,11 @@ export default function CategoryForm({
   }, [watchedValues, setWatchValues]);
 
   const submitCategoryForm = async (data: CategoryFormType) => {
-    const result = onFormSubmit(data);
+    const result = await onFormSubmit(data);
     if (result.error) {
       return toast.error(result.message);
     }
+    closeSheet(false);
     return toast.success(result.message);
   };
 
@@ -134,9 +138,7 @@ export default function CategoryForm({
           )}
         />
 
-        {/* Color and Icon Row */}
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Color Picker */}
           <FormField
             control={form.control}
             name="color"

@@ -13,12 +13,22 @@ import { CategoryFormType } from "./category-form";
 import { getCssHslGradient } from "@/lib/utils";
 import { CategoryType } from "./category-form";
 
-type Props = { children: ReactNode; onSubmit: any };
+type Props = {
+  children: ReactNode;
+  onSubmit: any;
+  defaultValues: CategoryFormType;
+};
 
-export default function CategoryCardSheet({ children, onSubmit }: Props) {
+export default function CategoryCardSheet({
+  children,
+  onSubmit,
+  defaultValues,
+}: Props) {
   const [formValues, setFormValues] = useState<Partial<CategoryFormType>>();
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent
         className="w-full max-w-none h-screen overflow-auto pb-20"
@@ -40,17 +50,12 @@ export default function CategoryCardSheet({ children, onSubmit }: Props) {
             )}
           />
           <CategoryForm
+            closeSheet={setIsOpen}
             setWatchValues={setFormValues}
             onFormSubmit={onSubmit}
             className="w-full"
             type=""
-            defaultValues={{
-              name: "",
-              color: "hsl(233,36%,26%)",
-              budget: 0,
-              icon: "🇳🇵",
-              type: CategoryType.Expense,
-            }}
+            defaultValues={defaultValues}
           />
         </div>
       </SheetContent>
