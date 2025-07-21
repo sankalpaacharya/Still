@@ -20,6 +20,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { HslStringColorPicker } from "react-colorful";
 import { cn } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 export enum CategoryType {
   Income = "income",
@@ -43,7 +44,7 @@ const categoryFormSchema = z.object({
 export type CategoryFormType = z.infer<typeof categoryFormSchema>;
 
 type Props = {
-  onFormSubmit: (data: any) => void;
+  onFormSubmit: (data: any) => { error: boolean; message: string };
   defaultValues: CategoryFormType;
   className?: string;
   type: string;
@@ -70,10 +71,18 @@ export default function CategoryForm({
     setWatchValues(watchedValues);
   }, [watchedValues, setWatchValues]);
 
+  const submitCategoryForm = async (data: CategoryFormType) => {
+    const result = onFormSubmit(data);
+    if (result.error) {
+      return toast.error(result.message);
+    }
+    return toast.success(result.message);
+  };
+
   return (
     <Form {...form}>
       <form
-        onSubmit={(data) => onFormSubmit(data)}
+        onSubmit={form.handleSubmit((data) => submitCategoryForm(data))}
         className={cn("space-y-6 w-2xl", className)}
       >
         <FormField
@@ -167,12 +176,13 @@ export default function CategoryForm({
             control={form.control}
             name="icon"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="border">
                 <FormLabel>Icon</FormLabel>
                 <FormControl>
                   <div className="space-y-3">
                     <EmojiPicker
                       className="h-[200px] rounded-lg border"
+                      onClick={(e) => e.preventDefault()}
                       onEmojiSelect={({ emoji }) => field.onChange(emoji)}
                     >
                       <EmojiPickerSearch />
