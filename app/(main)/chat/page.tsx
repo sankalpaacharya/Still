@@ -6,7 +6,6 @@ import StreamingMessage from "@/features/chat/components/streaming-message";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ShootingStars } from "@/components/ui/shooting-stars";
 import { StarsBackground } from "@/components/ui/stars-background";
-import { streamChatAction } from "@/lib/chat-actions";
 
 type ChatHistory = {
   role: "user" | "ai";
@@ -55,31 +54,57 @@ export default function Page() {
     scrollToCurrentExchange();
 
     try {
-      const aiResponse = await streamChatAction(
-        message,
-        provider as "groq" | "openai" | "google",
-      );
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: message,
+          provider,
+        }),
+      });
 
-      let displayedText = "";
-      const words = aiResponse.split(" ");
-
-      for (let i = 0; i < words.length; i++) {
-        const word = words[i];
-        displayedText += word;
-
-        if (i < words.length - 1) {
-          displayedText += " ";
-        }
-
-        setResponse(displayedText);
-        responseRef.current = displayedText;
-
-        scrollToStreamingMessage();
-
-        await new Promise((resolve) => setTimeout(resolve, 50));
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.error || `HTTP error! status: ${response.status}`,
+        );
       }
 
-      setChatHistory((prev) => [...prev, { role: "ai", message: aiResponse }]);
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (!reader) {
+        throw new Error("No reader available");
+      }
+
+      let fullResponse = "";
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+
+          if (done) {
+            break;
+          }
+
+          const chunk = decoder.decode(value, { stream: true });
+          fullResponse += chunk;
+
+          setResponse(fullResponse);
+          responseRef.current = fullResponse;
+
+          scrollToStreamingMessage();
+        }
+      } finally {
+        reader.releaseLock();
+      }
+
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "ai", message: fullResponse },
+      ]);
       setIsStreaming(false);
     } catch (error) {
       console.error("Error sending message:", error);
