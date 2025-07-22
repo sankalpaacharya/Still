@@ -11,15 +11,16 @@ import CategoryForm from "./category-form";
 import CategoryCard from "./category-card";
 import { CategoryFormType } from "./category-form";
 import { getCssHslGradient } from "@/lib/utils";
-import { CategoryType } from "./category-form";
 
 type Props = {
   children: ReactNode;
   onSubmit: any;
   defaultValues: CategoryFormType;
+  id?: string;
 };
 
 export default function CategoryCardSheet({
+  id,
   children,
   onSubmit,
   defaultValues,
@@ -50,6 +51,7 @@ export default function CategoryCardSheet({
             )}
           />
           <CategoryForm
+            id={id}
             closeSheet={setIsOpen}
             setWatchValues={setFormValues}
             onFormSubmit={onSubmit}

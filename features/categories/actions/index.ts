@@ -26,3 +26,29 @@ export async function createCategoryAction(data: CategoryFormType) {
   revalidatePath("/categories");
   return { error: false, message: "category added!" };
 }
+
+export async function updateCategoryAction(id: string, data: CategoryFormType) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: true, message: "User not found" };
+  }
+
+  const { error: updateError } = await supabase
+    .from("category")
+    .update({ ...data })
+    .eq("id", id);
+
+  if (updateError) {
+    console.error(updateError.message);
+    return { error: true, message: updateError.message };
+  }
+
+  revalidatePath("/categories");
+
+  return { error: false, message: "Category updated successfully!" };
+}

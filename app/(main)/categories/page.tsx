@@ -2,7 +2,10 @@ import CategoryCard from "@/features/categories/components/category-card";
 import CategoryCardSheet from "@/features/categories/components/category-card-sheet";
 import { Plus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { createCategoryAction } from "@/features/categories/actions";
+import {
+  createCategoryAction,
+  updateCategoryAction,
+} from "@/features/categories/actions";
 import { getUserCategories } from "@/features/categories/query";
 import { getCssHslGradient } from "@/lib/utils";
 import { CategoryType } from "@/features/categories/components/category-form";
@@ -37,6 +40,7 @@ export default async function Page() {
             {categories.map((category) => (
               <CategoryCardSheet
                 key={category.id}
+                id={category.id}
                 defaultValues={{
                   name: category.name,
                   budget: category.budget,
@@ -44,7 +48,7 @@ export default async function Page() {
                   icon: category.icon,
                   color: category.color,
                 }}
-                onSubmit={createCategoryAction}
+                onSubmit={updateCategoryAction}
               >
                 <CategoryCard
                   name={category.name}

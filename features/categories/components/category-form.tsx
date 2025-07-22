@@ -48,6 +48,7 @@ type Props = {
   onFormSubmit: (data: any) => { error: boolean; message: string };
   defaultValues: CategoryFormType;
   className?: string;
+  id?: string;
   type: string;
   closeSheet: Dispatch<SetStateAction<boolean>>;
   setWatchValues: Dispatch<
@@ -59,6 +60,7 @@ export default function CategoryForm({
   onFormSubmit,
   defaultValues,
   className,
+  id,
   closeSheet,
   type,
   setWatchValues,
@@ -75,7 +77,7 @@ export default function CategoryForm({
   }, [watchedValues, setWatchValues]);
 
   const submitCategoryForm = async (data: CategoryFormType) => {
-    const result = await onFormSubmit(data);
+    const result = await onFormSubmit({ ...data, id });
     if (result.error) {
       return toast.error(result.message);
     }
