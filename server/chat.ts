@@ -1,5 +1,3 @@
-// import { system_prompt } from "./prompts/prompts";
-// import { system_prompt } from "./prompts/prompt2";
 import { system_prompt } from "./prompts/prompt3";
 import { buildImagePrompt } from "./prompts/image_prompt";
 import { getFullUserInfo, getCategories } from "./supabase/fetchData";

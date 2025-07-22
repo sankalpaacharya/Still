@@ -45,7 +45,7 @@ const categoryFormSchema = z.object({
 export type CategoryFormType = z.infer<typeof categoryFormSchema>;
 
 type Props = {
-  onFormSubmit: (data: any) => { error: boolean; message: string };
+  onFormSubmit: (data: any, id: string) => { error: boolean; message: string };
   defaultValues: CategoryFormType;
   className?: string;
   id?: string;
@@ -77,7 +77,7 @@ export default function CategoryForm({
   }, [watchedValues, setWatchValues]);
 
   const submitCategoryForm = async (data: CategoryFormType) => {
-    const result = await onFormSubmit({ ...data, id });
+    const result = await onFormSubmit(data, id || "");
     if (result.error) {
       return toast.error(result.message);
     }

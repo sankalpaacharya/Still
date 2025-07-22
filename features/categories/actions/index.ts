@@ -27,9 +27,8 @@ export async function createCategoryAction(data: CategoryFormType) {
   return { error: false, message: "category added!" };
 }
 
-export async function updateCategoryAction(id: string, data: CategoryFormType) {
+export async function updateCategoryAction(data: CategoryFormType, id: string) {
   const supabase = await createClient();
-
   const {
     data: { user },
   } = await supabase.auth.getUser();

@@ -8,7 +8,8 @@ export async function getUserCategories() {
   const { data, error } = await supabase
     .from("category")
     .select("*")
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: true });
   if (error) return [];
   return data;
 }
