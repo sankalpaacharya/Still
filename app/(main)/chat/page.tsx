@@ -52,7 +52,6 @@ export default function Page() {
     setChatHistory((prev) => [...prev, { role: "user", message }]);
 
     scrollToCurrentExchange();
-
     try {
       const response = await fetch("/api/chat", {
         method: "POST",

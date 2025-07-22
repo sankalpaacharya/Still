@@ -1,7 +1,7 @@
 "use client";
 import { uploadImageAction } from "@/lib/image-actions";
 
-export async function uploadImageSnap(file: File): Promise<any> {
+export async function uploadImageSnap(file: File) {
   try {
     const formData = new FormData();
     formData.append("image", file);

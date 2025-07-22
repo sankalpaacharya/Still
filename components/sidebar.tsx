@@ -6,11 +6,9 @@ import { hydrateBudgetStore } from "@/lib/zustand-sync";
 import {
   Home as HomeIcon,
   Menu,
-  DollarSign,
   User,
   Sparkles,
   LogOut,
-  CreditCard,
   BanknoteArrowDown,
   Layers,
   X,
@@ -34,11 +32,11 @@ const navItems: NavItem[] = [
     label: "Dashboard",
     href: "/dashboard",
   },
-  {
-    icon: DollarSign,
-    label: "Finance",
-    href: "/finance",
-  },
+  // {
+  //   icon: DollarSign,
+  //   label: "Finance",
+  //   href: "/finance",
+  // },
   {
     icon: Layers,
     label: "Categories",
@@ -55,7 +53,7 @@ const navItems: NavItem[] = [
     href: "/chat",
   },
 
-  { icon: CreditCard, label: "Account", href: "/account" },
+  // { icon: CreditCard, label: "Account", href: "/account" },
 ];
 
 interface User {

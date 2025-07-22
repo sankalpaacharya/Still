@@ -1,10 +1,14 @@
-"use client";
 import CategoryCard from "@/features/categories/components/category-card";
 import CategoryCardSheet from "@/features/categories/components/category-card-sheet";
 import { Plus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { createCategoryAction } from "@/features/categories/actions";
+import { getUserCategories } from "@/features/categories/query";
+import { getCssHslGradient } from "@/lib/utils";
 
-export default function Page() {
+export default async function Page() {
+  const categories = await getUserCategories();
+  console.log(categories);
   return (
     <main className="p-6 space-y-6">
       <div className="space-y-1">
@@ -30,16 +34,21 @@ export default function Page() {
         </TabsList>
         <TabsContent value="expense">
           <div className="grid grid-cols-3 gap-10">
-            <CategoryCard
-              name="Food & Dining"
-              icon="🍔"
-              currentAmount={1240}
-              budgetAmount={1800}
-              transactionCount={14}
-              trend={{ direction: "up", percentage: 60 }}
-              gradient="from-blue-500 to-blue-400"
-            />
-            <CategoryCardSheet>
+            {categories.map((category) => (
+              <CategoryCard
+                key={category.id}
+                name={category.name}
+                icon={category.icon}
+                currentAmount={4000}
+                budgetAmount={category.budget}
+                transactionCount={14}
+                trend={{ direction: "up", percentage: 60 }}
+                gradient={getCssHslGradient(
+                  category.color || "hsl(233,36%,26%)",
+                )}
+              />
+            ))}
+            <CategoryCardSheet onSubmit={createCategoryAction}>
               <button className="flex flex-col cursor-pointer items-center justify-center  p-6 border-2 border-dashed border-white/20 rounded-xl transition-all hover:bg-white/5">
                 <div className="p-4 rounded-full bg-white/10 mb-4">
                   <Plus className="h-6 w-6" />
@@ -63,7 +72,7 @@ export default function Page() {
               trend={{ direction: "up", percentage: 60 }}
               gradient="from-blue-500 to-blue-400"
             />
-            <CategoryCardSheet>
+            <CategoryCardSheet onSubmit={createCategoryAction}>
               <button className="flex flex-col cursor-pointer items-center justify-center  p-6 border-2 border-dashed border-white/20 rounded-xl transition-all hover:bg-white/5">
                 <div className="p-4 rounded-full bg-white/10 mb-4">
                   <Plus className="h-6 w-6" />
@@ -77,15 +86,6 @@ export default function Page() {
           </div>
         </TabsContent>
       </Tabs>
-      {/* <CategoryForm
-        onSubmit={(data) => console.log("this is the data", data)}
-        defaultValues={{
-          username: "",
-          color: "#265d98",
-          budget: 0,
-          icon: "🇳🇵",
-        }}
-      /> */}
     </main>
   );
 }

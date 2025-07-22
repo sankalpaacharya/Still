@@ -4,6 +4,7 @@ import { BicepsFlexed } from "lucide-react";
 import { Instrument_Serif } from "next/font/google";
 import TaskCard from "./taskcard";
 import MessageBubble from "./message-bubble";
+import Link from "next/link";
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument",
@@ -24,7 +25,7 @@ export default function Hero() {
           Your AI that tracks spending
           <br />
           <span className={`${instrumentSerif.className}`}>
-            and roasts your unnecessary expenses.
+            and fix your unnecessary expenses
           </span>
         </h2>
       </div>
@@ -50,10 +51,12 @@ export default function Hero() {
         className="absolute top-70 right-0 rotate-5 hidden lg:block"
       />
       <div className="space-y-2 flex flex-col items-center">
-        <Button className="cursor-pointer font-bold mt-5 py-6 bg-indigo-700 hover:bg-indigo-800 text-white">
-          <BicepsFlexed />
-          Try Still for free
-        </Button>
+        <Link href="/login">
+          <Button className="cursor-pointer font-bold mt-5 py-6 bg-indigo-700 hover:bg-indigo-800 text-white">
+            <BicepsFlexed />
+            Try Still for free
+          </Button>
+        </Link>
         <p className="text-gray-400 text-sm">used by 100k+ users</p>
         <div className="gradient-bg absolute top-[30rem]" />
       </div>

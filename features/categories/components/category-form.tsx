@@ -20,9 +20,15 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { HslStringColorPicker } from "react-colorful";
 import { cn } from "@/lib/utils";
+import toast from "react-hot-toast";
+
+export enum CategoryType {
+  Income = "income",
+  Expense = "expense",
+}
 
 const categoryFormSchema = z.object({
-  username: z.string().min(2, {
+  name: z.string().min(2, {
     message: "Username must be atleast 2 characters.",
   }),
   color: z.string().min(1, {
@@ -32,12 +38,13 @@ const categoryFormSchema = z.object({
   icon: z.string().min(1, {
     message: "Please pick an emoji.",
   }),
+  type: z.nativeEnum(CategoryType),
 });
 
 export type CategoryFormType = z.infer<typeof categoryFormSchema>;
 
 type Props = {
-  onSubmit: (data: any) => void;
+  onFormSubmit: (data: any) => { error: boolean; message: string };
   defaultValues: CategoryFormType;
   className?: string;
   type: string;
@@ -47,7 +54,7 @@ type Props = {
 };
 
 export default function CategoryForm({
-  onSubmit,
+  onFormSubmit,
   defaultValues,
   className,
   type,
@@ -64,12 +71,23 @@ export default function CategoryForm({
     setWatchValues(watchedValues);
   }, [watchedValues, setWatchValues]);
 
+  const submitCategoryForm = async (data: CategoryFormType) => {
+    const result = onFormSubmit(data);
+    if (result.error) {
+      return toast.error(result.message);
+    }
+    return toast.success(result.message);
+  };
+
   return (
     <Form {...form}>
-      <div className={cn("space-y-6 w-2xl", className)}>
+      <form
+        onSubmit={form.handleSubmit((data) => submitCategoryForm(data))}
+        className={cn("space-y-6 w-2xl", className)}
+      >
         <FormField
           control={form.control}
-          name="username"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category Name</FormLabel>
@@ -158,12 +176,13 @@ export default function CategoryForm({
             control={form.control}
             name="icon"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="border">
                 <FormLabel>Icon</FormLabel>
                 <FormControl>
                   <div className="space-y-3">
                     <EmojiPicker
                       className="h-[200px] rounded-lg border"
+                      onClick={(e) => e.preventDefault()}
                       onEmojiSelect={({ emoji }) => field.onChange(emoji)}
                     >
                       <EmojiPickerSearch />
@@ -188,14 +207,8 @@ export default function CategoryForm({
           />
         </div>
 
-        {/* Submit Button */}
-        <Button
-          onClick={form.handleSubmit((data) => onSubmit(data))}
-          className="w-full"
-        >
-          Submit
-        </Button>
-      </div>
+        <Button className="w-full">Submit</Button>
+      </form>
     </Form>
   );
 }
