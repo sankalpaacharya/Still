@@ -10,16 +10,6 @@ export interface CategoryGroup {
   categories: Category[];
 }
 
-export interface Transaction {
-  amount: number;
-  category: string;
-  category_group: string;
-  description: string;
-  type: string;
-  category_id: string;
-  account_id: string;
-}
-
 export interface Account {
   id: string;
   name: string;
@@ -74,41 +64,6 @@ export async function getCategories(): Promise<
   });
 
   return [result, response.data as CategoryGroup[]];
-}
-
-export async function storeFinance(data: string) {
-  try {
-    const parsed: Transaction = JSON.parse(data);
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-      return {
-        success: false,
-        message: "User not authenticated",
-      };
-    }
-
-    const response = await supabase.from("transactions").insert({
-      user_id: user.id,
-      created_at: new Date().toISOString(),
-      ...parsed,
-    });
-
-    return {
-      success: true,
-      message: `Successfully logged expense of ₹${parsed.amount} for ${parsed.description} in ${parsed.category} category.`,
-    };
-  } catch (e: any) {
-    return {
-      success: false,
-      message: `Failed to log expense: ${e.message}`,
-    };
-  }
 }
 
 export async function getFullUserInfo() {

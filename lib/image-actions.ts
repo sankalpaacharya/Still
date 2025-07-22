@@ -1,45 +1,6 @@
 "use server";
-import { chatWithStream, uploadSnapToAI } from "@/server/chat";
+import { uploadSnapToAI } from "@/server/chat";
 import { createClient } from "@/utils/supabase/server";
-
-export async function streamChatAction(
-  query: string,
-  provider: "groq" | "openai" | "google" = "groq",
-) {
-  try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-      throw new Error("Unauthorized");
-    }
-
-    const stream = await chatWithStream(provider, query);
-
-    return new Promise<string>((resolve, reject) => {
-      let fullResponse = "";
-
-      stream.on("data", (chunk) => {
-        fullResponse += chunk.toString();
-      });
-
-      stream.on("end", () => {
-        resolve(fullResponse);
-      });
-
-      stream.on("error", (error) => {
-        console.error("Stream error:", error);
-        reject(error);
-      });
-    });
-  } catch (error) {
-    console.error("Error in chat stream:", error);
-    throw error;
-  }
-}
 
 export async function uploadImageAction(formData: FormData) {
   try {

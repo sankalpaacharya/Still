@@ -2,21 +2,17 @@ import { Readable } from "stream";
 import OpenAI from "openai";
 import Groq from "groq-sdk";
 import { GoogleGenAI } from "@google/genai";
-import { storeFinance } from "../supabase/fetchData";
 
 interface chatGroqOrOpenAI {
   client: any;
   model: string;
   messages: any[];
-  tools: any[];
-  availableFunctions?: Record<string, Function>;
 }
 
 interface chatGoogle {
   client: GoogleGenAI;
   model: string;
   messages: any[];
-  config: any;
 }
 
 export function getLLMClientAndModel(provider: "groq" | "openai" | "google") {
@@ -85,50 +81,11 @@ export async function handleGroqOrOpenAIResponse({
   client,
   model,
   messages,
-  tools,
-  availableFunctions = {},
 }: chatGroqOrOpenAI): Promise<Readable> {
-  const response = await client.chat.completions.create({
-    model,
-    messages,
-    tools: tools,
-    tool_choice: "auto",
-    stream: false,
-  });
-  const responseMessage = response.choices[0].message;
-  const toolCalls = responseMessage.tool_calls;
-
-  if (toolCalls && toolCalls.length > 0) {
-    messages.push(responseMessage);
-
-    for (const toolCall of toolCalls) {
-      const functionName = toolCall.function.name;
-      const func = availableFunctions[functionName];
-      const args = JSON.parse(toolCall.function.arguments);
-
-      if (func) {
-        const result = await func(args.data);
-        messages.push({
-          tool_call_id: toolCall.id,
-          role: "tool",
-          name: functionName,
-          content: JSON.stringify(result),
-        });
-      }
-    }
-  } else {
-    return streamGroqOrOpenAI(
-      await client.chat.completions.create({
-        model,
-        messages,
-        stream: true,
-      }),
-    );
-  }
-
   const streamResponse = await client.chat.completions.create({
     model,
     messages,
+    max_completion_tokens: 1000,
     stream: true,
   });
 
@@ -139,50 +96,14 @@ export async function handleGoogleResponse({
   client,
   model,
   messages,
-  config,
 }: chatGoogle): Promise<Readable> {
-  const result = await client.models.generateContent({
+  const streamGenerator = await client.models.generateContentStream({
     model: model,
     contents: messages,
-    config: config,
+    config: {
+      maxOutputTokens: 1000,
+    },
   });
 
-  const toolCalls = result.functionCalls;
-
-  let function_response_parts: any[] = [];
-
-  if (toolCalls && toolCalls.length > 0) {
-    for (const toolCall of toolCalls) {
-      if (toolCall.name === "storeFinance") {
-        const args = toolCall.args as { data: string };
-        const response = await storeFinance(args.data);
-        function_response_parts.push({
-          functionResponse: {
-            name: toolCall.name,
-            response: { content: JSON.stringify(response) },
-          },
-        });
-      }
-    }
-
-    const finalStreamGenerator = await client.models.generateContentStream({
-      model: model,
-      contents: [
-        ...messages,
-        {
-          role: "model",
-          parts: function_response_parts,
-        },
-      ],
-    });
-
-    return streamGoogle(finalStreamGenerator);
-  } else {
-    const streamGenerator = await client.models.generateContentStream({
-      model: model,
-      contents: messages,
-    });
-
-    return streamGoogle(streamGenerator);
-  }
+  return streamGoogle(streamGenerator);
 }
