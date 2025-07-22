@@ -1,5 +1,5 @@
 "use client";
-import { uploadImageAction } from "@/lib/chat-actions";
+import { uploadImageAction } from "@/lib/image-actions";
 
 export async function uploadImageSnap(file: File) {
   try {

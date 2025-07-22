@@ -1,14 +1,11 @@
-import { system_prompt } from "./prompts/prompt2";
+// import { system_prompt } from "./prompts/prompts";
+// import { system_prompt } from "./prompts/prompt2";
+import { system_prompt } from "./prompts/prompt3";
 import { buildImagePrompt } from "./prompts/image_prompt";
-import {
-  getFullUserInfo,
-  storeFinance,
-  getCategories,
-} from "./supabase/fetchData";
+import { getFullUserInfo, getCategories } from "./supabase/fetchData";
 import Groq from "groq-sdk";
 import { GoogleGenAI } from "@google/genai";
 import { Readable } from "stream";
-import { FINANCE_TOOLS, FINANCE_TOOLS_GEMINI } from "./utils/tools";
 import {
   getLLMClientAndModel,
   handleGroqOrOpenAIResponse,
@@ -32,17 +29,11 @@ export async function chatWithStream(
     { role: "user", content: query },
   ];
 
-  const availableFunctions: Record<string, Function> = {
-    storeFinance: storeFinance,
-  };
-
   if (provider === "openai" || provider === "groq") {
     return await handleGroqOrOpenAIResponse({
       client,
       model,
       messages,
-      tools: FINANCE_TOOLS,
-      availableFunctions,
     });
   } else if (provider === "google") {
     const googleClient = client as GoogleGenAI;
@@ -52,16 +43,11 @@ export async function chatWithStream(
       parts: [{ text: msg.content }],
     }));
 
-    const config = {
-      tools: [{ functionDeclarations: [FINANCE_TOOLS_GEMINI] }],
-    };
-
     try {
       const result = await handleGoogleResponse({
         client: googleClient,
         model,
         messages: googleMessages,
-        config,
       });
       return result;
     } catch (error) {

@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
-import { Camera, RotateCcw } from "lucide-react";
+import { Camera, RotateCcw, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -19,7 +19,7 @@ import { AccountSelect } from "@/features/dashboard/components/account-select";
 import { dataURLtoBlob } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { createClient } from "@/utils/supabase/client";
-import { uploadImageSnap } from "@/lib/chat-utils";
+import { uploadImageSnap } from "@/lib/image-utils";
 
 type CategoryChange = {
   categoryID: string;
@@ -27,6 +27,7 @@ type CategoryChange = {
 
 export default function SnapUpload() {
   const webcamRef = useRef<Webcam>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<string | null>(null);
   const [hasCaptured, sethasCaptured] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -87,6 +88,47 @@ export default function SnapUpload() {
     }
   };
 
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size must be less than 10MB");
+      return;
+    }
+
+    setIsUploading(true);
+    sethasCaptured(true);
+
+    try {
+      const imageUrl = URL.createObjectURL(file);
+      setImage(imageUrl);
+
+      const data = await uploadImageSnap(file);
+
+      console.log("Upload successful:", data);
+      setAmount(data["amount"] || 0);
+      setName(data["title"] || "");
+      setIsLoading(false);
+      setCategory(data["category"]);
+      setCategoryGroup(data["categoryGroup"]);
+      setCategoryChange({ categoryID: data["categoryID"] });
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to upload image. Please try again.");
+      resetSnap();
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const resetSnap = () => {
     setImage(null);
     sethasCaptured(false);
@@ -96,6 +138,9 @@ export default function SnapUpload() {
     setAmount(0);
     setCategory("");
     setCategoryGroup("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleSave = async () => {
@@ -142,6 +187,14 @@ export default function SnapUpload() {
       <DialogContent className="max-w-2xl overflow-y-scroll max-h-screen">
         <DialogTitle className="">📷 Snap</DialogTitle>
 
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileUpload}
+          className="hidden"
+        />
+
         {image && (
           <div className="mt-4 bg-secondary p-3 rounded-lg flex gap-2">
             <img
@@ -175,7 +228,7 @@ export default function SnapUpload() {
           </div>
         )}
 
-        <DialogFooter className="!justify-center">
+        <DialogFooter className="!justify-center gap-2">
           {hasCaptured && !isUploading && (
             <Button onClick={resetSnap} className="gap-2" variant={"secondary"}>
               <RotateCcw className="w-4 h-4" />
@@ -183,14 +236,25 @@ export default function SnapUpload() {
             </Button>
           )}
           {!hasCaptured && (
-            <Button
-              onClick={capture}
-              className="gap-2"
-              disabled={isUploading || !user}
-            >
-              <Camera className="w-4 h-4" />
-              {isUploading ? "Processing..." : "Capture"}
-            </Button>
+            <>
+              <Button
+                onClick={capture}
+                className="gap-2"
+                disabled={isUploading || !user}
+              >
+                <Camera className="w-4 h-4" />
+                {isUploading ? "Processing..." : "Capture"}
+              </Button>
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                className="gap-2"
+                variant="outline"
+                disabled={isUploading || !user}
+              >
+                <Upload className="w-4 h-4" />
+                Upload
+              </Button>
+            </>
           )}
         </DialogFooter>
 
