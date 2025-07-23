@@ -4,7 +4,7 @@ type Props = {};
 
 export default function Page({}: Props) {
   return (
-    <div>
+    <div className="p-5 h-full">
       <TransactionForm />
     </div>
   );

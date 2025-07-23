@@ -205,7 +205,7 @@ const Pricing = () => {
         <div className="rounded-3xl p-8 border border-gray-800">
           <h2 className="text-xl font-medium mb-4">Monthly</h2>
           <div className="flex items-baseline mb-6">
-            <span className="text-5xl font-bold">$5</span>
+            <span className="text-5xl font-bold">₹5</span>
             <span className="text-gray-400">/month</span>
           </div>
           <p className="text-gray-300 mb-8">
@@ -234,7 +234,7 @@ const Pricing = () => {
         <div className="rounded-3xl p-8 border border-gray-800">
           <h2 className="text-xl font-medium mb-4">Annual</h2>
           <div className="flex items-baseline mb-6">
-            <span className="text-5xl font-bold">$2</span>
+            <span className="text-5xl font-bold">₹2</span>
             <span className="text-gray-400">/month</span>
           </div>
           <p className="text-gray-300 mb-8">

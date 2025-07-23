@@ -49,21 +49,21 @@ export function TargetCard({ title = "Select a category" }: TargetCardProps) {
     const { need, type } = currentTarget;
     if (currentTarget.type === "weekly") {
       return {
-        amount: `$${need}`,
+        amount: `₹${need}`,
         frequency: type,
         schedule: currentTarget.every || "No end date",
       };
     }
     if (currentTarget.type === "monthly") {
       return {
-        amount: `$${need}`,
+        amount: `₹${need}`,
         frequency: type,
         schedule: currentTarget.on || "No end date",
       };
     }
     if (currentTarget.type === "yearly") {
       return {
-        amount: `$${need}`,
+        amount: `₹${need}`,
         frequency: type,
         schedule: currentTarget.date || "No end date",
       };

@@ -32,22 +32,22 @@ export default async function ExpenseStats() {
       <div className="grid grid-cols-2 gap-3 md:hidden">
         <CompactStatCard
           title="💸 Total Balance"
-          value={`$${total}`}
+          value={`₹${total}`}
           icon={<CreditCard className="w-4 h-4" />}
         />
         <CompactStatCard
           title="📈 Daily Average Spending"
-          value={`$${avgDailySpending}`}
+          value={`₹${avgDailySpending}`}
           icon={<Flame className="w-4 h-4" />}
         />
         <CompactStatCard
           title="Income"
-          value={`$${totalIncome.amount}`}
+          value={`₹${totalIncome.amount}`}
           icon={<Landmark className="w-4 h-4" />}
         />
         <CompactStatCard
           title="Expense"
-          value={`$${totalExpense.amount}`}
+          value={`₹${totalExpense.amount}`}
           icon={<HandCoins className="w-4 h-4" />}
         />
       </div>
@@ -55,28 +55,28 @@ export default async function ExpenseStats() {
       <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="💸 Total Balance"
-          value={`$${total}`}
+          value={`₹${total}`}
           change="12.3%"
           isPositive={false}
           icon={<CreditCard />}
         />
         <StatCard
           title="📈 Daily Average Spending"
-          value={`$${avgDailySpending}`}
+          value={`₹${avgDailySpending}`}
           isPositive={false}
           change="12.3%"
           icon={<Flame />}
         />
         <StatCard
           title="Income"
-          value={`$${totalIncome.amount}`}
+          value={`₹${totalIncome.amount}`}
           change="12.3%"
           isPositive={false}
           icon={<Landmark />}
         />
         <StatCard
           title="Expense"
-          value={`$${totalExpense.amount}`}
+          value={`₹${totalExpense.amount}`}
           change="12.3%"
           isPositive={false}
           icon={<HandCoins />}

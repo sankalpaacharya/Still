@@ -42,7 +42,7 @@ export function categoryNeedText({
 
   if (target.type === "monthly") {
     if (target.need > assign) {
-      return `$${target.need - assign} more needed by the ${target.on}th`;
+      return `₹${target.need - assign} more needed by the ${target.on}th`;
     }
     return "";
   }
@@ -52,7 +52,7 @@ export function categoryNeedText({
       if (assign === monthlyAmount) {
         return "on track";
       }
-      return `$${(monthlyAmount - assign).toFixed(2)} more needed this month`;
+      return `₹${(monthlyAmount - assign).toFixed(2)} more needed this month`;
     }
   }
 
@@ -64,7 +64,7 @@ export function categoryNeedText({
       date.getMonth(),
       dayNumber || 0,
     );
-    return `$${numberofWeeks * target.need - assign} need more this month`;
+    return `₹${numberofWeeks * target.need - assign} need more this month`;
   }
   return "";
 }
