@@ -31,6 +31,9 @@ export async function uploadImageAction(formData: FormData) {
 
     try {
       const parsed = JSON.parse(result);
+      if ("error" in parsed) {
+        throw new Error(parsed.error);
+      }
       return parsed;
     } catch (parseError) {
       console.error("JSON parsing error:", parseError);
