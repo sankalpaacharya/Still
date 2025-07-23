@@ -1,4 +1,4 @@
-import TransactionForm from "@/features/cashflow/components/transaction-form";
+import TransactionForm from "@/features/cashflow/components/expense-form";
 
 type Props = {};
 

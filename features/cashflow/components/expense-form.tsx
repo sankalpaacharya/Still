@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function TransactionForm() {
+export default function ExpenseForm() {
   const form = useForm({
     defaultValues: {
       type: "",
@@ -23,6 +23,7 @@ export default function TransactionForm() {
       category: "",
     },
   });
+
   const [step, setStep] = useState(1);
 
   const totalSteps = 3;
@@ -113,11 +114,7 @@ export default function TransactionForm() {
                       key={cat}
                       variant={field.value === cat ? "default" : "secondary"}
                       onClick={() => field.onChange(cat)}
-                      className={`${
-                        field.value === cat
-                          ? "bg-white/20 text-white"
-                          : "bg-white/10 text-white/80 hover:bg-white/20"
-                      } py-6 transition-all duration-200`}
+                      className={`py-6 transition-all duration-200`}
                     >
                       {cat}
                     </Button>
