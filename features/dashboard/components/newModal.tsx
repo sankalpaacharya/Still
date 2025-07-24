@@ -1,4 +1,3 @@
-"use client";
 import ExpenseSheet from "@/features/cashflow/components/expense-sheet";
 import { Button } from "@/components/ui/button";
 

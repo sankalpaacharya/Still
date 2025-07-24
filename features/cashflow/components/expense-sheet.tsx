@@ -1,25 +1,24 @@
+"use client";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import ExpenseForm from "./expense-form";
 
 export default function ExpenseSheet({ children }: { children: ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle></SheetTitle>
         </SheetHeader>
-        <ExpenseForm />
+        <ExpenseForm onSubmit={() => setIsOpen(false)} />
       </SheetContent>
     </Sheet>
   );
