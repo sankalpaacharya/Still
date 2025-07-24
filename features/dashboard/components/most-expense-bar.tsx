@@ -8,7 +8,7 @@ import { getCategoryEmoji } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
 type CategoryItem = {
-  category: string;
+  name: string;
   amount: number;
   assigned: number;
 };
@@ -46,13 +46,13 @@ export default function MostExpenseContainer({ data }: Props) {
                   whileHover={{ rotate: 20 }}
                   className="flex items-center justify-center w-8 h-8 rounded-md bg-muted text-lg cursor-pointer"
                 >
-                  {getCategoryEmoji(item.category)}
+                  {getCategoryEmoji(item.name)}
                 </motion.div>
 
                 <div className="flex-1">
                   <div className="flex justify-between items-center">
                     <p className="text-sm font-medium capitalize">
-                      {item.category}
+                      {item.name}
                     </p>
                     <p className="text-sm font-semibold">
                       ${item.amount.toLocaleString("en-IN")}

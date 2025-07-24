@@ -110,24 +110,32 @@ export async function mostSpentCategoryWithBudget() {
     .padStart(2, "0")}-01`;
 
   const { data: transactions, error } = await supabase
-    .from("transactions")
-    .select("category, category_id, amount")
+    .from("transaction")
+    .select("category_id, amount")
     .eq("user_id", user.id)
-    .eq("type", "expense")
     .gte("created_at", startOfMonth.toISOString())
     .lte("created_at", endOfMonth.toISOString());
   if (error || !transactions) return [];
 
+  const { data: category } = await supabase
+    .from("category")
+    .select("id, name")
+    .in(
+      "id",
+      transactions.map((tx) => tx.category_id),
+    );
+  if (!category) return [];
+
   const grouped: Record<
     string,
-    { category: string; category_id: string; amount: number }
+    { name: string; category_id: string; amount: number }
   > = {};
 
   for (const tx of transactions) {
     const id = tx.category_id;
     if (!grouped[id]) {
       grouped[id] = {
-        category: tx.category,
+        name: category.find((c) => c.id === id)?.name || "Unknown",
         category_id: tx.category_id,
         amount: 0,
       };
@@ -142,16 +150,22 @@ export async function mostSpentCategoryWithBudget() {
   const categoryIds = top5.map((c) => c.category_id);
   console.log("categoryIDS", categoryIds);
   const { data: monthsData } = await supabase
-    .from("category_months")
-    .select("category_id, assign")
-    .in("category_id", categoryIds)
-    .eq("month", monthKey);
+    .from("category")
+    .select("id, budget")
+    .in("id", categoryIds);
+
   console.log("month key", monthKey);
+
   const assignMap: Record<string, number> = {};
   for (const item of monthsData || []) {
-    assignMap[item.category_id] = item.assign ?? 0;
+    assignMap[item.id] = item.budget ?? 0;
   }
-
+  console.log(
+    top5.map((item) => ({
+      ...item,
+      assigned: assignMap[item.category_id] || 0,
+    })),
+  );
   return top5.map((item) => ({
     ...item,
     assigned: assignMap[item.category_id] || 0,
@@ -169,7 +183,7 @@ export async function getRecentTransactions() {
   if (!user || userError) return [];
 
   const { data, error } = await supabase
-    .from("transactions")
+    .from("transaction")
     .select("*")
     .eq("user_id", user.id)
     .limit(5);
@@ -190,10 +204,9 @@ export async function getTotalSpendingThisMonth() {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
   const { data, error } = await supabase
-    .from("transactions")
+    .from("transaction")
     .select("amount")
     .eq("user_id", user.id)
-    .eq("type", "expense")
     .gte("created_at", startOfMonth.toISOString())
     .lte("created_at", now.toISOString());
 
@@ -216,10 +229,10 @@ export async function getTransactionOfMonth() {
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
   const { data } = await supabase
-    .from("transactions")
+    .from("transaction")
     .select("amount, created_at")
     .eq("user_id", user.id)
-    .eq("type", "expense")
+
     .gte("created_at", startOfMonth.toISOString())
     .lte("created_at", endOfMonth.toISOString());
 

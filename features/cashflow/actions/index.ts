@@ -14,22 +14,35 @@ export async function getExpenses(): Promise<GroupExpense | {}> {
   if (!user) return { error: true, message: "user not found" };
 
   const { data, error } = await supabase
-    .from("transactions")
+    .from("transaction")
     .select("*")
     .order("created_at", { ascending: true })
-    .eq("user_id", user.id);
+    .eq("user_id", "9468f9b3-5d78-44b4-b714-e1aaff0195ef");
   if (!data) return { error: true, message: error.message };
+
+  const { data: category } = await supabase
+    .from("category")
+    .select("id, name, icon, budget, type")
+    .eq("user_id", "9468f9b3-5d78-44b4-b714-e1aaff0195ef");
+  if (!category) return { error: true, message: "Failed to fetch categories" };
 
   const expenseData: any = {};
 
   for (let expense of data) {
-    const group = expense["category_group"];
-    if (expense["category_group"] in expenseData) {
-      expenseData[group].push(expense);
+    const group = expense["category_id"];
+    expense.category =
+      category.find((cat) => cat.id === group)?.name || "Uncategorized";
+    expense.icon =
+      category.find((cat) => cat.id === group)?.icon || "default-icon";
+    expense.budget = category.find((cat) => cat.id === group)?.budget || 0;
+    expense.type = category.find((cat) => cat.id === group)?.type || "expense";
+    if (expense.category in expenseData) {
+      expenseData[expense.category].push(expense);
     } else {
-      expenseData[group] = [expense];
+      expenseData[expense.category] = [expense];
     }
   }
+
   return expenseData;
 }
 
