@@ -83,7 +83,6 @@ export async function updateExpenseAction(data: any) {
       return { error: true, message: "Failed to fetch old account details" };
     }
 
-    // Restore the old account balance (add back the old expense amount)
     const { error: revertError } = await supabase
       .from("accounts")
       .update({
@@ -98,7 +97,6 @@ export async function updateExpenseAction(data: any) {
       };
     }
 
-    // Now fetch the new account and check if it has sufficient balance
     const { data: newAccount, error: newAccountError } = await supabase
       .from("accounts")
       .select("amount")
@@ -106,7 +104,6 @@ export async function updateExpenseAction(data: any) {
       .single();
 
     if (newAccountError || !newAccount) {
-      // If we can't fetch new account, we need to revert the old account change
       await supabase
         .from("accounts")
         .update({
@@ -120,7 +117,6 @@ export async function updateExpenseAction(data: any) {
     const newBalance = newAccount.amount - data.amount;
 
     if (newBalance < 0) {
-      // Revert the old account balance change before returning error
       await supabase
         .from("accounts")
         .update({
@@ -134,7 +130,6 @@ export async function updateExpenseAction(data: any) {
       };
     }
 
-    // Update the new account balance
     const { error: updateNewAccountError } = await supabase
       .from("accounts")
       .update({
@@ -143,7 +138,6 @@ export async function updateExpenseAction(data: any) {
       .eq("id", data.accountID);
 
     if (updateNewAccountError) {
-      // Revert the old account balance change
       await supabase
         .from("accounts")
         .update({
@@ -158,7 +152,6 @@ export async function updateExpenseAction(data: any) {
     }
   }
 
-  // Finally, update the expense
   const { error: updateExpenseError } = await supabase
     .from("transactions")
     .update({
@@ -206,4 +199,25 @@ export async function getTotalAmountByType(type: string) {
     error: false,
     amount,
   };
+}
+
+export async function addExpenseAction(data: any) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { error: true, message: "User not found" };
+
+  const { error } = await supabase
+    .from("transaction")
+    .insert({
+      user_id: user.id,
+      category_id: data.category,
+      amount: data.amount,
+    });
+
+  if (error) return { error: true, message: error.message };
+
+  return { error: false, message: "expense added successfully" };
 }

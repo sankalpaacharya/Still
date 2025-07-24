@@ -51,3 +51,17 @@ export async function updateCategoryAction(data: CategoryFormType, id: string) {
 
   return { error: false, message: "Category updated successfully!" };
 }
+
+export async function getAllCategories() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+  const { data, error } = await supabase
+    .from("category")
+    .select("*")
+    .eq("user_id", user.id);
+  if (error) return [];
+  return data;
+}

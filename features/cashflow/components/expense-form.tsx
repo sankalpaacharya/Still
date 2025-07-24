@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Form,
   FormField,
@@ -14,15 +14,35 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { addExpenseAction } from "../actions";
+import { getAllCategories } from "@/features/categories/actions";
+import toast from "react-hot-toast";
 
-export default function TransactionForm() {
+export interface Category {
+  id: string;
+  name: string;
+  icon?: string;
+  color?: string;
+  user_id: string;
+}
+
+export default function ExpenseForm({ onSubmit }: { onSubmit: () => any }) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const cats = await getAllCategories();
+      setCategories(cats);
+    };
+    fetchCategories();
+  }, []);
   const form = useForm({
     defaultValues: {
-      type: "",
+      amount: "",
       description: "",
       category: "",
     },
   });
+
   const [step, setStep] = useState(1);
 
   const totalSteps = 3;
@@ -33,8 +53,8 @@ export default function TransactionForm() {
         return (
           <FormField
             control={form.control}
-            name="type"
-            rules={{ maxLength: 5, required: "Amount is required" }}
+            name="amount"
+            rules={{ required: "Amount is required" }}
             render={({ field }) => (
               <FormItem className="flex flex-col items-center space-y-4">
                 <div className="flex items-center space-x-3">
@@ -54,7 +74,22 @@ export default function TransactionForm() {
                           field.onChange(value);
                         }
                       }}
-                      className="bg-transparent w-[200px] text-4xl font-bold text-white text-center border-b-2 border-white/30 focus:border-white/50 transition-colors duration-200 focus:outline-none focus:ring-0 placeholder:text-white/30"
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === "Enter" &&
+                          field.value &&
+                          field.value.length > 0
+                        ) {
+                          handleNext();
+                        }
+                      }}
+                      style={{
+                        fontSize: "3rem",
+                        height: "auto",
+                        backgroundColor: "transparent",
+                      }}
+                      autoFocus
+                      className="bg-transparent w-[200px] text-4xl font-bold text-white text-center border-none focus:outline-none focus:ring-0 placeholder:text-white/30"
                     />
                   </FormControl>
                 </div>
@@ -69,7 +104,7 @@ export default function TransactionForm() {
           <FormField
             control={form.control}
             name="description"
-            rules={{ maxLength: 50, required: "Description is required" }}
+            rules={{ required: "Description is required" }}
             render={({ field }) => (
               <FormItem className="w-full max-w-md space-y-3">
                 <FormLabel className="text-white text-lg font-medium">
@@ -77,8 +112,18 @@ export default function TransactionForm() {
                 </FormLabel>
                 <FormControl>
                   <Input
+                    autoFocus
                     placeholder="e.g. Coffee at Starbucks"
                     {...field}
+                    onKeyDown={(e) => {
+                      if (
+                        e.key === "Enter" &&
+                        field.value &&
+                        field.value.length > 0
+                      ) {
+                        handleNext();
+                      }
+                    }}
                     className="bg-white/5 border-white/10 text-white placeholder-white/40 rounded-md py-3 transition-all duration-200 focus:ring-2 focus:ring-white/30 focus:border-white/30"
                   />
                 </FormControl>
@@ -103,23 +148,14 @@ export default function TransactionForm() {
                   Category
                 </FormLabel>
                 <div className="grid grid-cols-2 gap-3">
-                  {[
-                    "Transportation",
-                    "Food & Dining",
-                    "Bottle",
-                    "Entertainment",
-                  ].map((cat) => (
+                  {categories.map((cat) => (
                     <Button
-                      key={cat}
-                      variant={field.value === cat ? "default" : "secondary"}
-                      onClick={() => field.onChange(cat)}
-                      className={`${
-                        field.value === cat
-                          ? "bg-white/20 text-white"
-                          : "bg-white/10 text-white/80 hover:bg-white/20"
-                      } py-6 transition-all duration-200`}
+                      key={cat.id}
+                      variant={field.value === cat.id ? "default" : "secondary"}
+                      onClick={() => field.onChange(cat.id)}
+                      className={`py-6 transition-all duration-200`}
                     >
-                      {cat}
+                      {cat.name}
                     </Button>
                   ))}
                 </div>
@@ -137,14 +173,37 @@ export default function TransactionForm() {
     }
   }
 
-  const handleNext = () => {
+  const validateCurrentStep = () => {
+    const values = form.getValues();
+
+    switch (step) {
+      case 1:
+        return values.amount && values.amount.length > 0;
+      case 2:
+        return values.description && values.description.length > 0;
+      case 3:
+        return values.category && values.category.length > 0;
+      default:
+        return false;
+    }
+  };
+
+  const handleNext = async () => {
     if (step < totalSteps) {
-      form.trigger().then((isValid) => {
-        if (isValid) setStep((prev) => prev + 1);
-      });
+      if (validateCurrentStep()) {
+        setStep((prev) => prev + 1);
+      } else {
+        const currentField =
+          step === 1 ? "amount" : step === 2 ? "description" : "category";
+        form.trigger(currentField);
+      }
     } else {
-      form.handleSubmit((data) => {
-        console.log("Form submitted:", data);
+      form.handleSubmit(async (data: any) => {
+        const response = await addExpenseAction(data);
+        if (response.error) toast.error(response.message);
+        if (!response.error) toast.success(response.message);
+
+        onSubmit();
         form.reset();
         setStep(1);
       })();
