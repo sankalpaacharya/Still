@@ -232,7 +232,6 @@ export async function getTransactionOfMonth() {
     .from("transaction")
     .select("amount, created_at")
     .eq("user_id", user.id)
-
     .gte("created_at", startOfMonth.toISOString())
     .lte("created_at", endOfMonth.toISOString());
 

@@ -17,13 +17,13 @@ export async function getExpenses(): Promise<GroupExpense | {}> {
     .from("transaction")
     .select("*")
     .order("created_at", { ascending: true })
-    .eq("user_id", "9468f9b3-5d78-44b4-b714-e1aaff0195ef");
+    .eq("user_id", user.id);
   if (!data) return { error: true, message: error.message };
 
   const { data: category } = await supabase
     .from("category")
     .select("id, name, icon, budget, type")
-    .eq("user_id", "9468f9b3-5d78-44b4-b714-e1aaff0195ef");
+    .eq("user_id", user.id);
   if (!category) return { error: true, message: "Failed to fetch categories" };
 
   const expenseData: any = {};
@@ -173,7 +173,7 @@ export async function updateExpenseAction(data: any) {
   return { error: false, message: "Expense updated successfully" };
 }
 
-export async function getTotalAmountByType(type: string) {
+export async function getTotalAmountByType(type: "income" | "expense") {
   const supabase = await createClient();
 
   const {
@@ -182,18 +182,35 @@ export async function getTotalAmountByType(type: string) {
 
   if (!user) return { error: true, message: "User not found" };
 
-  const { data, error } = await supabase
-    .from("transactions")
+  const { data: category } = await supabase
+    .from("category")
     .select("*")
     .eq("user_id", user.id)
     .eq("type", type);
+
+  if (!category) return { error: true, message: "Failed to fetch categories" };
+
+  const categoryIds = category.map((cat) => cat.id);
+
+  const { data, error } = await supabase
+    .from("transaction")
+    .select("*")
+    .eq("user_id", user.id)
+    .in("category_id", categoryIds);
 
   if (error) {
     return { error: true, message: error.message };
   }
 
+  if (!data || data.length === 0) {
+    return { error: false, amount: 0 };
+  }
+  console.log("filterData", data);
+
   const amount =
     data?.reduce((acc, transaction) => acc + transaction.amount, 0) ?? 0;
+
+  console.log("amount", amount);
 
   return {
     error: false,
@@ -209,13 +226,11 @@ export async function addExpenseAction(data: any) {
 
   if (!user) return { error: true, message: "User not found" };
 
-  const { error } = await supabase
-    .from("transaction")
-    .insert({
-      user_id: user.id,
-      category_id: data.category,
-      amount: data.amount,
-    });
+  const { error } = await supabase.from("transaction").insert({
+    user_id: user.id,
+    category_id: data.category,
+    amount: data.amount,
+  });
 
   if (error) return { error: true, message: error.message };
 

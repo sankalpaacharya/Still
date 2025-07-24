@@ -23,17 +23,26 @@ export const TransactionCard = async () => {
         </Link>
       </CardHeader>
       <CardContent className="space-y-2">
-        {transactions.map((tx) => (
-          <TransactionItem
-            key={tx.id}
-            emoji={getCategoryEmoji(tx.category)}
-            title={tx.description}
-            category={tx.category}
-            timeAgo={timeSince(tx.created_at)}
-            amount={tx.amount}
-            type={tx.type}
-          />
-        ))}
+        {transactions.length > 0 ? (
+          transactions.map((tx) => (
+            <TransactionItem
+              key={tx.id}
+              emoji={getCategoryEmoji(tx.category)}
+              title={tx.description}
+              category={tx.category}
+              timeAgo={timeSince(tx.created_at)}
+              amount={tx.amount}
+              type={tx.type}
+            />
+          ))
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            <p className="text-sm">No recent transactions</p>
+            <p className="text-xs mt-1">
+              Your transactions will appear here once you start spending
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
