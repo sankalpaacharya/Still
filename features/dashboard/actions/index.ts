@@ -16,7 +16,7 @@ type Expense = {
   accountID: string;
 };
 
-type Category = {
+export type Category = {
   id: string;
   name: string;
   userId: string;
@@ -266,8 +266,8 @@ export async function getCategories() {
 
   const { data, error } = await supabase
     .from("category")
-    .select("*")
-    .eq("user_id", user.id);
+    .select("name")
+    .eq("user_id", "9468f9b3-5d78-44b4-b714-e1aaff0195ef");
   if (error) return [];
 
   return data as Category[];

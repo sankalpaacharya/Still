@@ -1,6 +1,6 @@
 import { system_prompt } from "./prompts/prompt3";
 import { buildImagePrompt } from "./prompts/image_prompt";
-import { getFullUserInfo, getCategories } from "./supabase/fetchData";
+import { getFullUserInfo } from "../features/chat/actions/index";
 import Groq from "groq-sdk";
 import { GoogleGenAI } from "@google/genai";
 import { Readable } from "stream";
@@ -9,6 +9,7 @@ import {
   handleGroqOrOpenAIResponse,
   handleGoogleResponse,
 } from "./service/llm_service";
+import { getCategories } from "@/features/dashboard/actions/index";
 
 export async function chatWithStream(
   provider: "groq" | "openai" | "google",
@@ -16,7 +17,7 @@ export async function chatWithStream(
 ): Promise<Readable> {
   const { client, model } = getLLMClientAndModel(provider);
   const financeData = await getFullUserInfo();
-
+  console.log("Finance Data:", financeData);
   const prompt = system_prompt({
     finance_data: JSON.stringify(financeData),
     query,
