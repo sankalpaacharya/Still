@@ -1,5 +1,5 @@
 "use client";
-import { uploadImageAction } from "@/lib/image-actions";
+import { uploadImageAction } from ".";
 
 export async function uploadImageSnap(file: File) {
   try {

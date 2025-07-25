@@ -2,6 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getDaysInMonth, getDay } from "date-fns";
+import { uploadSnapToAI } from "@/server/chat";
 
 type Expense = {
   categoryGroup: string;
@@ -13,6 +14,12 @@ type Expense = {
   type: string;
   categoryId: string;
   accountID: string;
+};
+
+type Category = {
+  id: string;
+  name: string;
+  userId: string;
 };
 
 export async function addExpenseAction(data: Expense) {
@@ -247,4 +254,64 @@ export async function getTransactionOfMonth() {
   });
 
   return spentInDay;
+}
+
+export async function getCategories() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (!user || userError) return [];
+
+  const { data, error } = await supabase
+    .from("category")
+    .select("*")
+    .eq("user_id", user.id);
+  if (error) return [];
+
+  return data as Category[];
+}
+
+export async function uploadImageAction(formData: FormData) {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      throw new Error("Unauthorized");
+    }
+
+    const imageFile = formData.get("image") as File;
+
+    if (!imageFile) {
+      throw new Error("No image provided");
+    }
+
+    if (!["image/jpeg", "image/png"].includes(imageFile.type)) {
+      throw new Error("Invalid image format. Only JPEG and PNG are supported.");
+    }
+
+    const result = await uploadSnapToAI(imageFile);
+    if (!result) {
+      throw new Error("AI parsing failed");
+    }
+
+    try {
+      const parsed = JSON.parse(result);
+      if ("error" in parsed) {
+        throw new Error(parsed.error);
+      }
+      return parsed;
+    } catch (parseError) {
+      console.error("JSON parsing error:", parseError);
+      throw new Error("Invalid AI response format");
+    }
+  } catch (error) {
+    console.error("Upload error:", error);
+    throw error;
+  }
 }
