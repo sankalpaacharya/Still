@@ -8,7 +8,7 @@ import { getCategoryEmoji } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
 type CategoryItem = {
-  category: string;
+  name: string;
   amount: number;
   assigned: number;
 };
@@ -27,55 +27,64 @@ export default function MostExpenseContainer({ data }: Props) {
       </CardHeader>
 
       <CardContent className="space-y-5">
-        {data.map((item, index) => {
-          const percentage =
-            item.assigned > 0 ? (item.amount / item.assigned) * 100 : 0;
-          const label =
-            item.assigned === 0
-              ? "Unassigned"
-              : percentage > 100
-                ? "Overspent"
-                : percentage > 80
-                  ? "Near Budget"
-                  : "Under Budget";
+        {data.length > 0 ? (
+          data.map((item, index) => {
+            const percentage =
+              item.assigned > 0 ? (item.amount / item.assigned) * 100 : 0;
+            const label =
+              item.assigned === 0
+                ? "Unassigned"
+                : percentage > 100
+                  ? "Overspent"
+                  : percentage > 80
+                    ? "Near Budget"
+                    : "Under Budget";
 
-          return (
-            <div key={index} className="space-y-1">
-              <div className="flex items-center gap-3">
-                <motion.div
-                  whileHover={{ rotate: 20 }}
-                  className="flex items-center justify-center w-8 h-8 rounded-md bg-muted text-lg cursor-pointer"
-                >
-                  {getCategoryEmoji(item.category)}
-                </motion.div>
+            return (
+              <div key={index} className="space-y-1">
+                <div className="flex items-center gap-3">
+                  <motion.div
+                    whileHover={{ rotate: 20 }}
+                    className="flex items-center justify-center w-8 h-8 rounded-md bg-muted text-lg cursor-pointer"
+                  >
+                    {getCategoryEmoji(item.name)}
+                  </motion.div>
 
-                <div className="flex-1">
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm font-medium capitalize">
-                      {item.category}
-                    </p>
-                    <p className="text-sm font-semibold">
-                      ${item.amount.toLocaleString("en-IN")}
-                    </p>
-                  </div>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center">
+                      <p className="text-sm font-medium capitalize">
+                        {item.name}
+                      </p>
+                      <p className="text-sm font-semibold">
+                        ${item.amount.toLocaleString("en-IN")}
+                      </p>
+                    </div>
 
-                  <div className="flex justify-between items-center text-xs text-muted-foreground">
-                    <span>
-                      {item.assigned === 0
-                        ? "No Budget Assigned"
-                        : `${label} • ${Math.round(percentage)}% used`}
-                    </span>
-                    <span className="text-muted-foreground">
-                      Budget: ${item.assigned.toLocaleString("en-IN")}
-                    </span>
+                    <div className="flex justify-between items-center text-xs text-muted-foreground">
+                      <span>
+                        {item.assigned === 0
+                          ? "No Budget Assigned"
+                          : `${label} • ${Math.round(percentage)}% used`}
+                      </span>
+                      <span className="text-muted-foreground">
+                        Budget: ${item.assigned.toLocaleString("en-IN")}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <Progress value={percentage} className={cn("h-1")} />
-            </div>
-          );
-        })}
+                <Progress value={percentage} className={cn("h-1")} />
+              </div>
+            );
+          })
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            <p className="text-sm">No spending data</p>
+            <p className="text-xs mt-1">
+              Start spending in different categories to see your breakdown here
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -14,22 +14,37 @@ export async function getExpenses(): Promise<GroupExpense | {}> {
   if (!user) return { error: true, message: "user not found" };
 
   const { data, error } = await supabase
-    .from("transactions")
+    .from("transaction")
     .select("*")
     .order("created_at", { ascending: true })
     .eq("user_id", user.id);
   if (!data) return { error: true, message: error.message };
 
+  const { data: categories } = await supabase
+    .from("category")
+    .select("id, name, icon, budget, type")
+    .eq("user_id", user.id);
+  if (!categories)
+    return { error: true, message: "Failed to fetch categories" };
+
+  const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
+
   const expenseData: any = {};
 
   for (let expense of data) {
-    const group = expense["category_group"];
-    if (expense["category_group"] in expenseData) {
-      expenseData[group].push(expense);
+    const group = expense["category_id"];
+    const categoryInfo = categoryMap.get(group);
+    expense.category = categoryInfo?.name || "Uncategorized";
+    expense.icon = categoryInfo?.icon || "default-icon";
+    expense.budget = categoryInfo?.budget || 0;
+    expense.type = categoryInfo?.type || "expense";
+    if (expense.category in expenseData) {
+      expenseData[expense.category].push(expense);
     } else {
-      expenseData[group] = [expense];
+      expenseData[expense.category] = [expense];
     }
   }
+
   return expenseData;
 }
 
@@ -160,7 +175,7 @@ export async function updateExpenseAction(data: any) {
   return { error: false, message: "Expense updated successfully" };
 }
 
-export async function getTotalAmountByType(type: string) {
+export async function getTotalAmountByType(type: "income" | "expense") {
   const supabase = await createClient();
 
   const {
@@ -169,18 +184,35 @@ export async function getTotalAmountByType(type: string) {
 
   if (!user) return { error: true, message: "User not found" };
 
-  const { data, error } = await supabase
-    .from("transactions")
+  const { data: category } = await supabase
+    .from("category")
     .select("*")
     .eq("user_id", user.id)
     .eq("type", type);
+
+  if (!category) return { error: true, message: "Failed to fetch categories" };
+
+  const categoryIds = category.map((cat) => cat.id);
+
+  const { data, error } = await supabase
+    .from("transaction")
+    .select("*")
+    .eq("user_id", user.id)
+    .in("category_id", categoryIds);
 
   if (error) {
     return { error: true, message: error.message };
   }
 
+  if (!data || data.length === 0) {
+    return { error: false, amount: 0 };
+  }
+  console.log("filterData", data);
+
   const amount =
     data?.reduce((acc, transaction) => acc + transaction.amount, 0) ?? 0;
+
+  console.log("amount", amount);
 
   return {
     error: false,

@@ -19,7 +19,7 @@ import { AccountSelect } from "@/features/dashboard/components/account-select";
 import { dataURLtoBlob } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { createClient } from "@/utils/supabase/client";
-import { uploadImageSnap } from "@/lib/image-utils";
+import { uploadImageSnap } from "@/features/dashboard/actions/image-utils";
 
 type CategoryChange = {
   categoryID: string;
