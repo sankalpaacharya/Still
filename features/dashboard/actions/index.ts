@@ -126,7 +126,7 @@ export async function mostSpentCategoryWithBudget() {
 
   const { data: category } = await supabase
     .from("category")
-    .select("id, name")
+    .select("id, name, icon")
     .in(
       "id",
       transactions.map((tx) => tx.category_id),
@@ -135,7 +135,7 @@ export async function mostSpentCategoryWithBudget() {
 
   const grouped: Record<
     string,
-    { name: string; category_id: string; amount: number }
+    { name: string; category_id: string; amount: number; icon: string }
   > = {};
 
   for (const tx of transactions) {
@@ -145,6 +145,7 @@ export async function mostSpentCategoryWithBudget() {
         name: category.find((c) => c.id === id)?.name || "Unknown",
         category_id: tx.category_id,
         amount: 0,
+        icon: category.find((c) => c.id === id)?.icon || "default-icon",
       };
     }
     grouped[id].amount += tx.amount;

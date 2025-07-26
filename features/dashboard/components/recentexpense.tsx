@@ -27,10 +27,10 @@ export const TransactionCard = async () => {
           transactions.map((tx) => (
             <TransactionItem
               key={tx.id}
-              emoji={getCategoryEmoji(tx.category)}
+              emoji={tx.icon}
               title={tx.description}
               category={tx.category}
-              timeAgo={timeSince(tx.created_at)}
+              timeAgo={timeSince(tx.date)}
               amount={tx.amount}
               type={tx.type}
             />

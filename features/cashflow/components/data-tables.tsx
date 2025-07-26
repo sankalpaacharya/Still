@@ -22,7 +22,7 @@ export default async function DisplayTable() {
 
             <div className="text-right">
               <div className="font-semibold text-sm text-zinc-500 dark:text-zinc-400">
-                NPR{" "}
+                ₹{" "}
                 {expenseList
                   .reduce((sum, expense) => sum + Math.abs(expense.amount), 0)
                   .toLocaleString("en-NP", {
