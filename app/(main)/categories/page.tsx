@@ -1,7 +1,6 @@
 import CategoryCard from "@/features/categories/components/category-card";
 import CategoryCardSheet from "@/features/categories/components/category-card-sheet";
 import { Plus } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   createCategoryAction,
   updateCategoryAction,
@@ -20,105 +19,53 @@ export default async function Page() {
           A summary of all your expense categories with budget usage and trends.
         </p>
       </div>
-      <Tabs defaultValue="expense" className="w-full bg-transparent">
-        <TabsList className="w-full bg-transparent mb-2 border-b border-border h-auto p-0 rounded-none">
-          <TabsTrigger
-            value="expense"
-            className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2 h-auto"
+
+      <div className="grid grid-cols-3 gap-10">
+        {categories.map((category) => (
+          <CategoryCardSheet
+            key={category.id}
+            id={category.id}
+            defaultValues={{
+              name: category.name,
+              budget: category.budget,
+              type: category.type,
+              icon: category.icon,
+              color: category.color,
+            }}
+            onSubmit={updateCategoryAction}
           >
-            Expense
-          </TabsTrigger>
-          <TabsTrigger
-            value="income"
-            className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2 h-auto"
-          >
-            Income
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="expense">
-          <div className="grid grid-cols-3 gap-10">
-            {categories.map((category) => (
-              <CategoryCardSheet
-                key={category.id}
-                id={category.id}
-                defaultValues={{
-                  name: category.name,
-                  budget: category.budget,
-                  type: category.type,
-                  icon: category.icon,
-                  color: category.color,
-                }}
-                onSubmit={updateCategoryAction}
-              >
-                <CategoryCard
-                  name={category.name}
-                  icon={category.icon}
-                  currentAmount={4000}
-                  budgetAmount={category.budget}
-                  transactionCount={14}
-                  trend={{ direction: "up", percentage: 60 }}
-                  gradient={getCssHslGradient(
-                    category.color || "hsl(233,36%,26%)",
-                  )}
-                />
-              </CategoryCardSheet>
-            ))}
-            <CategoryCardSheet
-              defaultValues={{
-                name: "sankalpa",
-                budget: 100,
-                type: CategoryType.Expense,
-                icon: "a",
-                color: "sa",
-              }}
-              onSubmit={createCategoryAction}
-            >
-              <button className="flex flex-col cursor-pointer items-center justify-center  p-6 border-2 border-dashed border-white/20 rounded-xl transition-all hover:bg-white/5">
-                <div className="p-4 rounded-full bg-white/10 mb-4">
-                  <Plus className="h-6 w-6" />
-                </div>
-                <p className="text-lg font-medium">Add New Category</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Track another financial account
-                </p>
-              </button>
-            </CategoryCardSheet>
-          </div>
-        </TabsContent>
-        <TabsContent value="income">
-          <div className="grid grid-cols-3 gap-10">
             <CategoryCard
-              name="Food & Dining"
-              icon="🍔"
-              currentAmount={1240}
-              budgetAmount={1800}
+              name={category.name}
+              icon={category.icon}
+              currentAmount={4000}
+              budgetAmount={category.budget}
               transactionCount={14}
               trend={{ direction: "up", percentage: 60 }}
-              gradient="from-blue-500 to-blue-400"
+              gradient={getCssHslGradient(category.color || "hsl(233,36%,26%)")}
             />
-            <CategoryCardSheet
-              defaultValues={{
-                name: "sankalpa",
-                budget: 100,
-                type: CategoryType.Expense,
-                icon: "a",
-                color: "sa",
-              }}
-              onSubmit={createCategoryAction}
-            >
-              <button className="flex flex-col cursor-pointer items-center justify-center  p-6 border-2 border-dashed border-white/20 rounded-xl transition-all hover:bg-white/5">
-                <div className="p-4 rounded-full bg-white/10 mb-4">
-                  <Plus className="h-6 w-6" />
-                </div>
-                <p className="text-lg font-medium">Add New Category</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Track another financial account
-                </p>
-              </button>
-            </CategoryCardSheet>
-          </div>
-        </TabsContent>
-      </Tabs>
+          </CategoryCardSheet>
+        ))}
+        <CategoryCardSheet
+          defaultValues={{
+            name: "title",
+            budget: 100,
+            type: CategoryType.Expense,
+            icon: "💻",
+            color: "hsl(233,36%,26%)",
+          }}
+          onSubmit={createCategoryAction}
+        >
+          <button className="flex flex-col cursor-pointer items-center justify-center  p-6 border-2 border-dashed border-white/20 rounded-xl transition-all hover:bg-white/5">
+            <div className="p-4 rounded-full bg-white/10 mb-4">
+              <Plus className="h-6 w-6" />
+            </div>
+            <p className="text-lg font-medium">Add New Category</p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Track another financial account
+            </p>
+          </button>
+        </CategoryCardSheet>
+      </div>
     </main>
   );
 }

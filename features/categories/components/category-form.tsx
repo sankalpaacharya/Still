@@ -39,7 +39,6 @@ const categoryFormSchema = z.object({
   icon: z.string().min(1, {
     message: "Please pick an emoji.",
   }),
-  type: z.nativeEnum(CategoryType),
 });
 
 export type CategoryFormType = z.infer<typeof categoryFormSchema>;
@@ -70,6 +69,10 @@ export default function CategoryForm({
     defaultValues,
   });
 
+  useEffect(() => {
+    console.log("is there some error", form.formState.errors);
+  }, [form.formState.errors]);
+
   const watchedValues = useWatch({ control: form.control });
 
   useEffect(() => {
@@ -77,6 +80,7 @@ export default function CategoryForm({
   }, [watchedValues, setWatchValues]);
 
   const submitCategoryForm = async (data: CategoryFormType) => {
+    console.log("form is okay");
     const result = await onFormSubmit(data, id || "");
     if (result.error) {
       return toast.error(result.message);

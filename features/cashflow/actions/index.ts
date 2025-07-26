@@ -196,13 +196,12 @@ export async function addExpenseAction(data: any) {
 
   if (!user) return { error: true, message: "User not found" };
 
-  const { error } = await supabase
-    .from("transaction")
-    .insert({
-      user_id: user.id,
-      category_id: data.category,
-      amount: data.amount,
-    });
+  const { error } = await supabase.from("transaction").insert({
+    user_id: user.id,
+    category_id: data.category,
+    amount: data.amount,
+    date: data.date,
+  });
 
   if (error) return { error: true, message: error.message };
 
