@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { addExpenseAction } from "../actions";
 import { getAllCategories } from "@/features/categories/actions";
 import toast from "react-hot-toast";
+import { DatePicker } from "@/components/ui/date-picker";
 
 export interface Category {
   id: string;
@@ -40,6 +41,7 @@ export default function ExpenseForm({ onSubmit }: { onSubmit: () => any }) {
       amount: "",
       description: "",
       category: "",
+      date: new Date(),
     },
   });
 
@@ -101,39 +103,60 @@ export default function ExpenseForm({ onSubmit }: { onSubmit: () => any }) {
 
       case 2:
         return (
-          <FormField
-            control={form.control}
-            name="description"
-            rules={{ required: "Description is required" }}
-            render={({ field }) => (
-              <FormItem className="w-full max-w-md space-y-3">
-                <FormLabel className="text-white text-lg font-medium">
-                  Description
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    autoFocus
-                    placeholder="e.g. Coffee at Starbucks"
-                    {...field}
-                    onKeyDown={(e) => {
-                      if (
-                        e.key === "Enter" &&
-                        field.value &&
-                        field.value.length > 0
-                      ) {
-                        handleNext();
-                      }
-                    }}
-                    className="bg-white/5 border-white/10 text-white placeholder-white/40 rounded-md py-3 transition-all duration-200 focus:ring-2 focus:ring-white/30 focus:border-white/30"
-                  />
-                </FormControl>
-                <FormDescription className="text-sm text-white/50">
-                  Add a short note about your expense (max 50 characters).
-                </FormDescription>
-                <FormMessage className="text-sm text-red-400" />
-              </FormItem>
-            )}
-          />
+          <div className="flex flex-col space-y-10">
+            <FormField
+              control={form.control}
+              name="description"
+              rules={{ required: "Description is required" }}
+              render={({ field }) => (
+                <FormItem className="w-full max-w-md space-y-3">
+                  <FormLabel className="text-white text-lg font-medium">
+                    Description
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      autoFocus
+                      placeholder="e.g. Coffee at Starbucks"
+                      {...field}
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === "Enter" &&
+                          field.value &&
+                          field.value.length > 0
+                        ) {
+                          handleNext();
+                        }
+                      }}
+                      className="bg-white/5 border-white/10 text-white placeholder-white/40 rounded-md py-3 transition-all duration-200 focus:ring-2 focus:ring-white/30 focus:border-white/30"
+                    />
+                  </FormControl>
+                  <FormDescription className="text-sm text-white/50">
+                    Add a short note about your expense (max 50 characters).
+                  </FormDescription>
+                  <FormMessage className="text-sm text-red-400" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="date"
+              rules={{ required: "Description is required" }}
+              render={({ field }) => (
+                <FormItem className="w-full max-w-md space-y-3">
+                  <FormLabel className="text-white text-lg font-medium">
+                    Date
+                  </FormLabel>
+                  <FormControl>
+                    <DatePicker date={field.value} setDate={field.onChange} />
+                  </FormControl>
+                  <FormDescription className="text-sm text-white/50">
+                    Date of your expense
+                  </FormDescription>
+                  <FormMessage className="text-sm text-red-400" />
+                </FormItem>
+              )}
+            />
+          </div>
         );
 
       case 3:

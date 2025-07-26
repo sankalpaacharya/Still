@@ -230,6 +230,7 @@ export async function addExpenseAction(data: any) {
     user_id: user.id,
     category_id: data.category,
     amount: data.amount,
+    date: data.date,
   });
 
   if (error) return { error: true, message: error.message };

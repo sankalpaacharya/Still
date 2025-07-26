@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { CategoryFormType } from "../components/category-form";
 import { revalidatePath } from "next/cache";
 
-export async function createCategoryAction(data: CategoryFormType) {
+export async function createCategoryAction(data: CategoryFormType, id: string) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -13,7 +13,6 @@ export async function createCategoryAction(data: CategoryFormType) {
     .from("category")
     .select("*")
     .eq("name", data.name);
-  console.log(error?.message);
   if (error)
     return { error: true, message: "some error while getting category" };
   if (categoryData.length > 0)
