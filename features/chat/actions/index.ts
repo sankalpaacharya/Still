@@ -2,6 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { Category } from "@/features/dashboard/actions";
 type Account = {
+  id: string;
   name: string;
   amount: number;
   type: string;
