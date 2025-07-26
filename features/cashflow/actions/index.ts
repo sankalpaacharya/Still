@@ -42,6 +42,7 @@ export async function getExpenses(): Promise<GroupExpense | {}> {
       expenseData[expense.category] = [expense];
     }
   }
+  console.log(expenseData);
 
   return expenseData;
 }

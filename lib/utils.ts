@@ -16,8 +16,8 @@ export const dataURLtoBlob = (dataUrl: string) => {
 };
 
 export const getCategoryEmoji = (name: string) => {
+  if (!name) return "💫"; // Default emoji for undefined/null categories
   const lowerName = name.toLowerCase();
-
   if (
     lowerName.includes("food") ||
     lowerName.includes("groceries") ||

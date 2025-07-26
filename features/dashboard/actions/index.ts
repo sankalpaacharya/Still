@@ -192,11 +192,33 @@ export async function getRecentTransactions() {
   const { data, error } = await supabase
     .from("transaction")
     .select("*")
+    .order("created_at", { ascending: false })
     .eq("user_id", user.id)
     .limit(5);
-  if (error) return [];
 
-  return data;
+  if (error || !data) return [];
+
+  const { data: category } = await supabase
+    .from("category")
+    .select("id, name, icon, budget, type")
+    .eq("user_id", user.id);
+
+  if (!category) return [];
+
+  const enrichedTransactions = data.map((transaction) => {
+    const categoryInfo = category.find(
+      (cat) => cat.id === transaction.category_id,
+    );
+    return {
+      ...transaction,
+      category: categoryInfo?.name || "Uncategorized",
+      icon: categoryInfo?.icon || "default-icon",
+      budget: categoryInfo?.budget || 0,
+      type: categoryInfo?.type || "expense",
+    };
+  });
+
+  return enrichedTransactions;
 }
 
 export async function getTotalSpendingThisMonth() {
