@@ -20,29 +20,30 @@ export async function getExpenses(): Promise<GroupExpense | {}> {
     .eq("user_id", user.id);
   if (!data) return { error: true, message: error.message };
 
-  const { data: category } = await supabase
+  const { data: categories } = await supabase
     .from("category")
     .select("id, name, icon, budget, type")
     .eq("user_id", user.id);
-  if (!category) return { error: true, message: "Failed to fetch categories" };
+  if (!categories)
+    return { error: true, message: "Failed to fetch categories" };
+
+  const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
 
   const expenseData: any = {};
 
   for (let expense of data) {
     const group = expense["category_id"];
-    expense.category =
-      category.find((cat) => cat.id === group)?.name || "Uncategorized";
-    expense.icon =
-      category.find((cat) => cat.id === group)?.icon || "default-icon";
-    expense.budget = category.find((cat) => cat.id === group)?.budget || 0;
-    expense.type = category.find((cat) => cat.id === group)?.type || "expense";
+    const categoryInfo = categoryMap.get(group);
+    expense.category = categoryInfo?.name || "Uncategorized";
+    expense.icon = categoryInfo?.icon || "default-icon";
+    expense.budget = categoryInfo?.budget || 0;
+    expense.type = categoryInfo?.type || "expense";
     if (expense.category in expenseData) {
       expenseData[expense.category].push(expense);
     } else {
       expenseData[expense.category] = [expense];
     }
   }
-  console.log(expenseData);
 
   return expenseData;
 }
