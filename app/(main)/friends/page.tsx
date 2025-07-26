@@ -28,7 +28,7 @@ export default function FriendsPage() {
       name: "Alex Johnson",
       avatar: "A",
       category: "Groceries",
-      amount: "$42.99",
+      amount: "₹42.99",
       streak: 18,
     },
     {
@@ -36,7 +36,7 @@ export default function FriendsPage() {
       name: "Sam Wilson",
       avatar: "S",
       category: "Coffee",
-      amount: "$5.25",
+      amount: "₹5.25",
       streak: 15,
     },
     {
@@ -44,7 +44,7 @@ export default function FriendsPage() {
       name: "Taylor Kim",
       avatar: "T",
       category: "Gym",
-      amount: "$25.00",
+      amount: "₹25.00",
       streak: 30,
     },
     {
@@ -52,7 +52,7 @@ export default function FriendsPage() {
       name: "Jordan Lee",
       avatar: "J",
       category: "Books",
-      amount: "$32.50",
+      amount: "₹32.50",
       streak: 8,
     },
   ]);

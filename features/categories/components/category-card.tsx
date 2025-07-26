@@ -74,13 +74,13 @@ export default function CategoryCard({
 
         <div className="space-y-4">
           <div className="text-3xl font-bold text-white">
-            ${currentAmount.toLocaleString()}
+            ₹{currentAmount.toLocaleString()}
           </div>
 
           <div className="flex justify-between text-sm">
             <span className="text-gray-400">Budget</span>
             <span className="text-gray-400">
-              ${budgetAmount.toLocaleString()}
+              ₹{budgetAmount.toLocaleString()}
             </span>
           </div>
 
@@ -99,7 +99,7 @@ export default function CategoryCard({
           <div className="grid grid-cols-1">
             <div className="text-center p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
               <div className="text-lg font-bold text-white animate-pulse">
-                ${remaining.toLocaleString()}
+                ₹{remaining.toLocaleString()}
               </div>
               <div className="text-xs text-gray-400 uppercase tracking-wide">
                 Remaining

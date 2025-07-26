@@ -1,5 +1,5 @@
 import { Card, CardTitle, CardContent, CardHeader } from "@/components/ui/card";
-import { Calendar, TrendingUp, DollarSign } from "lucide-react";
+import { Calendar, TrendingUp, IndianRupee } from "lucide-react";
 import { startOfMonth, getDay, getDaysInMonth, format } from "date-fns";
 import { getTransactionOfMonth } from "../actions";
 
@@ -35,8 +35,8 @@ export async function SpendingHeatmap() {
           {/* Month Summary */}
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-muted/50">
-              <DollarSign size={16} className="text-green-600" />
-              <span className="font-semibold">${totalSpending.toFixed(2)}</span>
+              <IndianRupee size={16} className="text-green-600" />
+              <span className="font-semibold">{totalSpending.toFixed(2)}</span>
             </div>
             <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-muted/50">
               <TrendingUp size={16} className="text-blue-600" />
@@ -106,7 +106,7 @@ export async function SpendingHeatmap() {
                       <span className="text-base sm:text-lg opacity-60 group-hover:opacity-100 transition-opacity"></span>
                     ) : (
                       <span className="text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
-                        ${amount}
+                        ₹{amount}
                       </span>
                     )}
                   </div>

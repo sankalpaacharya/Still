@@ -23,7 +23,7 @@ export function BalanceCard() {
         <div className="flex justify-between items-start mb-4">
           <div>
             <p className="text-slate-400 text-xs font-medium">Your Balance</p>
-            <h1 className="text-white text-3xl font-bold mt-1">${balance}</h1>
+            <h1 className="text-white text-3xl font-bold mt-1">₹{balance}</h1>
           </div>
 
           <Button
