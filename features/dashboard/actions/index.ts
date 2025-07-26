@@ -289,7 +289,7 @@ export async function getCategories() {
   const { data, error } = await supabase
     .from("category")
     .select("name")
-    .eq("user_id", "9468f9b3-5d78-44b4-b714-e1aaff0195ef");
+    .eq("user_id", user.id);
   if (error) return [];
 
   return data as Category[];
