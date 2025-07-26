@@ -1,12 +1,6 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
 import { Category } from "@/features/dashboard/actions";
-type Account = {
-  id: string;
-  name: string;
-  amount: number;
-  type: string;
-};
 
 type Transaction = {
   category_id: string;
@@ -16,7 +10,6 @@ type Transaction = {
 };
 
 export async function getFullUserInfo(): Promise<{
-  accounts: Account[];
   categories: Category[];
   transactions: Transaction[];
 }> {
@@ -28,15 +21,6 @@ export async function getFullUserInfo(): Promise<{
 
   if (userError || !user) {
     throw new Error("User not authenticated");
-  }
-
-  const { data: accounts, error: accountsError } = await supabase
-    .from("accounts")
-    .select("*")
-    .eq("user_id", user.id);
-
-  if (accountsError) {
-    throw new Error("Failed to fetch accounts");
   }
 
   const { data: categories, error: categoriesError } = await supabase
@@ -57,5 +41,5 @@ export async function getFullUserInfo(): Promise<{
     throw new Error("Failed to fetch transactions");
   }
 
-  return { accounts, categories, transactions };
+  return { categories, transactions };
 }
