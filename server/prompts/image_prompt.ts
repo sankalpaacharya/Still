@@ -23,7 +23,7 @@ The user has uploaded an image of a product they bought. Analyze the image and e
 **Response Format:**
 Return ONLY a JSON object with these exact keys:
 - title: Product name (string)
-- amount: Estimated price in NPR (number), don't put fake amount provide as accurate you can
+- amount: Estimated price in INR (number), don't put fake amount provide as accurate you can
 - categoryGroup: Category group from user's existing groups (string)  
 - category: Specific category from user's existing categories (string)
 - categoryID : Specific category id from user's existing categories (uuid)

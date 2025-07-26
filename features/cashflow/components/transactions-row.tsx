@@ -48,7 +48,7 @@ export const ExpenseRow: React.FC<ExpenseRowProps> = ({ row }) => {
               : "text-green-600 dark:text-green-400"
           }`}
         >
-          {isExpense ? "-" : "+"}NPR{" "}
+          {isExpense ? "-" : "+"}₹{" "}
           {Math.abs(amount).toLocaleString("en-NP", {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
