@@ -259,10 +259,10 @@ export async function getTransactionOfMonth() {
 
   const { data } = await supabase
     .from("transaction")
-    .select("amount, created_at")
+    .select("amount, date")
     .eq("user_id", user.id)
-    .gte("created_at", startOfMonth.toISOString())
-    .lte("created_at", endOfMonth.toISOString());
+    .gte("date", startOfMonth.toISOString())
+    .lte("date", endOfMonth.toISOString());
 
   const numberOfDays = getDaysInMonth(now);
   const spentInDay: Record<number, number> = {};
@@ -271,7 +271,7 @@ export async function getTransactionOfMonth() {
   }
 
   data?.forEach((tx) => {
-    const day = new Date(tx.created_at).getDate();
+    const day = new Date(tx.date).getDate();
     spentInDay[day] += tx.amount;
   });
 

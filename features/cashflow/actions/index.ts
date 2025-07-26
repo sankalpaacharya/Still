@@ -229,6 +229,7 @@ export async function addExpenseAction(data: any) {
   if (!user) return { error: true, message: "User not found" };
 
   const { error } = await supabase.from("transaction").insert({
+    description: data.description,
     user_id: user.id,
     category_id: data.category,
     amount: data.amount,
@@ -236,6 +237,7 @@ export async function addExpenseAction(data: any) {
   });
 
   if (error) return { error: true, message: error.message };
+  revalidatePath("/dashboard");
 
   return { error: false, message: "expense added successfully" };
 }

@@ -29,6 +29,7 @@ export interface Category {
 
 export default function ExpenseForm({ onSubmit }: { onSubmit: () => any }) {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
   useEffect(() => {
     const fetchCategories = async () => {
       const cats = await getAllCategories();
@@ -222,10 +223,11 @@ export default function ExpenseForm({ onSubmit }: { onSubmit: () => any }) {
       }
     } else {
       form.handleSubmit(async (data: any) => {
+        setButtonDisabled(true);
         const response = await addExpenseAction(data);
         if (response.error) toast.error(response.message);
         if (!response.error) toast.success(response.message);
-
+        setButtonDisabled(false);
         onSubmit();
         form.reset();
         setStep(1);
@@ -286,6 +288,7 @@ export default function ExpenseForm({ onSubmit }: { onSubmit: () => any }) {
             </Button>
           )}
           <Button
+            disabled={isButtonDisabled}
             onClick={handleNext}
             className="w-full text-white font-medium bg-white/20 hover:bg-white/30"
             variant="secondary"
