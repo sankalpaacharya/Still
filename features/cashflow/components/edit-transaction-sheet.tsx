@@ -77,7 +77,7 @@ export const EditExpenseSheet: React.FC<EditExpenseSheetProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="amount">Amount (NPR)</Label>
+          <Label htmlFor="amount">Amount (₹)</Label>
           <Input
             id="amount"
             type="number"

@@ -173,7 +173,7 @@ export function AccountCard({
             </div>
             <div>
               <p className="text-xs font-medium text-white/70">BALANCE</p>
-              <p className="font-bold text-white text-xl">${balance}</p>
+              <p className="font-bold text-white text-xl">₹{balance}</p>
             </div>
           </div>
         </div>

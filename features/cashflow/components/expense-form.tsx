@@ -62,7 +62,7 @@ export default function ExpenseForm({ onSubmit }: { onSubmit: () => any }) {
               <FormItem className="flex flex-col items-center space-y-4">
                 <div className="flex items-center space-x-3">
                   <FormLabel className="text-4xl font-bold text-white">
-                    NPR
+                    ₹
                   </FormLabel>
                   <FormControl>
                     <Input

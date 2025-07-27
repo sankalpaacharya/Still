@@ -34,7 +34,7 @@ export default function AddExpenseModalButton() {
   const [category, setCategory] = useState("");
   const [categoryGroup, setCategoryGroup] = useState("");
   const [categoryChange, setCategoryChange] = useState<any>({});
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [account, setAccount] = useState("");
   const [type, setType] = useState("expense"); // New state for transaction type
 
@@ -50,7 +50,9 @@ export default function AddExpenseModalButton() {
       categoryGroup,
       amount: parseInt(amount),
       description,
-      date,
+      date:
+        date?.toISOString().split("T")[0] ||
+        new Date().toISOString().split("T")[0],
       categoryId: categoryChange.categoryID,
       accountID: account,
       type: type,
@@ -71,7 +73,7 @@ export default function AddExpenseModalButton() {
     setDescription("");
     setAmount("");
     setCategory("");
-    setDate(new Date().toISOString().split("T")[0]);
+    setDate(new Date());
     setType("expense"); // Reset to default
 
     toast.success(
@@ -135,7 +137,7 @@ export default function AddExpenseModalButton() {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="amount">Amount ($)</Label>
+              <Label htmlFor="amount">Amount (₹)</Label>
               <Input
                 id="amount"
                 type="number"
@@ -164,7 +166,7 @@ export default function AddExpenseModalButton() {
 
             <div className="grid gap-2">
               <Label htmlFor="date">Date</Label>
-              <DatePicker />
+              <DatePicker date={date} setDate={setDate} />
             </div>
           </div>
 

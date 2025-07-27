@@ -16,11 +16,46 @@ type Expense = {
   accountID: string;
 };
 
+type transaction = {
+  amount: number;
+  category_id: string;
+  user_id: string;
+  category: string;
+};
+
+type transactionItem = {
+  [itemName: string]: transaction;
+};
+
 export type Category = {
   id: string;
   name: string;
   userId: string;
 };
+
+export async function NewAddExpenseAction(data: transactionItem) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError || !user) {
+    return { error: true, message: "User not found" };
+  }
+  const { error: insertError } = await supabase.from("transaction").insert(
+    Object.entries(data).map(([itemName, item]) => ({
+      user_id: user.id,
+      amount: item.amount,
+      description: itemName || "",
+      category_id: item.category_id,
+    })),
+  );
+  if (insertError) {
+    return { error: true, message: insertError.message };
+  }
+  revalidatePath("/dashboard");
+  return { error: false, message: "Expense added successfully" };
+}
 
 export async function addExpenseAction(data: Expense) {
   const supabase = await createClient();
@@ -126,7 +161,7 @@ export async function mostSpentCategoryWithBudget() {
 
   const { data: category } = await supabase
     .from("category")
-    .select("id, name")
+    .select("id, name, icon")
     .in(
       "id",
       transactions.map((tx) => tx.category_id),
@@ -135,7 +170,7 @@ export async function mostSpentCategoryWithBudget() {
 
   const grouped: Record<
     string,
-    { name: string; category_id: string; amount: number }
+    { name: string; category_id: string; amount: number; icon: string }
   > = {};
 
   for (const tx of transactions) {
@@ -145,6 +180,7 @@ export async function mostSpentCategoryWithBudget() {
         name: category.find((c) => c.id === id)?.name || "Unknown",
         category_id: tx.category_id,
         amount: 0,
+        icon: category.find((c) => c.id === id)?.icon || "default-icon",
       };
     }
     grouped[id].amount += tx.amount;
@@ -288,7 +324,7 @@ export async function getCategories() {
 
   const { data, error } = await supabase
     .from("category")
-    .select("name")
+    .select("*")
     .eq("user_id", user.id);
   if (error) return [];
 

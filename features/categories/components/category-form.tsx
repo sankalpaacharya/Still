@@ -125,7 +125,7 @@ export default function CategoryForm({
               <FormControl>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                    $
+                    ₹
                   </span>
                   <Input
                     type="number"
@@ -137,7 +137,7 @@ export default function CategoryForm({
                 </div>
               </FormControl>
               <FormDescription>
-                Set your budget limit ($100 - $6,000)
+                Set your budget limit (₹100 - ₹6,000)
               </FormDescription>
               <FormMessage />
             </FormItem>

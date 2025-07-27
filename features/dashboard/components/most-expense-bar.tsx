@@ -11,6 +11,7 @@ type CategoryItem = {
   name: string;
   amount: number;
   assigned: number;
+  icon: string;
 };
 
 type Props = {
@@ -47,7 +48,7 @@ export default function MostExpenseContainer({ data }: Props) {
                     whileHover={{ rotate: 20 }}
                     className="flex items-center justify-center w-8 h-8 rounded-md bg-muted text-lg cursor-pointer"
                   >
-                    {getCategoryEmoji(item.name)}
+                    {item.icon}
                   </motion.div>
 
                   <div className="flex-1">
@@ -56,7 +57,7 @@ export default function MostExpenseContainer({ data }: Props) {
                         {item.name}
                       </p>
                       <p className="text-sm font-semibold">
-                        ${item.amount.toLocaleString("en-IN")}
+                        ₹{item.amount.toLocaleString("en-IN")}
                       </p>
                     </div>
 
@@ -67,7 +68,7 @@ export default function MostExpenseContainer({ data }: Props) {
                           : `${label} • ${Math.round(percentage)}% used`}
                       </span>
                       <span className="text-muted-foreground">
-                        Budget: ${item.assigned.toLocaleString("en-IN")}
+                        Budget: ₹{item.assigned.toLocaleString("en-IN")}
                       </span>
                     </div>
                   </div>

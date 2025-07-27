@@ -27,7 +27,7 @@ export default function ExpenseGroup({ name, expenses }: ExpenseGroupProps) {
 
         <div className="text-right">
           <div className="font-semibold text-sm text-zinc-500 dark:text-zinc-400">
-            NPR{" "}
+            ₹{" "}
             {total.toLocaleString("en-NP", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,

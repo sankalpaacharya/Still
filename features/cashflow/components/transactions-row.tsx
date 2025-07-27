@@ -12,6 +12,7 @@ export const ExpenseRow: React.FC<ExpenseRowProps> = ({ row }) => {
   const categoryGroup = row.original.category;
   const description = row.original.description;
   const date = new Date(row.original.created_at);
+  const icon = row.original.icon;
   const formattedDate = date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -22,7 +23,7 @@ export const ExpenseRow: React.FC<ExpenseRowProps> = ({ row }) => {
       <div className="flex items-center space-x-3 flex-1 min-w-0">
         <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
           <span className="text-sm transition-transform duration-200 group-hover:scale-110">
-            {getCategoryEmoji(categoryGroup || "")}
+            {icon}
           </span>
         </div>
         <div className="flex-1 min-w-0">
@@ -47,7 +48,7 @@ export const ExpenseRow: React.FC<ExpenseRowProps> = ({ row }) => {
               : "text-green-600 dark:text-green-400"
           }`}
         >
-          {isExpense ? "-" : "+"}NPR{" "}
+          {isExpense ? "-" : "+"}₹{" "}
           {Math.abs(amount).toLocaleString("en-NP", {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
