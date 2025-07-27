@@ -7,7 +7,6 @@ import {
 } from "@/features/categories/actions";
 import { getUserCategories } from "@/features/categories/query";
 import { getCssHslGradient } from "@/lib/utils";
-import { CategoryType } from "@/features/categories/components/category-form";
 
 export default async function Page() {
   const categories = await getUserCategories();

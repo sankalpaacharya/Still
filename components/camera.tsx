@@ -5,7 +5,6 @@ import { Camera, RotateCcw, Upload, Edit, Trash2, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { NewAddExpenseAction } from "@/features/dashboard/actions";
 import {
   Dialog,
@@ -25,10 +24,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-type CategoryChange = {
-  categoryID: string;
-};
-
 type ExtractedItem = {
   name: string;
   amount: number;
@@ -37,6 +32,24 @@ type ExtractedItem = {
   user_id: string;
   isEditing?: boolean;
 };
+
+type details = {
+  amount: number;
+  category: string;
+  categoryID: string;
+  user_id: string;
+};
+
+interface transaction {
+  amount: number;
+  category: string;
+  category_id: string;
+  user_id: string;
+}
+
+interface transactionItem {
+  [key: string]: transaction;
+}
 
 export default function SnapUpload() {
   const webcamRef = useRef<Webcam>(null);
@@ -89,12 +102,12 @@ export default function SnapUpload() {
 
       // Convert the response data to ExtractedItem format
       const items: ExtractedItem[] = Object.entries(data).map(
-        ([name, details]: [string, any]) => ({
+        ([name, details]) => ({
           name,
-          amount: details.amount || 0,
-          category: details.category || "",
-          categoryID: details.categoryID || "",
-          user_id: details.user_id || "",
+          amount: (details as details).amount || 0,
+          category: (details as details).category || "",
+          categoryID: (details as details).categoryID || "",
+          user_id: (details as details).user_id || "",
           isEditing: false,
         }),
       );
@@ -152,12 +165,12 @@ export default function SnapUpload() {
       }
 
       const items: ExtractedItem[] = Object.entries(data).map(
-        ([name, details]: [string, any]) => ({
+        ([name, details]) => ({
           name,
-          amount: details.amount || 0,
-          category: details.category || "",
-          categoryID: details.categoryID || "",
-          user_id: details.user_id || "",
+          amount: (details as details).amount || 0,
+          category: (details as details).category || "",
+          categoryID: (details as details).categoryID || "",
+          user_id: (details as details).user_id || "",
           isEditing: false,
         }),
       );
@@ -222,27 +235,22 @@ export default function SnapUpload() {
       return;
     }
 
-    for (let i = 0; i < extractedItems.length; i++) {
-      const item = extractedItems[i];
-      if (!item.name.trim()) {
-        toast.error(`Item ${i + 1}: Name is required`);
-        return;
-      }
-      if (item.amount <= 0) {
-        toast.error(`Item ${i + 1}: Amount must be greater than 0`);
-        return;
-      }
-      if (!item.category) {
-        toast.error(`Item ${i + 1}: Category is required`);
-        return;
-      }
-    }
-
     try {
-      // Create transactionItem object according to the expected type
-      const transactionItem: any = {};
-      extractedItems.forEach((item, index) => {
-        transactionItem[item.name] = {
+      for (let i = 0; i < extractedItems.length; i++) {
+        const item = extractedItems[i];
+        if (!item.name.trim()) {
+          toast.error(`Item ${i + 1}: Name is required`);
+          return;
+        }
+        if (item.amount <= 0) {
+          toast.error(`Item ${i + 1}: Amount must be greater than 0`);
+          return;
+        }
+      }
+
+      const transactionData: transactionItem = {};
+      extractedItems.forEach((item: ExtractedItem) => {
+        transactionData[item.name] = {
           amount: item.amount,
           category_id: item.categoryID,
           user_id: item.user_id,
@@ -250,7 +258,7 @@ export default function SnapUpload() {
         };
       });
 
-      const result = await NewAddExpenseAction(transactionItem);
+      const result = await NewAddExpenseAction(transactionData);
 
       if (!result.error) {
         toast.success(`Successfully saved ${extractedItems.length} expenses!`);
