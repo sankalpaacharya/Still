@@ -1,12 +1,12 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
-import { Camera, RotateCcw, Upload } from "lucide-react";
+import { Camera, RotateCcw, Upload, Edit, Trash2, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { addExpenseAction } from "@/features/dashboard/actions";
+import { NewAddExpenseAction } from "@/features/dashboard/actions";
 import {
   Dialog,
   DialogContent,
@@ -14,15 +14,28 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CategoryGroupCombobox } from "@/features/dashboard/components/addexpenseselect";
-import { AccountSelect } from "@/features/dashboard/components/account-select";
 import { dataURLtoBlob } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { createClient } from "@/utils/supabase/client";
 import { uploadImageSnap } from "@/features/dashboard/actions/image-utils";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type CategoryChange = {
   categoryID: string;
+};
+
+type ExtractedItem = {
+  name: string;
+  amount: number;
+  category: string;
+  categoryID: string;
+  user_id: string;
+  isEditing?: boolean;
 };
 
 export default function SnapUpload() {
@@ -32,16 +45,9 @@ export default function SnapUpload() {
   const [hasCaptured, sethasCaptured] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
-  const [category, setCategory] = useState("");
-  const [categoryGroup, setCategoryGroup] = useState("");
-  const [account, setAccount] = useState("");
-  const [name, setName] = useState("");
-  const [amount, setAmount] = useState(0);
+  const [extractedItems, setExtractedItems] = useState<ExtractedItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<unknown>();
-  const [CategoryChange, setCategoryChange] = useState<CategoryChange>({
-    categoryID: "",
-  });
 
   useEffect(() => {
     const getUser = async () => {
@@ -73,12 +79,36 @@ export default function SnapUpload() {
       const data = await uploadImageSnap(file);
 
       console.log("Upload successful:", data);
-      setAmount(data["amount"] || 0);
-      setName(data["title"] || "");
+
+      // Handle error case
+      if (data.error) {
+        toast.error(data.error);
+        resetSnap();
+        return;
+      }
+
+      // Convert the response data to ExtractedItem format
+      const items: ExtractedItem[] = Object.entries(data).map(
+        ([name, details]: [string, any]) => ({
+          name,
+          amount: details.amount || 0,
+          category: details.category || "",
+          categoryID: details.categoryID || "",
+          user_id: details.user_id || "",
+          isEditing: false,
+        }),
+      );
+
+      if (items.length === 0) {
+        toast.error(
+          "No items could be extracted from the image. Please try a clearer image.",
+        );
+        resetSnap();
+        return;
+      }
+
+      setExtractedItems(items);
       setIsLoading(false);
-      setCategory(data["category"]);
-      setCategoryGroup(data["categoryGroup"]);
-      setCategoryChange({ categoryID: data["categoryID"] });
     } catch (error) {
       console.log(error);
       toast.error("Failed to upload image. Please try again.");
@@ -114,12 +144,34 @@ export default function SnapUpload() {
       const data = await uploadImageSnap(file);
 
       console.log("Upload successful:", data);
-      setAmount(data["amount"] || 0);
-      setName(data["title"] || "");
+
+      if (data.error) {
+        toast.error(data.error);
+        resetSnap();
+        return;
+      }
+
+      const items: ExtractedItem[] = Object.entries(data).map(
+        ([name, details]: [string, any]) => ({
+          name,
+          amount: details.amount || 0,
+          category: details.category || "",
+          categoryID: details.categoryID || "",
+          user_id: details.user_id || "",
+          isEditing: false,
+        }),
+      );
+
+      if (items.length === 0) {
+        toast.error(
+          "No items could be extracted from the image. Please try a clearer image.",
+        );
+        resetSnap();
+        return;
+      }
+
+      setExtractedItems(items);
       setIsLoading(false);
-      setCategory(data["category"]);
-      setCategoryGroup(data["categoryGroup"]);
-      setCategoryChange({ categoryID: data["categoryID"] });
     } catch (error) {
       console.log(error);
       toast.error("Failed to upload image. Please try again.");
@@ -134,42 +186,82 @@ export default function SnapUpload() {
     sethasCaptured(false);
     setIsLoading(true);
     setIsUploading(false);
-    setName("");
-    setAmount(0);
-    setCategory("");
-    setCategoryGroup("");
+    setExtractedItems([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
 
-  const handleSave = async () => {
-    if (!name.trim()) {
-      toast.error("Please enter a name");
+  const toggleItemEditing = (index: number) => {
+    setExtractedItems((items) =>
+      items.map((item, i) =>
+        i === index ? { ...item, isEditing: !item.isEditing } : item,
+      ),
+    );
+  };
+
+  const updateItem = (
+    index: number,
+    field: keyof Omit<ExtractedItem, "isEditing">,
+    value: string | number,
+  ) => {
+    setExtractedItems((items) =>
+      items.map((item, i) =>
+        i === index ? { ...item, [field]: value } : item,
+      ),
+    );
+  };
+
+  const deleteItem = (index: number) => {
+    setExtractedItems((items) => items.filter((_, i) => i !== index));
+  };
+
+  const handleSaveAll = async () => {
+    if (extractedItems.length === 0) {
+      toast.error("No items to save");
       return;
     }
 
-    if (amount <= 0) {
-      toast.error("Please enter a valid amount");
-      return;
-    }
-    if (!category) {
-      toast.error("Please select a category");
-      return;
+    for (let i = 0; i < extractedItems.length; i++) {
+      const item = extractedItems[i];
+      if (!item.name.trim()) {
+        toast.error(`Item ${i + 1}: Name is required`);
+        return;
+      }
+      if (item.amount <= 0) {
+        toast.error(`Item ${i + 1}: Amount must be greater than 0`);
+        return;
+      }
+      if (!item.category) {
+        toast.error(`Item ${i + 1}: Category is required`);
+        return;
+      }
     }
 
-    const result = await addExpenseAction({
-      amount: amount,
-      description: name,
-      category: category,
-      categoryGroup: categoryGroup,
-      categoryId: CategoryChange.categoryID,
-      accountID: account,
-      type: "expense",
-    });
-    if (result?.error) return toast.error(result.message);
-    setIsOpen(false);
-    return toast.success(result.message);
+    try {
+      // Create transactionItem object according to the expected type
+      const transactionItem: any = {};
+      extractedItems.forEach((item, index) => {
+        transactionItem[item.name] = {
+          amount: item.amount,
+          category_id: item.categoryID,
+          user_id: item.user_id,
+          category: item.category,
+        };
+      });
+
+      const result = await NewAddExpenseAction(transactionItem);
+
+      if (!result.error) {
+        toast.success(`Successfully saved ${extractedItems.length} expenses!`);
+        resetSnap();
+      } else {
+        toast.error(result.message || "Failed to save expenses");
+      }
+    } catch (error) {
+      console.error("Error saving expenses:", error);
+      toast.error("Failed to save expenses. Please try again.");
+    }
   };
 
   return (
@@ -203,7 +295,7 @@ export default function SnapUpload() {
               className="w-20 h-20 rounded-lg"
             />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">Receipt captured</p>
+              <p className="text-sm font-medium truncate">Image captured</p>
               <p className="text-xs text-muted-foreground">
                 Details extracted automatically
               </p>
@@ -266,51 +358,107 @@ export default function SnapUpload() {
           </div>
         )}
 
-        {!isLoading && !isUploading && (
-          <Card>
-            <CardContent className="space-y-3 pt-6">
-              <div className="grid w-full items-center gap-3">
-                <Label htmlFor="expense-name">Description</Label>
-                <Input
-                  type="text"
-                  id="expense-name"
-                  placeholder="Description"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="grid w-full items-center gap-3">
-                <Label htmlFor="expense-amount">Amount</Label>
-                <Input
-                  type="number"
-                  id="expense-amount"
-                  placeholder="0.00"
-                  value={amount || ""}
-                  onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-              <div className="grid w-full items-center gap-3">
-                <Label htmlFor="expense-category">Category</Label>
-                <CategoryGroupCombobox
-                  selectedCategory={category}
-                  setSelectedCategory={setCategory}
-                  setCategoryGroup={setCategoryGroup}
-                  onChange={setCategoryChange}
-                />
-              </div>
-              <div className="grid w-full items-center gap-3">
-                <Label htmlFor="expense-category">Account</Label>
-                <AccountSelect selected={account} setSelected={setAccount} />
-              </div>
-            </CardContent>
-            <CardFooter className="flex">
-              <Button onClick={handleSave} className="w-full">
-                Save Expense
+        {!isLoading && !isUploading && extractedItems.length > 0 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-medium">
+                Extracted Items ({extractedItems.length})
+              </h3>
+              <Button
+                onClick={handleSaveAll}
+                className="flex items-center gap-2"
+              >
+                <Save className="w-4 h-4" />
+                Save All
               </Button>
-            </CardFooter>
-          </Card>
+            </div>
+
+            <Accordion type="multiple" className="w-full">
+              {extractedItems.map((item, index) => (
+                <AccordionItem key={index} value={`item-${index}`}>
+                  <div className="flex items-center justify-between w-full">
+                    <AccordionTrigger className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{item.name}</span>
+                        <span className="text-sm text-muted-foreground">
+                          ₹{item.amount.toFixed(2)} - {item.category}
+                        </span>
+                      </div>
+                    </AccordionTrigger>
+                    <div className="flex items-center gap-2 px-4">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleItemEditing(index)}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteItem(index)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <AccordionContent>
+                    <div className="space-y-3 pt-3">
+                      <div className="grid w-full items-center gap-3">
+                        <Label htmlFor={`item-name-${index}`}>
+                          Description
+                        </Label>
+                        <Input
+                          type="text"
+                          id={`item-name-${index}`}
+                          placeholder="Description"
+                          value={item.name}
+                          onChange={(e) =>
+                            updateItem(index, "name", e.target.value)
+                          }
+                          disabled={!item.isEditing}
+                        />
+                      </div>
+                      <div className="grid w-full items-center gap-3">
+                        <Label htmlFor={`item-amount-${index}`}>Amount</Label>
+                        <Input
+                          type="number"
+                          id={`item-amount-${index}`}
+                          placeholder="0.00"
+                          value={item.amount || ""}
+                          onChange={(e) =>
+                            updateItem(
+                              index,
+                              "amount",
+                              parseFloat(e.target.value) || 0,
+                            )
+                          }
+                          min="0"
+                          step="0.01"
+                          disabled={!item.isEditing}
+                        />
+                      </div>
+                      <div className="grid w-full items-center gap-3">
+                        <Label htmlFor={`item-category-${index}`}>
+                          Category
+                        </Label>
+                        <Input
+                          type="text"
+                          id={`item-category-${index}`}
+                          placeholder="Category"
+                          value={item.category}
+                          onChange={(e) =>
+                            updateItem(index, "category", e.target.value)
+                          }
+                          disabled={!item.isEditing}
+                        />
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
         )}
       </DialogContent>
     </Dialog>

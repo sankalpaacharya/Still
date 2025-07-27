@@ -68,7 +68,7 @@ export async function uploadSnapToAI(file: File): Promise<string | null> {
     const contentType = file.type;
     const imageDataUrl = `data:${contentType};base64,${base64Image}`;
 
-    const [categories] = await getCategories();
+    const categories = await getCategories();
     const userData = await getFullUserInfo();
 
     const imagePrompt = buildImagePrompt({

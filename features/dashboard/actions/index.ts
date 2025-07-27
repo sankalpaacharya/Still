@@ -16,11 +16,46 @@ type Expense = {
   accountID: string;
 };
 
+type transaction = {
+  amount: number;
+  category_id: string;
+  user_id: string;
+  category: string;
+};
+
+type transactionItem = {
+  [itemName: string]: transaction;
+};
+
 export type Category = {
   id: string;
   name: string;
   userId: string;
 };
+
+export async function NewAddExpenseAction(data: transactionItem) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError || !user) {
+    return { error: true, message: "User not found" };
+  }
+  const { error: insertError } = await supabase.from("transaction").insert(
+    Object.entries(data).map(([itemName, item]) => ({
+      user_id: user.id,
+      amount: item.amount,
+      description: itemName || "",
+      category_id: item.category_id,
+    })),
+  );
+  if (insertError) {
+    return { error: true, message: insertError.message };
+  }
+  revalidatePath("/dashboard");
+  return { error: false, message: "Expense added successfully" };
+}
 
 export async function addExpenseAction(data: Expense) {
   const supabase = await createClient();
@@ -289,7 +324,7 @@ export async function getCategories() {
 
   const { data, error } = await supabase
     .from("category")
-    .select("name")
+    .select("*")
     .eq("user_id", user.id);
   if (error) return [];
 
