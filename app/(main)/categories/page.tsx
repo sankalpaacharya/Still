@@ -28,7 +28,6 @@ export default async function Page() {
             defaultValues={{
               name: category.name,
               budget: category.budget,
-              type: category.type,
               icon: category.icon,
               color: category.color,
             }}
@@ -49,7 +48,6 @@ export default async function Page() {
           defaultValues={{
             name: "title",
             budget: 100,
-            type: CategoryType.Expense,
             icon: "💻",
             color: "hsl(233,36%,26%)",
           }}

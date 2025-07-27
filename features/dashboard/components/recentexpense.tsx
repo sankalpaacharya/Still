@@ -8,7 +8,7 @@ import { timeSince } from "@/lib/utils";
 
 export const TransactionCard = async () => {
   const transactions = await getRecentTransactions();
-  console.log("transactions", transactions);
+  console.log("all transactions", transactions);
   return (
     <Card className="bg-card/50">
       <CardHeader className="flex flex-row items-center justify-between">
