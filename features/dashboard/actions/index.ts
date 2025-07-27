@@ -21,6 +21,7 @@ type transaction = {
   category_id: string;
   user_id: string;
   category: string;
+  date: string;
 };
 
 type transactionItem = {
@@ -48,6 +49,7 @@ export async function NewAddExpenseAction(data: transactionItem) {
       amount: item.amount,
       description: itemName || "",
       category_id: item.category_id,
+      date: item.date || new Date().toISOString().split("T")[0], // Include date field
     })),
   );
   if (insertError) {

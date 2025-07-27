@@ -30,6 +30,7 @@ type ExtractedItem = {
   category: string;
   categoryID: string;
   user_id: string;
+  date: string;
   isEditing?: boolean;
 };
 
@@ -38,6 +39,7 @@ type details = {
   category: string;
   categoryID: string;
   user_id: string;
+  date: string;
 };
 
 interface transaction {
@@ -45,6 +47,7 @@ interface transaction {
   category: string;
   category_id: string;
   user_id: string;
+  date: string;
 }
 
 interface transactionItem {
@@ -108,6 +111,8 @@ export default function SnapUpload() {
           category: (details as details).category || "",
           categoryID: (details as details).categoryID || "",
           user_id: (details as details).user_id || "",
+          date:
+            (details as details).date || new Date().toISOString().split("T")[0],
           isEditing: false,
         }),
       );
@@ -171,6 +176,8 @@ export default function SnapUpload() {
           category: (details as details).category || "",
           categoryID: (details as details).categoryID || "",
           user_id: (details as details).user_id || "",
+          date:
+            (details as details).date || new Date().toISOString().split("T")[0],
           isEditing: false,
         }),
       );
@@ -255,6 +262,7 @@ export default function SnapUpload() {
           category_id: item.categoryID,
           user_id: item.user_id,
           category: item.category,
+          date: item.date,
         };
       });
 
@@ -389,7 +397,8 @@ export default function SnapUpload() {
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{item.name}</span>
                         <span className="text-sm text-muted-foreground">
-                          ₹{item.amount.toFixed(2)} - {item.category}
+                          ₹{item.amount.toFixed(2)} - {item.category} -{" "}
+                          {item.date}
                         </span>
                       </div>
                     </AccordionTrigger>
@@ -457,6 +466,18 @@ export default function SnapUpload() {
                           value={item.category}
                           onChange={(e) =>
                             updateItem(index, "category", e.target.value)
+                          }
+                          disabled={!item.isEditing}
+                        />
+                      </div>
+                      <div className="grid w-full items-center gap-3">
+                        <Label htmlFor={`item-date-${index}`}>Date</Label>
+                        <Input
+                          type="date"
+                          id={`item-date-${index}`}
+                          value={item.date}
+                          onChange={(e) =>
+                            updateItem(index, "date", e.target.value)
                           }
                           disabled={!item.isEditing}
                         />
