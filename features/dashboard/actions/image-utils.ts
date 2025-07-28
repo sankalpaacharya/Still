@@ -1,5 +1,5 @@
 "use client";
-import { uploadImageAction } from ".";
+import { uploadImageAction, uploadImageFile } from ".";
 
 export async function uploadImageSnap(file: File) {
   try {
@@ -7,6 +7,9 @@ export async function uploadImageSnap(file: File) {
     formData.append("image", file);
 
     const result = await uploadImageAction(formData);
+
+    await uploadImageFile(file);
+
     return result;
   } catch (error) {
     console.error("Upload error:", error);

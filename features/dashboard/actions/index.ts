@@ -43,20 +43,27 @@ export async function NewAddExpenseAction(data: transactionItem) {
   if (userError || !user) {
     return { error: true, message: "User not found" };
   }
-  const { error: insertError } = await supabase.from("transaction").insert(
-    Object.entries(data).map(([itemName, item]) => ({
-      user_id: user.id,
-      amount: item.amount,
-      description: itemName || "",
-      category_id: item.category_id,
-      date: item.date || new Date().toISOString().split("T")[0], // Include date field
-    })),
-  );
+  const { data: insertedData, error: insertError } = await supabase
+    .from("transaction")
+    .insert(
+      Object.entries(data).map(([itemName, item]) => ({
+        user_id: user.id,
+        amount: item.amount,
+        description: itemName || "",
+        category_id: item.category_id,
+        date: item.date || new Date().toISOString().split("T")[0],
+      })),
+    )
+    .select();
   if (insertError) {
     return { error: true, message: insertError.message };
   }
   revalidatePath("/dashboard");
-  return { error: false, message: "Expense added successfully" };
+  return {
+    error: false,
+    message: "Expense added successfully",
+    data: insertedData,
+  };
 }
 
 export async function addExpenseAction(data: Expense) {
@@ -372,6 +379,73 @@ export async function uploadImageAction(formData: FormData) {
     }
   } catch (error) {
     console.error("Upload error:", error);
+    throw error;
+  }
+}
+
+export async function uploadImageFile(file: File) {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+    if (userError || !user) {
+      throw new Error("Unauthorized");
+    }
+    const { data, error } = await supabase.storage
+      .from("items-receipts")
+      .upload(`${user.id}/${file.name}`, file, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+    if (error) {
+      throw new Error(`Upload failed: ${error.message}`);
+    }
+  } catch (error) {
+    console.error("Image upload failed:", error);
+    throw error;
+  }
+  revalidatePath("/dashboard");
+  return { success: true, message: "Image uploaded successfully" };
+}
+
+export async function renameImageFile(
+  oldFilename: string,
+  newFilename: string,
+) {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+    if (userError || !user) {
+      throw new Error("Unauthorized");
+    }
+
+    const oldPath = `${user.id}/${oldFilename}.png`;
+    const newPath = `${user.id}/${newFilename}.png`;
+
+    const { data: copyData, error: copyError } = await supabase.storage
+      .from("items-receipts")
+      .copy(oldPath, newPath);
+
+    if (copyError) {
+      throw new Error(`Copy failed: ${copyError.message}`);
+    }
+
+    const { error: deleteError } = await supabase.storage
+      .from("items-receipts")
+      .remove([oldPath]);
+
+    if (deleteError) {
+      console.error("Failed to delete old file:", deleteError);
+    }
+
+    return { success: true, message: "Image renamed successfully" };
+  } catch (error) {
+    console.error("Image rename failed:", error);
     throw error;
   }
 }
