@@ -8,9 +8,12 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-type HeatMapProps = { children: React.ReactNode; date: string };
+type HeatMapProps = { children: React.ReactNode; transactions?: any };
 
-export default async function HeatMapSheet({ children }: HeatMapProps) {
+export default async function HeatMapSheet({
+  children,
+  transactions,
+}: HeatMapProps) {
   return (
     <Sheet>
       <SheetTrigger>{children}</SheetTrigger>

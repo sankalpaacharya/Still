@@ -1,6 +1,5 @@
 import toast from "react-hot-toast";
 import { useBudgetStore, type CategoryGroup, type Target } from "./store";
-// change to server, i will not turn on rls for now so it's safe to call from server
 import { createClient } from "@/utils/supabase/client";
 
 interface BudgetStoreData {

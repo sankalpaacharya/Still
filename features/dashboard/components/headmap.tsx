@@ -17,6 +17,7 @@ export async function SpendingHeatmap() {
     (sum, amount) => sum + amount,
     0,
   );
+
   const currentMonth = format(today, "MMMM yyyy");
 
   return (
@@ -64,7 +65,6 @@ export async function SpendingHeatmap() {
           ))}
         </div>
 
-        {/* Calendar Grid */}
         <div className="grid grid-cols-7 gap-1 sm:gap-2">
           {Array.from({ length: daysInMonth + monthStartDay }).map(
             (_, index) => {
@@ -76,7 +76,7 @@ export async function SpendingHeatmap() {
               return index < monthStartDay ? (
                 <div key={index} className="aspect-square" />
               ) : (
-                <HeatMapSheet key={index} date="">
+                <HeatMapSheet key={index}>
                   <div
                     className={`
                   aspect-square border-2 flex items-center justify-center 
