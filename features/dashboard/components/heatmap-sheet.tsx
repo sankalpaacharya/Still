@@ -10,7 +10,7 @@ import {
 
 type HeatMapProps = { children: React.ReactNode; date: string };
 
-export default function HeatMapSheet({ children }: HeatMapProps) {
+export default async function HeatMapSheet({ children }: HeatMapProps) {
   return (
     <Sheet>
       <SheetTrigger>{children}</SheetTrigger>

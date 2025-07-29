@@ -3,6 +3,7 @@ import { Calendar, TrendingUp, IndianRupee } from "lucide-react";
 import { startOfMonth, getDay, getDaysInMonth, format } from "date-fns";
 import { getTransactionOfMonth } from "../actions";
 import HeatMapSheet from "./heatmap-sheet";
+import { getAllMonthExpenses } from "../actions";
 
 export async function SpendingHeatmap() {
   const today = new Date();
@@ -10,7 +11,7 @@ export async function SpendingHeatmap() {
   const daysInMonth = getDaysInMonth(today);
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const all = await getTransactionOfMonth();
-  console.log(all);
+  const data = await getAllMonthExpenses();
 
   const totalSpending = Object.values(all).reduce(
     (sum, amount) => sum + amount,
