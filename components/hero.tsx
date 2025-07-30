@@ -18,7 +18,7 @@ export default function Hero() {
     <main className="wrapper flex justify-center py-20 flex-col items-center space-y-5 relative">
       <p className="border border-gray-800 px-3 rounded-full shadow-xl inline-flex items-center gap-2">
         <span className="h-2 w-2 rounded-full bg-green-700"></span>
-        Still is now available
+        Bloomi is now available
       </p>
       <div>
         <h2 className="text-5xl md:text-6xl font-extrabold text-center">
