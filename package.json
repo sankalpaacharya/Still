@@ -33,6 +33,7 @@
     "@tanstack/react-query": "^5.83.0",
     "@tanstack/react-table": "^8.21.3",
     "@types/formidable": "^3.4.5",
+    "@types/uuid": "^10.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -59,6 +60,7 @@
     "remark-gfm": "^4.0.1",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.3.0",
+    "uuid": "^11.1.0",
     "zod": "^3.24.4",
     "zustand": "^5.0.4"
   },
