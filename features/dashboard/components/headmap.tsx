@@ -6,6 +6,8 @@ import HeatMapSheet from "./heatmap-sheet";
 
 export async function SpendingHeatmap() {
   const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonthIndex = today.getMonth();
   const monthStartDay = getDay(startOfMonth(today));
   const daysInMonth = getDaysInMonth(today);
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -75,7 +77,14 @@ export async function SpendingHeatmap() {
               return index < monthStartDay ? (
                 <div key={index} className="aspect-square" />
               ) : (
-                <HeatMapSheet key={index} date="">
+                <HeatMapSheet
+                  key={index}
+                  date={format(
+                    new Date(currentYear, currentMonthIndex, dayNumber),
+                    "yyyy-MM-dd HH:mm:ss.SSSxxx",
+                  )}
+                  amount={amount}
+                >
                   <div
                     className={`
                   aspect-square border-2 flex items-center justify-center 

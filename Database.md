@@ -132,6 +132,31 @@ This document lists all database functions available in the `features/*/actions/
   - Selects amount and date from `transaction` table for current month
 - **Returns**: Object with daily spending totals
 
+### `getTransactionsByDate(dateStr: string)`
+- **Purpose**: Retrieves all transactions for a specific date with category enrichment
+- **Parameters**: 
+  - `dateStr`: string - Date in timestamp format (YYYY-MM-DD HH:mm:ss.SSS+00)
+- **Complex Logic**: 
+  - Extracts date part from timestamp format
+  - Uses date range query (start of day to end of day)
+  - Enriches transactions with category details
+- **Database Operations**: 
+  - Selects from `transaction` table with date range filtering and user filtering
+  - Joins with `category` table for enrichment (name, icon, budget, type)
+- **Returns**: Array of enriched transaction objects for the specified date
+- **Data Enhancement**: Adds category info, icon, budget, and type to each transaction
+
+### `updateTransactionAction(data)`
+- **Purpose**: Updates an existing transaction (simplified version without account balance management)
+- **Parameters**: 
+  - `data`: Object containing id, description, amount, date, categoryID, category
+- **Database Operations**: 
+  - Updates `transaction` table by `id` and `user_id`
+  - Updates: description, amount, date, category_id
+- **Returns**: Success/error message
+- **Path Revalidation**: `/dashboard`, `/cashflow`
+- **Note**: This is a simplified update function that doesn't handle account balance changes
+
 ### `getCategories()`
 - **Purpose**: Retrieves all user categories
 - **Database Operations**: 
@@ -179,10 +204,22 @@ This document lists all database functions available in the `features/*/actions/
 
 ### Duplicate Functions
 - `addExpenseAction` exists in both `cashflow` and `dashboard` actions with different implementations
+- `updateTransactionAction` vs `updateExpenseAction` - similar functionality but different complexity levels
 - Consider consolidating or renaming for clarity
 
 ### Table Naming Inconsistency
 - `transaction` vs `transactions` - standardize table naming
+- Most functions now use `transaction` (singular) but some still reference `transactions` (plural)
+
+### Transaction Update Functions
+- `updateTransactionAction` (dashboard) - Simple update without account balance management
+- `updateExpenseAction` (cashflow) - Complex update with account balance management
+- Consider consolidating these or clearly documenting when to use each
+
+### Date Handling Improvements
+- `getTransactionsByDate` now properly handles timestamp format dates
+- Improved date range queries for better timezone handling
+- Consider standardizing date format across all functions
 
 ### Missing Error Handling
 - Some functions don't handle all potential database errors
