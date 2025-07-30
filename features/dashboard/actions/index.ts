@@ -1,8 +1,9 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
-import { getDaysInMonth, getDay } from "date-fns";
+import { getDaysInMonth } from "date-fns";
 import { uploadSnapToAI } from "@/server/chat";
+import { format } from "date-fns";
 
 type Expense = {
   categoryGroup: string;
@@ -374,4 +375,37 @@ export async function uploadImageAction(formData: FormData) {
     console.error("Upload error:", error);
     throw error;
   }
+}
+
+export async function getAllMonthExpenses() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (!user || userError) return {};
+
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const { data } = await supabase
+    .from("transaction")
+    .select("id, amount, date, description, category_id(name)")
+    .eq("user_id", user.id)
+    .gte("date", startOfMonth.toISOString())
+    .lte("date", endOfMonth.toISOString());
+  if (!data) return [];
+
+  // ik this is not a way of doing and it sucks but still it's fine for now
+  const hashMap: Record<string, (typeof data)[0][]> = {};
+
+  for (let tx of data) {
+    const formatedDate = format(new Date(data[0].date), "dd-MM-yyyy");
+    if (!hashMap[formatedDate]) {
+      hashMap[formatedDate] = [tx];
+    }
+  }
+
+  return hashMap;
 }

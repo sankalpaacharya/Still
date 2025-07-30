@@ -3,6 +3,7 @@ import { Calendar, TrendingUp, IndianRupee } from "lucide-react";
 import { startOfMonth, getDay, getDaysInMonth, format } from "date-fns";
 import { getTransactionOfMonth } from "../actions";
 import HeatMapSheet from "./heatmap-sheet";
+import { getAllMonthExpenses } from "../actions";
 
 export async function SpendingHeatmap() {
   const today = new Date();
@@ -10,12 +11,13 @@ export async function SpendingHeatmap() {
   const daysInMonth = getDaysInMonth(today);
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const all = await getTransactionOfMonth();
-  console.log(all);
+  const data: any = await getAllMonthExpenses();
 
   const totalSpending = Object.values(all).reduce(
     (sum, amount) => sum + amount,
     0,
   );
+
   const currentMonth = format(today, "MMMM yyyy");
 
   return (
@@ -63,7 +65,6 @@ export async function SpendingHeatmap() {
           ))}
         </div>
 
-        {/* Calendar Grid */}
         <div className="grid grid-cols-7 gap-1 sm:gap-2">
           {Array.from({ length: daysInMonth + monthStartDay }).map(
             (_, index) => {
@@ -75,7 +76,14 @@ export async function SpendingHeatmap() {
               return index < monthStartDay ? (
                 <div key={index} className="aspect-square" />
               ) : (
-                <HeatMapSheet key={index} date="">
+                <HeatMapSheet
+                  key={index}
+                  transactions={
+                    data[
+                      `${dayNumber.toString().padStart(2, "0")}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getFullYear()}`
+                    ]
+                  }
+                >
                   <div
                     className={`
                   aspect-square border-2 flex items-center justify-center 

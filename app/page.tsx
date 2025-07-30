@@ -213,7 +213,7 @@ const Pricing = () => {
             personalized support.
           </p>
 
-          <Button className="w-full font-black bg-purple-600 hover:bg-purple-700 py-5 rounded-xl mb-4 flex items-center justify-center">
+          <Button className="w-full text-white font-black bg-purple-600 hover:bg-purple-700 py-5 rounded-xl mb-4 flex items-center justify-center">
             Buy Now <FaArrowRight />
           </Button>
 
@@ -242,7 +242,7 @@ const Pricing = () => {
             personalized support.
           </p>
 
-          <Button className="w-full font-black bg-purple-600 hover:bg-purple-700 py-5 rounded-xl mb-4 flex items-center justify-center">
+          <Button className="w-full text-white font-black bg-purple-600 hover:bg-purple-700 py-5 rounded-xl mb-4 flex items-center justify-center">
             Buy Now <FaArrowRight />
           </Button>
 

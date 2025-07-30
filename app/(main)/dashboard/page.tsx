@@ -6,7 +6,7 @@ import WelcomeText from "@/features/dashboard/components/welcometext";
 import { WelcomeTextSkeleton } from "@/components/skeleton/welcometext-skeleton";
 import NewAddExpenseModalButton from "@/features/dashboard/components/newModal";
 import { TransactionCard } from "@/features/dashboard/components/recentexpense";
-import { SpendingHeatmap } from "@/features/dashboard/components/headmap";
+import { SpendingHeatmap } from "@/features/dashboard/components/heatmap";
 
 export default async function page() {
   return (
