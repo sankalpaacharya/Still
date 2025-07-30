@@ -391,7 +391,7 @@ export async function getAllMonthExpenses() {
 
   const { data } = await supabase
     .from("transaction")
-    .select("id, amount, date")
+    .select("id, amount, date, description, category_id(name)")
     .eq("user_id", user.id)
     .gte("date", startOfMonth.toISOString())
     .lte("date", endOfMonth.toISOString());

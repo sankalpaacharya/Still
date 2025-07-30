@@ -11,7 +11,7 @@ export async function SpendingHeatmap() {
   const daysInMonth = getDaysInMonth(today);
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const all = await getTransactionOfMonth();
-  const data = await getAllMonthExpenses();
+  const data: any = await getAllMonthExpenses();
 
   const totalSpending = Object.values(all).reduce(
     (sum, amount) => sum + amount,
@@ -76,7 +76,14 @@ export async function SpendingHeatmap() {
               return index < monthStartDay ? (
                 <div key={index} className="aspect-square" />
               ) : (
-                <HeatMapSheet key={index}>
+                <HeatMapSheet
+                  key={index}
+                  transactions={
+                    data[
+                      `${dayNumber.toString().padStart(2, "0")}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getFullYear()}`
+                    ]
+                  }
+                >
                   <div
                     className={`
                   aspect-square border-2 flex items-center justify-center 
