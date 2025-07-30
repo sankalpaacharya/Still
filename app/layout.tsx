@@ -32,8 +32,8 @@ const sfPro = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "fixyourspend",
-  description: "Still Your Financial Guide",
+  title: "bloomi.live",
+  description: "bloomi Your Financial Guide",
 };
 
 export default function RootLayout({

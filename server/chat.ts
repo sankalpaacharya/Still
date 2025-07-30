@@ -60,7 +60,7 @@ export async function chatWithStream(
 
 export async function uploadSnapToAI(file: File): Promise<string | null> {
   try {
-    const { client, model } = getLLMClientAndModel("groq");
+    const { client, model } = getLLMClientAndModel("openai");
     const groqClient = client as Groq;
 
     const buffer = await file.arrayBuffer();

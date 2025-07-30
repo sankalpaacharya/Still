@@ -120,7 +120,7 @@ export default function ChatInput({
         </div>
       </div>
       <div className="text-xs text-center mt-2 text-gray-500">
-        Sanku is designed to help you achieve your daily goals
+        Bloomi is designed to help you achieve your daily goals
       </div>
     </div>
   );

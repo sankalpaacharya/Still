@@ -2,6 +2,7 @@ import { Card, CardTitle, CardContent, CardHeader } from "@/components/ui/card";
 import { Calendar, TrendingUp, IndianRupee } from "lucide-react";
 import { startOfMonth, getDay, getDaysInMonth, format } from "date-fns";
 import { getTransactionOfMonth } from "../actions";
+import HeatMapSheet from "./heatmap-sheet";
 
 export async function SpendingHeatmap() {
   const today = new Date();
@@ -9,6 +10,7 @@ export async function SpendingHeatmap() {
   const daysInMonth = getDaysInMonth(today);
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const all = await getTransactionOfMonth();
+  console.log(all);
 
   const totalSpending = Object.values(all).reduce(
     (sum, amount) => sum + amount,
@@ -73,9 +75,9 @@ export async function SpendingHeatmap() {
               return index < monthStartDay ? (
                 <div key={index} className="aspect-square" />
               ) : (
-                <div
-                  key={index}
-                  className={`
+                <HeatMapSheet key={index} date="">
+                  <div
+                    className={`
                   aspect-square border-2 flex items-center justify-center 
                   font-semibold rounded-xl transition-all duration-300 ease-out
                   hover:scale-105 hover:shadow-lg cursor-pointer
@@ -91,26 +93,27 @@ export async function SpendingHeatmap() {
                       : "bg-muted/30 hover:bg-muted/50"
                   }
                 `}
-                >
-                  <span
-                    className={`
+                  >
+                    <span
+                      className={`
                   text-xs sm:text-sm font-bold mb-1 
                   ${isToday ? "text-primary" : "text-foreground"}
                 `}
-                  >
-                    {dayNumber}
-                  </span>
+                    >
+                      {dayNumber}
+                    </span>
 
-                  <div className="flex items-center justify-center min-h-[20px]">
-                    {amount <= 0 ? (
-                      <span className="text-base sm:text-lg opacity-60 group-hover:opacity-100 transition-opacity"></span>
-                    ) : (
-                      <span className="text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
-                        ₹{amount}
-                      </span>
-                    )}
+                    <div className="flex items-center justify-center min-h-[20px]">
+                      {amount <= 0 ? (
+                        <span className="text-base sm:text-lg opacity-60 group-hover:opacity-100 transition-opacity"></span>
+                      ) : (
+                        <span className="text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                          ₹{amount}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
+                </HeatMapSheet>
               );
             },
           )}

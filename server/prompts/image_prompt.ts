@@ -10,7 +10,7 @@ export const buildImagePrompt = ({
   return `
     You are an AI assistant for a finance tracking app helping users in India categorize their purchases.
 
-The user has uploaded an image of a product(s) they bought. Analyze the image and extract the product information to return a pure JSON response.
+The user has uploaded an image of a product(s) they bought. Analyze the image and extract the product information to return a pure JSON response. Extract all items from receipt without any mistake 
 
 **Requirements:**
 - Extract the product name and estimate its price in Indian Rupees (INR)

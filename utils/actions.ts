@@ -4,7 +4,7 @@ import { createClient } from "./supabase/server";
 
 export const signInWithGoogle = async () => {
   const local = "http://localhost:3000/auth/callback";
-  const production = "https://fixyourspend.vercel.app/auth/callback";
+  const production = "https://bloomi.live/auth/callback";
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
