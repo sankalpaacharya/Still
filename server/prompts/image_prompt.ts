@@ -53,6 +53,7 @@ RETURN ONLY a JSON object with the follwing structure:
 - Return ONLY the raw JSON object - no markdown code blocks no backticks, no "json" label
 - Start your response directly with { and end with }
 - If the image is unclear, inappropriate, explicit, NSFW, or does not show a recognizable product, return: {"error": "Invalid or inappropriate image"}
+- If you cant recognise the product, return empty JSON object {}
 - If the image shows a person holding/using a product, focus on identifying the product itself
 - if image is any receipt or bill or a snapshot, then try to extract multiple or single product from it.
 - Use only the user's existing categories - do not invent new ones
