@@ -2,7 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getDaysInMonth, getDay } from "date-fns";
-import { uploadSnapToAI } from "@/server/chat";
+import { uploadSnapToAI, EditWithAISnap } from "@/server/chat";
 
 type Expense = {
   categoryGroup: string;
@@ -16,7 +16,7 @@ type Expense = {
   accountID: string;
 };
 
-type transaction = {
+export type transaction = {
   amount: number;
   category_id: string;
   user_id: string;
@@ -24,7 +24,7 @@ type transaction = {
   date: string;
 };
 
-type transactionItem = {
+export type transactionItem = {
   [itemName: string]: transaction;
 };
 
@@ -539,5 +539,31 @@ export async function renameImageFile(
   } catch (error) {
     console.error("Image rename failed:", error);
     throw error;
+  }
+}
+
+export async function editWithAIServerAction(expenses: any, query: string) {
+  const result = await EditWithAISnap(expenses, query);
+
+  let parsed;
+  if (typeof result === "string") {
+    try {
+      parsed = JSON.parse(result);
+    } catch {
+      throw new Error("AI result is not valid JSON");
+    }
+  } else {
+    parsed = result;
+  }
+
+  if (parsed && Array.isArray(parsed)) {
+    return parsed;
+  } else if (parsed && typeof parsed === "object") {
+    return Object.entries(parsed).map(([name, details]: [string, any]) => ({
+      name,
+      ...details,
+    }));
+  } else {
+    throw new Error("Unexpected AI edit result");
   }
 }

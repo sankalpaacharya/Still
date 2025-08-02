@@ -1,5 +1,6 @@
 import { system_prompt } from "./prompts/prompt3";
 import { buildImagePrompt } from "./prompts/image_prompt";
+import { buildEditPrompt } from "./prompts/edit_prompt";
 import { getFullUserInfo } from "../features/chat/actions/index";
 import Groq from "groq-sdk";
 import { GoogleGenAI } from "@google/genai";
@@ -8,9 +9,10 @@ import {
   getLLMClientAndModel,
   handleGroqOrOpenAIResponse,
   handleGoogleResponse,
+  handleEditResponse,
 } from "./service/llm_service";
 import { getCategories } from "@/features/dashboard/actions/index";
-
+import { transactionItem } from "@/features/dashboard/actions/index";
 export async function chatWithStream(
   provider: "groq" | "openai" | "google",
   query: string,
@@ -60,7 +62,7 @@ export async function chatWithStream(
 
 export async function uploadSnapToAI(file: File): Promise<string | null> {
   try {
-    const { client, model } = getLLMClientAndModel("openai");
+    const { client, model } = getLLMClientAndModel("groq");
     const groqClient = client as Groq;
 
     const buffer = await file.arrayBuffer();
@@ -95,4 +97,14 @@ export async function uploadSnapToAI(file: File): Promise<string | null> {
     console.error("Image upload to AI failed:", error);
     return null;
   }
+}
+
+export async function EditWithAISnap(expenses: transactionItem, query: string) {
+  const { client, model } = getLLMClientAndModel("groq");
+  const prompt = buildEditPrompt({ expenses: JSON.stringify(expenses) });
+  let messages: any = [
+    { role: "system", content: prompt },
+    { role: "user", content: query },
+  ];
+  return handleEditResponse({ client, model, messages });
 }
