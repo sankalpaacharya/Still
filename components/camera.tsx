@@ -1,4 +1,5 @@
 "use client";
+import { EditWithAIButton } from "@/features/dashboard/components/edit-with-ai-button";
 import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import { Camera, RotateCcw, Upload, Edit, Trash2, Save } from "lucide-react";
@@ -408,13 +409,19 @@ export default function SnapUpload() {
               <h3 className="text-lg font-medium">
                 Extracted Items ({extractedItems.length})
               </h3>
-              <Button
-                onClick={handleSaveAll}
-                className="flex items-center gap-2"
-              >
-                <Save className="w-4 h-4" />
-                Save All
-              </Button>
+              <div className="flex gap-2">
+                <EditWithAIButton
+                  expenses={extractedItems}
+                  onEdit={(editedExpenses) => setExtractedItems(editedExpenses)}
+                />
+                <Button
+                  onClick={handleSaveAll}
+                  className="flex items-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  Save All
+                </Button>
+              </div>
             </div>
 
             <Accordion type="multiple" className="w-full">

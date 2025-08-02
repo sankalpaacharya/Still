@@ -26,7 +26,7 @@ export default function Navbar() {
   return (
     <>
       <nav className="wrapper p-5 py-7 flex justify-between items-center">
-        <h2 className="flex items-center text-3xl">🎯 Still</h2>
+        <h2 className="flex items-center text-3xl">🎯 Bloomi</h2>
         <div className="flex gap-4 items-center">
           <div className="gap-4 items-center hidden md:flex">
             {navLinks.map((link) => (

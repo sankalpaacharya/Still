@@ -2,7 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { getDaysInMonth, getDay } from "date-fns";
-import { uploadSnapToAI } from "@/server/chat";
+import { uploadSnapToAI, EditWithAISnap } from "@/server/chat";
 
 type Expense = {
   categoryGroup: string;
@@ -16,7 +16,7 @@ type Expense = {
   accountID: string;
 };
 
-type transaction = {
+export type transaction = {
   amount: number;
   category_id: string;
   user_id: string;
@@ -24,7 +24,7 @@ type transaction = {
   date: string;
 };
 
-type transactionItem = {
+export type transactionItem = {
   [itemName: string]: transaction;
 };
 
@@ -323,6 +323,98 @@ export async function getTransactionOfMonth() {
   return spentInDay;
 }
 
+export async function getTransactionsByDate(dateStr: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (!user || userError) return [];
+
+  const dateOnly = dateStr.split(" ")[0];
+  console.log("Original dateStr:", dateStr);
+  console.log("Extracted dateOnly:", dateOnly);
+
+  const startOfDay = `${dateOnly} 00:00:00.000+00`;
+  const endOfDay = `${dateOnly} 23:59:59.999+00`;
+
+  console.log("Using date range:", startOfDay, "to", endOfDay);
+
+  let { data: transactions, error } = await supabase
+    .from("transaction")
+    .select("*")
+    .eq("user_id", user.id)
+    .gte("date", startOfDay)
+    .lte("date", endOfDay)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Database error:", error);
+    return [];
+  }
+
+  if (!transactions) return [];
+
+  const { data: categories } = await supabase
+    .from("category")
+    .select("id, name, icon, budget, type")
+    .eq("user_id", user.id);
+
+  if (!categories) return transactions;
+
+  const enrichedTransactions = transactions.map((transaction) => {
+    const categoryInfo = categories.find(
+      (cat) => cat.id === transaction.category_id,
+    );
+    return {
+      ...transaction,
+      category: categoryInfo?.name || "Uncategorized",
+      icon: categoryInfo?.icon || "📝",
+      budget: categoryInfo?.budget || 0,
+      type: categoryInfo?.type || "expense",
+    };
+  });
+
+  return enrichedTransactions;
+}
+
+export async function updateTransactionAction(data: {
+  id: string;
+  description: string;
+  amount: number;
+  date: string;
+  categoryID: string;
+  category: string;
+}) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (!user || userError) {
+    return { error: true, message: "User not found" };
+  }
+
+  const { error: updateError } = await supabase
+    .from("transaction")
+    .update({
+      description: data.description,
+      amount: data.amount,
+      date: data.date,
+      category_id: data.categoryID,
+    })
+    .eq("id", data.id)
+    .eq("user_id", user.id);
+
+  if (updateError) {
+    return { error: true, message: "Failed to update transaction" };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/cashflow");
+  return { error: false, message: "Transaction updated successfully" };
+}
+
 export async function getCategories() {
   const supabase = await createClient();
   const {
@@ -447,5 +539,31 @@ export async function renameImageFile(
   } catch (error) {
     console.error("Image rename failed:", error);
     throw error;
+  }
+}
+
+export async function editWithAIServerAction(expenses: any, query: string) {
+  const result = await EditWithAISnap(expenses, query);
+
+  let parsed;
+  if (typeof result === "string") {
+    try {
+      parsed = JSON.parse(result);
+    } catch {
+      throw new Error("AI result is not valid JSON");
+    }
+  } else {
+    parsed = result;
+  }
+
+  if (parsed && Array.isArray(parsed)) {
+    return parsed;
+  } else if (parsed && typeof parsed === "object") {
+    return Object.entries(parsed).map(([name, details]: [string, any]) => ({
+      name,
+      ...details,
+    }));
+  } else {
+    throw new Error("Unexpected AI edit result");
   }
 }
