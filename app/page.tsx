@@ -79,13 +79,13 @@ const HowItWorks = () => {
       id: 2,
       title: "Track Your Expenses Easily",
       description:
-        "Log your expenses manually or snap a receipt—Sanku will take care of the rest.",
+        "Log your expenses manually or snap a receipt, Sanku will take care of the rest.",
     },
     {
       id: 3,
       title: "Let Sanku Do the Heavy Lifting",
       description:
-        "Meet Sanku, your smart (and slightly sassy) AI assistant who helps you manage—and sometimes roast—you about your spending habits.",
+        "Meet Sanku, your smart (and slightly sassy) AI assistant who helps you manage and sometimes roast you about your spending habits.",
     },
   ];
   return (
@@ -198,6 +198,26 @@ const Testimonials = () => {
 };
 
 const Pricing = () => {
+  const free = [
+    {
+      id: 1,
+      perks: "Dashboard to summarize your expenses",
+    },
+  ];
+  const monthly = [
+    {
+      id: 1,
+      perks: "Get access to Sanku, your personalised AI assistant",
+    },
+    {
+      id: 2,
+      perks: "Dashboard to summarize your expenses",
+    },
+    {
+      id: 3,
+      perks: "Access to photo tracking with snap",
+    },
+  ];
   return (
     <div className="wrapper flex flex-col justify-center items-center mt-20 md:mt-30 space-y-5 relative px-4 md:px-6">
       <span className="border shadow-xl border-gray-800 px-3 py-1 rounded-full">
@@ -217,43 +237,32 @@ const Pricing = () => {
       <div className="flex flex-col md:flex-row gap-5">
         {/* cards */}
         <div className="rounded-3xl p-8 border border-gray-800">
-          <h2 className="text-xl font-medium mb-4">Monthly</h2>
+          <h2 className="text-xl font-medium mb-4">Free tier</h2>
           <div className="flex items-baseline mb-6">
-            <span className="text-5xl font-bold">₹149</span>
-            <span className="text-gray-400">/month</span>
+            <span className="text-5xl font-bold">Free</span>
           </div>
-          <p className="text-gray-300 mb-8">
-            Take your productivity to the next level with advanced tools and
-            personalized support.
-          </p>
-
           <Button className="w-full font-black bg-purple-600 hover:bg-purple-700 py-5 rounded-xl mb-4 flex items-center justify-center">
-            Buy Now <FaArrowRight />
+            Try Now <FaArrowRight />
           </Button>
 
-          <p className="text-sm text-center text-gray-500 mb-8">
-            Billed in one annual payment.
-          </p>
-
-          <h3 className="font-medium mb-4">Standard plus:</h3>
+          <h3 className="font-medium mb-4">Bloomi Free:</h3>
           <ul className="space-y-3">
-            {[1, 2, 3, 4, 5].map((b) => (
-              <li key={b} className="flex items-center space-x-2">
+            {free.map((f) => (
+              <li key={f.id} className="flex items-center space-x-2">
                 <Check size={20} />
-                <span>Custom Task Categories</span>
+                <span>{f.perks}</span>
               </li>
             ))}
           </ul>
         </div>
         <div className="rounded-3xl p-8 border border-gray-800">
-          <h2 className="text-xl font-medium mb-4">Annual</h2>
+          <h2 className="text-xl font-medium mb-4">Paid</h2>
           <div className="flex items-baseline mb-6">
-            <span className="text-5xl font-bold">₹1599</span>
-            <span className="text-gray-400">/year</span>
+            <span className="text-5xl font-bold">₹199</span>
+            <span className="text-gray-400">/month</span>
           </div>
           <p className="text-gray-300 mb-8">
-            Take your productivity to the next level with advanced tools and
-            personalized support.
+            Improve your budget with advanced tools and personal AI support
           </p>
 
           <Button className="w-full font-black bg-purple-600 hover:bg-purple-700 py-5 rounded-xl mb-4 flex items-center justify-center">
@@ -264,12 +273,12 @@ const Pricing = () => {
             Billed in one annual payment.
           </p>
 
-          <h3 className="font-medium mb-4">Standard plus:</h3>
+          <h3 className="font-medium mb-4">Bloomi pro+:</h3>
           <ul className="space-y-3">
-            {[1, 2, 3, 4, 5].map((b) => (
-              <li key={b} className="flex items-center space-x-2">
+            {monthly.map((m) => (
+              <li key={m.id} className="flex items-center space-x-2">
                 <Check size={20} />
-                <span>Custom Task Categories</span>
+                <span>{m.perks}</span>
               </li>
             ))}
           </ul>
