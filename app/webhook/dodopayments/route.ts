@@ -14,7 +14,10 @@ export async function POST(request: Request) {
   };
 
   await webhook.verify(rawBody, webhookHeaders);
-  //   const payload = JSON.parse(rawBody) as any;
-
-  // Process the payload according to your business logic
+  const payload = JSON.parse(rawBody);
+  switch (payload.type) {
+    case "payment.succeeded":
+      console.log("payment successfull fuckers");
+      break;
+  }
 }
