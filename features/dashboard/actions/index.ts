@@ -224,6 +224,94 @@ export async function mostSpentCategoryWithBudget() {
   }));
 }
 
+export async function getTopCategories(): Promise<{
+  name: string;
+  category_id: string;
+  amount: number;
+  icon: string;
+}> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (!user || userError)
+    return {
+      name: "No Expenses found",
+      category_id: "",
+      amount: 0,
+      icon: "default-icon",
+    };
+
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const monthKey = `${now.getFullYear()}-${(now.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-01`;
+
+  const { data: transactions, error } = await supabase
+    .from("transaction")
+    .select("category_id, amount")
+    .eq("user_id", user.id)
+    .gte("created_at", startOfMonth.toISOString())
+    .lte("created_at", endOfMonth.toISOString());
+  if (error || !transactions)
+    return {
+      name: "No Expenses found",
+      category_id: "",
+      amount: 0,
+      icon: "default-icon",
+    };
+
+  const { data: category } = await supabase
+    .from("category")
+    .select("id, name, icon")
+    .in(
+      "id",
+      transactions.map((tx) => tx.category_id),
+    );
+  if (!category)
+    return {
+      name: "No Expenses found",
+      category_id: "",
+      amount: 0,
+      icon: "default-icon",
+    };
+
+  const grouped: Record<
+    string,
+    { name: string; category_id: string; amount: number; icon: string }
+  > = {};
+
+  for (const tx of transactions) {
+    const id = tx.category_id;
+    if (!grouped[id]) {
+      grouped[id] = {
+        name: category.find((c) => c.id === id)?.name || "Unknown",
+        category_id: tx.category_id,
+        amount: 0,
+        icon: category.find((c) => c.id === id)?.icon || "default-icon",
+      };
+    }
+    grouped[id].amount += tx.amount;
+  }
+
+  const top1 = Object.values(grouped)
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, 1);
+  console.log("Top category:", top1);
+  return (
+    top1[0] || {
+      name: "No Expenses found",
+      category_id: "",
+      amount: 0,
+      icon: "default-icon",
+    }
+  );
+}
+
 // put limit here
 export async function getRecentTransactions() {
   const supabase = await createClient();

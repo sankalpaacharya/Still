@@ -2,7 +2,7 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { CreditCard, Flame, Landmark, HandCoins } from "lucide-react";
 import { getUserAccounts } from "@/features/account/actions";
-import { getTotalSpendingThisMonth } from "../actions";
+import { getTotalSpendingThisMonth, getTopCategories } from "../actions";
 import { cn } from "@/lib/utils";
 import { getTotalAmountByType } from "@/features/cashflow/actions";
 
@@ -25,14 +25,15 @@ export default async function ExpenseStats() {
   const total = accounts.reduce((sum, acc) => sum + acc.amount, 0);
   const todayDate = new Date().getDate();
   const avgDailySpending = parseFloat((totalSpending / todayDate).toFixed(2));
+  const topCategory = await getTopCategories();
 
   return (
     <div className="mb-6 animate-fade-in">
       {/* Mobile: 2x2 grid with compact cards */}
       <div className="grid grid-cols-2 gap-3 md:hidden">
         <CompactStatCard
-          title="💸 Total Balance"
-          value={`₹${total}`}
+          title="💸 "
+          value={`${topCategory.name} ₹${topCategory.amount}`}
           icon={<CreditCard className="w-4 h-4" />}
         />
         <CompactStatCard
@@ -54,8 +55,8 @@ export default async function ExpenseStats() {
 
       <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="💸 Total Balance"
-          value={`₹${total}`}
+          title="💸 Top Category"
+          value={`${topCategory.name} ₹${topCategory.amount}`}
           change="12.3%"
           isPositive={false}
           icon={<CreditCard />}
