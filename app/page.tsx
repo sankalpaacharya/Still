@@ -4,7 +4,7 @@ import Hero from "@/components/hero";
 import { Instrument_Serif } from "next/font/google";
 import { FaStar } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import localFont from "next/font/local";
@@ -198,20 +198,30 @@ const Testimonials = () => {
 };
 
 const Pricing = () => {
-  const free = [
-    {
-      id: 1,
-      perks: "Dashboard to summarize your expenses",
-    },
-  ];
-  const monthly = [
+  const not_in_free = [
     {
       id: 1,
       perks: "Get access to Sanku, your personalised AI assistant",
     },
     {
       id: 2,
-      perks: "Dashboard to summarize your expenses",
+      perks: "Access to photo tracking with snap",
+    },
+  ];
+  const free = [
+    {
+      id: 1,
+      perks: "Dashboard to visualise your expenses",
+    },
+  ];
+  const monthly = [
+    {
+      id: 1,
+      perks: "Dashboard to visualise your expenses",
+    },
+    {
+      id: 2,
+      perks: "Get access to Sanku, your personalised AI assistant",
     },
     {
       id: 3,
@@ -237,47 +247,59 @@ const Pricing = () => {
       <div className="flex flex-col md:flex-row gap-5">
         {/* cards */}
         <div className="rounded-3xl p-8 border border-gray-800">
-          <h2 className="text-xl font-medium mb-4">Free tier</h2>
+          <h2 className="text-xl font-medium mb-4">Basic</h2>
+          <p className="text-gray-300 mb-8">
+            Perfect for individuals just getting started with budgeting, baisc
+            expense tracking and visualisation.
+          </p>
           <div className="flex items-baseline mb-6">
-            <span className="text-5xl font-bold">Free</span>
+            <span className="text-5xl font-bold">₹0</span>
+            <span className="text-gray-400">/month</span>
           </div>
           <Button className="w-full font-black bg-purple-600 hover:bg-purple-700 py-5 rounded-xl mb-4 flex items-center justify-center">
-            Try Now <FaArrowRight />
+            Free Access <FaArrowRight />
           </Button>
 
-          <h3 className="font-medium mb-4">Bloomi Free:</h3>
+          <h3 className="font-medium mb-4">Featured :</h3>
           <ul className="space-y-3">
             {free.map((f) => (
               <li key={f.id} className="flex items-center space-x-2">
-                <Check size={20} />
+                <Check size={20} color="green" />
                 <span>{f.perks}</span>
+              </li>
+            ))}
+            {not_in_free.map((n) => (
+              <li key={n.id} className="flex items-center space-x-2">
+                <X size={20} color="red" />
+                <span>{n.perks}</span>
               </li>
             ))}
           </ul>
         </div>
         <div className="rounded-3xl p-8 border border-gray-800">
-          <h2 className="text-xl font-medium mb-4">Paid</h2>
+          <h2 className="text-xl font-medium mb-4">Pro</h2>
+          <p className="text-gray-300 mb-8">
+            For those who want to take their budgeting to the next level with
+            advanced tools and personal AI support. Upgrade to Pro plan
+          </p>
           <div className="flex items-baseline mb-6">
             <span className="text-5xl font-bold">₹199</span>
             <span className="text-gray-400">/month</span>
           </div>
-          <p className="text-gray-300 mb-8">
-            Improve your budget with advanced tools and personal AI support
-          </p>
 
           <Button className="w-full font-black bg-purple-600 hover:bg-purple-700 py-5 rounded-xl mb-4 flex items-center justify-center">
-            Buy Now <FaArrowRight />
+            Get Started <FaArrowRight />
           </Button>
 
-          <p className="text-sm text-center text-gray-500 mb-8">
+          {/* <p className="text-sm text-center text-gray-500 mb-8">
             Billed in one annual payment.
-          </p>
+          </p> */}
 
-          <h3 className="font-medium mb-4">Bloomi pro+:</h3>
+          <h3 className="font-medium mb-4">Featured :</h3>
           <ul className="space-y-3">
             {monthly.map((m) => (
               <li key={m.id} className="flex items-center space-x-2">
-                <Check size={20} />
+                <Check size={20} color="green" />
                 <span>{m.perks}</span>
               </li>
             ))}
