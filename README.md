@@ -114,7 +114,7 @@ Start the project
 ```
 
 ## Activity
-![Alt](https://repobeats.axiom.co/api/embed/327e6ac3248d27cfd145db3d1e22f514e88a1fe9.svg "Repobeats analytics image")
+![Alt](https://repobeats.axiom.co/api/embed/9ed110dd7861b24d27b74cf2c9010a73e10c5550.svg "Repobeats analytics image")
 
 ## Contributors
 
