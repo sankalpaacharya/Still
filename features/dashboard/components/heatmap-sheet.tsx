@@ -13,9 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Edit3, ChevronLeft, ChevronRight } from "lucide-react";
+import { Edit3, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { getTransactionsByDate, updateTransactionAction } from "../actions";
-import { CategoryGroupCombobox } from "./addexpenseselect";
 import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
 import { getAllCategories } from "@/features/categories/actions";
@@ -86,6 +85,18 @@ export default function HeatMapSheet({ children, date, amount }: HeatMapProps) {
       categoryName: transaction.category,
     });
   };
+
+  const handleCloseEdit = () => {
+    setEditingTransaction(null);
+    setEditStep(1);
+    setEditForm({
+      description: "",
+      amount: "",
+      date: new Date(),
+      category: "",
+    });
+    setCategoryChange({});
+  };
   const validateCurrentStep = () => {
     switch (editStep) {
       case 1:
@@ -134,6 +145,13 @@ export default function HeatMapSheet({ children, date, amount }: HeatMapProps) {
         toast.success("Transaction updated successfully");
         setEditingTransaction(null);
         setEditStep(1);
+        setEditForm({
+          description: "",
+          amount: "",
+          date: new Date(),
+          category: "",
+        });
+        setCategoryChange({});
         await loadTransactions();
         setTimeout(() => {
           router.refresh();
@@ -174,6 +192,9 @@ export default function HeatMapSheet({ children, date, amount }: HeatMapProps) {
                   ) {
                     handleNext();
                   }
+                  if (e.key === "Escape") {
+                    handleCloseEdit();
+                  }
                 }}
                 style={{
                   fontSize: "3rem",
@@ -210,6 +231,9 @@ export default function HeatMapSheet({ children, date, amount }: HeatMapProps) {
                   ) {
                     handleNext();
                   }
+                  if (e.key === "Escape") {
+                    handleCloseEdit();
+                  }
                 }}
                 className="bg-white/5 border-white/10 text-white placeholder-white/40 rounded-md py-3 transition-all duration-200 focus:ring-2 focus:ring-white/30 focus:border-white/30"
               />{" "}
@@ -233,6 +257,11 @@ export default function HeatMapSheet({ children, date, amount }: HeatMapProps) {
                 onChange={(e) =>
                   setEditForm({ ...editForm, date: new Date(e.target.value) })
                 }
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") {
+                    handleCloseEdit();
+                  }
+                }}
                 className="bg-white/5 border-white/10 text-white placeholder-white/40 rounded-md py-3 transition-all duration-200 focus:ring-2 focus:ring-white/30 focus:border-white/30"
               />{" "}
               <p className="text-sm text-white/50">Date of your expense</p>{" "}
@@ -285,162 +314,164 @@ export default function HeatMapSheet({ children, date, amount }: HeatMapProps) {
       <SheetTrigger asChild onClick={loadTransactions}>
         {children}
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-lg px-5 h-screen overflow-auto">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
-            <span>Transactions for {format(actualDate, "MMMM d, yyyy")}</span>
-          </SheetTitle>
-          <SheetDescription>
-            {amount > 0 ? (
-              <span className="text-blue-600 font-medium">
-                Total spending: {formatCurrency(amount)}
-              </span>
-            ) : (
-              <span className="text-muted-foreground">
-                No transactions on this day
-              </span>
-            )}
-          </SheetDescription>
-        </SheetHeader>
-        <div className="mt-1 space-y-0.5">
-          {loading ? (
-            <div className="flex items-center justify-center py-3">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+      <SheetContent className="w-full sm:max-w-lg px-0 h-screen overflow-auto">
+        {editingTransaction ? (
+          <div className="bg-black absolute inset-0 flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-white/10">
+              <div className="flex items-center gap-3">
+                {editStep > 1 ? (
+                  <ChevronLeft
+                    onClick={handleBack}
+                    className="cursor-pointer text-white w-6 h-6 hover:bg-white/10 rounded-full p-1 transition-colors"
+                  />
+                ) : (
+                  <X
+                    onClick={handleCloseEdit}
+                    className="cursor-pointer text-white w-6 h-6 hover:bg-white/10 rounded-full p-1 transition-colors"
+                  />
+                )}
+                <h1 className="text-white text-xl font-semibold">
+                  Edit Transaction
+                </h1>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalSteps }, (_, i) => (
+                    <div
+                      key={i}
+                      className={`w-2 h-2 rounded-full ${i + 1 <= editStep ? "bg-white" : "bg-white/30"} transition-colors duration-200`}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
-          ) : transactions.length === 0 ? (
-            <div className="text-center py-3 text-muted-foreground">
-              <p className="text-sm">No transactions found for this day</p>
-            </div>
-          ) : (
-            transactions.map((transaction) => {
-              const isEditing = editingTransaction?.id === transaction.id;
-              const isExpense = transaction.type === "expense";
-              return (
-                <div
-                  key={transaction.id}
-                  className="relative border-0 shadow-none bg-muted/20 rounded-md"
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={editStep}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.15 }}
+                className="flex-grow flex items-center justify-center p-6 overflow-hidden"
+              >
+                {renderEditStep(editStep)}
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="p-6 border-t border-white/10 flex gap-3">
+              {editStep > 1 && (
+                <Button
+                  onClick={handleBack}
+                  variant="outline"
+                  className="w-1/2 border-white/20 text-white hover:bg-white/10"
                 >
-                  <div className="">
-                    {isEditing ? (
-                      <div className="bg-gradient-to-br p-6 rounded-lg">
-                        <div className="flex items-center justify-between mb-6">
-                          <div className="flex items-center gap-3">
-                            <ChevronLeft
-                              onClick={handleBack}
-                              className={`${editStep === 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} text-white w-6 h-6`}
-                            />
-                            <h1 className="text-white text-xl font-semibold">
-                              Edit Transaction
-                            </h1>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            {Array.from({ length: totalSteps }, (_, i) => (
-                              <div
-                                key={i}
-                                className={`w-2 h-2 rounded-full ${i + 1 <= editStep ? "bg-white" : "bg-white/30"} transition-colors duration-200`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                        <AnimatePresence mode="wait">
-                          <motion.div
-                            key={editStep}
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            transition={{ duration: 0.2 }}
-                            className="flex-grow flex items-center justify-center min-h-[200px]"
-                          >
-                            {renderEditStep(editStep)}
-                          </motion.div>
-                        </AnimatePresence>
-                        <div className="pt-6 flex gap-3">
-                          {editStep > 1 && (
-                            <Button
-                              onClick={handleBack}
-                              variant="outline"
-                              className="w-1/2 border-white/20 text-white hover:bg-white/10"
-                            >
-                              Back
-                            </Button>
-                          )}
-                          <Button
-                            disabled={isButtonDisabled}
-                            onClick={handleNext}
-                            className="w-full text-white font-medium bg-white/20 hover:bg-white/30"
-                            variant="secondary"
-                          >
-                            {editStep === totalSteps ? (
-                              "Update Transaction"
-                            ) : (
-                              <>
-                                Next
-                                <ChevronRight className="ml-2 w-4 h-4" />
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
+                  Back
+                </Button>
+              )}
+              <Button
+                disabled={isButtonDisabled || !validateCurrentStep()}
+                onClick={handleNext}
+                className="w-full text-white font-medium bg-white/20 hover:bg-white/30 disabled:opacity-50"
+                variant="secondary"
+              >
+                {editStep === totalSteps ? (
+                  "Update Transaction"
+                ) : (
+                  <>
+                    Next
+                    <ChevronRight className="ml-2 w-4 h-6" />
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="px-5">
+            <SheetHeader>
+              <SheetTitle className="flex items-center gap-2">
+                <span>
+                  Transactions for {format(actualDate, "MMMM d, yyyy")}
+                </span>
+              </SheetTitle>
+              <SheetDescription>
+                {amount > 0 ? (
+                  <span className="text-blue-600 font-medium">
+                    Total spending: {formatCurrency(amount)}
+                  </span>
+                ) : (
+                  <span className="text-muted-foreground">
+                    No transactions on this day
+                  </span>
+                )}
+              </SheetDescription>
+            </SheetHeader>
+            <div className="mt-1 space-y-0.5">
+              {loading ? (
+                <div className="flex items-center justify-center py-3">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                </div>
+              ) : transactions.length === 0 ? (
+                <div className="text-center py-3 text-muted-foreground">
+                  <p className="text-sm">No transactions found for this day</p>
+                </div>
+              ) : (
+                transactions.map((transaction) => {
+                  const isExpense = transaction.type === "expense";
+                  return (
+                    <div
+                      key={transaction.id}
+                      className="relative border-0 shadow-none bg-muted/20 rounded-md"
+                    >
                       <div className="flex items-center justify-between p-2">
-                        {" "}
                         <div className="flex items-center gap-1.5 flex-1">
-                          {" "}
-                          <div className="text-lg">{transaction.icon}</div>{" "}
+                          <div className="text-lg">{transaction.icon}</div>
                           <div className="flex-1 min-w-0">
-                            {" "}
                             <div className="font-medium text-xs truncate">
-                              {" "}
-                              {transaction.description}{" "}
-                            </div>{" "}
+                              {transaction.description}
+                            </div>
                             <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                              {" "}
                               <Badge
                                 variant="secondary"
                                 className="text-xs py-0 px-1.5 h-4"
                               >
-                                {" "}
-                                {transaction.category}{" "}
-                              </Badge>{" "}
-                              <span>•</span>{" "}
+                                {transaction.category}
+                              </Badge>
+                              <span>•</span>
                               <span>
-                                {" "}
                                 {format(
                                   new Date(transaction.created_at),
                                   "h:mm a",
-                                )}{" "}
-                              </span>{" "}
-                            </div>{" "}
-                          </div>{" "}
-                        </div>{" "}
+                                )}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                         <div className="flex items-center gap-0.5">
-                          {" "}
                           <div
                             className={`font-semibold text-xs ${isExpense ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400"}`}
                           >
-                            {" "}
-                            {isExpense ? "-" : "+"}{" "}
-                            {formatCurrency(transaction.amount)}{" "}
-                          </div>{" "}
+                            {isExpense ? "-" : "+"}
+                            {formatCurrency(transaction.amount)}
+                          </div>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={() => handleEdit(transaction)}
                             className="h-6 w-6 p-0 ml-1"
                           >
-                            {" "}
-                            <Edit3 className="h-3 w-3" />{" "}
-                          </Button>{" "}
-                        </div>{" "}
+                            <Edit3 className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
-                    )}{" "}
-                  </div>{" "}
-                </div>
-              );
-            })
-          )}{" "}
-        </div>{" "}
-      </SheetContent>{" "}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        )}
+      </SheetContent>
     </Sheet>
   );
 }
