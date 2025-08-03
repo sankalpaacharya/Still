@@ -107,3 +107,15 @@ export async function handleGoogleResponse({
 
   return streamGoogle(streamGenerator);
 }
+
+export async function handleEditResponse({
+  client,
+  model,
+  messages,
+}: chatGroqOrOpenAI) {
+  const response = await client.chat.completions.create({
+    model,
+    messages,
+  });
+  return response.choices[0]?.message?.content;
+}

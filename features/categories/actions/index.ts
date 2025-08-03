@@ -12,7 +12,8 @@ export async function createCategoryAction(data: CategoryFormType, id: string) {
   const { data: categoryData, error } = await supabase
     .from("category")
     .select("*")
-    .eq("name", data.name);
+    .eq("name", data.name)
+    .eq("user_id", user.id);
   if (error)
     return { error: true, message: "some error while getting category" };
   if (categoryData.length > 0)

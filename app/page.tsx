@@ -4,7 +4,7 @@ import Hero from "@/components/hero";
 import { Instrument_Serif } from "next/font/google";
 import { FaStar } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import localFont from "next/font/local";
@@ -30,7 +30,7 @@ export default function Page() {
       <Navbar></Navbar>
       <Hero></Hero>
       <IntroducingSanku />
-      <HowItWroks />
+      <HowItWorks />
       <Testimonials />
       <Pricing />
       <Footer />
@@ -67,22 +67,25 @@ const IntroducingSanku = () => {
   );
 };
 
-const HowItWroks = () => {
+const HowItWorks = () => {
   const content = [
     {
       id: 1,
-      title: "Create Your Budget Plan",
-      description: "this is random text",
+      title: "Build Your Custom Budget Plan",
+      description:
+        "Create a personalized budget that helps you stay on top of your expenses and save smarter.",
     },
     {
       id: 2,
-      title: "Add your Expense",
-      description: "this is random text",
+      title: "Track Your Expenses Easily",
+      description:
+        "Log your expenses manually or snap a receipt, Sanku will take care of the rest.",
     },
     {
       id: 3,
-      title: "Let Sanku handle your work",
-      description: "this is random text",
+      title: "Let Sanku Do the Heavy Lifting",
+      description:
+        "Meet Sanku, your smart (and slightly sassy) AI assistant who helps you manage and sometimes roast you about your spending habits.",
     },
   ];
   return (
@@ -116,9 +119,7 @@ const HowItWroks = () => {
             <div className="mt-auto space-y-2">
               <h3 className="text-xl md:text-2xl">{process.title}</h3>
               <span className="text-sm md:text-md text-gray-400">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
-                nostrum inventore, error rerum optio eum qui saepe voluptatibus
-                beatae excepturi.
+                {process.description}
               </span>
             </div>
           </motion.fieldset>
@@ -129,6 +130,26 @@ const HowItWroks = () => {
 };
 
 const Testimonials = () => {
+  const testimonialsData = [
+    {
+      name: "Sankalpa Acharya",
+      image: "https://github.com/sankalpaacharya.png",
+      review:
+        "Using this tool changed the way I handle my finances. It’s intuitive, fun, and makes budgeting feel effortless. Sanku’s attitude is a bonus!",
+    },
+    {
+      name: "Aarushi Mehta",
+      image: "https://randomuser.me/api/portraits/women/44.jpg",
+      review:
+        "I love how Sanku makes me laugh *and* rethink my spending habits. The AI feels human, and the design is just beautiful. Highly recommend!",
+    },
+    {
+      name: "Rohan Deshmukh",
+      image: "https://randomuser.me/api/portraits/men/75.jpg",
+      review:
+        "I’ve tried multiple budget apps, but none hit the sweet spot like this one. It’s smart, insightful, and doesn’t bore you with numbers. A must-have!",
+    },
+  ];
   return (
     <div className="wrapper flex flex-col justify-center items-center mt-20 md:mt-30 space-y-5 px-4 md:px-6">
       <span className="border shadow-xl border-gray-800 px-3 py-1 rounded-full">
@@ -147,9 +168,9 @@ const Testimonials = () => {
       <div className="gradient-bg absolute" />
       {/* cards */}
       <div className="grid sm:grid-cols-2 md:grid-cols-3 grid-cols-1 gap-4 md:gap-5 mt-10 w-full">
-        {[1, 2, 3, 4, 5, 6].map((t) => (
+        {testimonialsData.map((testimonial, index) => (
           <div
-            key={t}
+            key={index}
             className="bg-glass/10 backdrop-blur-2xl p-4 md:p-6 flex flex-col gap-4 md:gap-7 rounded-2xl md:rounded-3xl"
           >
             <span className="flex gap-1">
@@ -157,23 +178,16 @@ const Testimonials = () => {
                 <FaStar key={star} size={14} />
               ))}
             </span>
-            <p className="text-sm md:text-base">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos
-              veritatis rem molestias enim sed! Eaque sit et aliquid iure
-              inventore?
-            </p>
+            <p className="text-sm md:text-base">{testimonial.review}</p>
 
             <div className="flex gap-2 items-center">
               <img
                 className="w-8 h-8 md:w-10 md:h-10 rounded-full"
-                src="https://github.com/sankalpaacharya.png"
+                src={testimonial.image}
                 alt=""
               />
               <p className="flex flex-col">
-                <span className="text-sm md:text-base">Sankalpa Acharya</span>
-                <span className="text-xs md:text-sm text-gray-400">
-                  Founder of weride.live
-                </span>
+                <span className="text-sm md:text-base">{testimonial.name}</span>
               </p>
             </div>
           </div>
@@ -184,6 +198,36 @@ const Testimonials = () => {
 };
 
 const Pricing = () => {
+  const not_in_free = [
+    {
+      id: 1,
+      perks: "Get access to Sanku, your personalised AI assistant",
+    },
+    {
+      id: 2,
+      perks: "Access to photo tracking with snap",
+    },
+  ];
+  const free = [
+    {
+      id: 1,
+      perks: "Dashboard to visualise your expenses",
+    },
+  ];
+  const monthly = [
+    {
+      id: 1,
+      perks: "Dashboard to visualise your expenses",
+    },
+    {
+      id: 2,
+      perks: "Get access to Sanku, your personalised AI assistant",
+    },
+    {
+      id: 3,
+      perks: "Access to photo tracking with snap",
+    },
+  ];
   return (
     <div className="wrapper flex flex-col justify-center items-center mt-20 md:mt-30 space-y-5 relative px-4 md:px-6">
       <span className="border shadow-xl border-gray-800 px-3 py-1 rounded-full">
@@ -203,59 +247,60 @@ const Pricing = () => {
       <div className="flex flex-col md:flex-row gap-5">
         {/* cards */}
         <div className="rounded-3xl p-8 border border-gray-800">
-          <h2 className="text-xl font-medium mb-4">Monthly</h2>
+          <h2 className="text-xl font-medium mb-4">Basic</h2>
+          <p className="text-gray-300 mb-8">
+            Perfect for individuals just getting started with budgeting, baisc
+            expense tracking and visualisation.
+          </p>
           <div className="flex items-baseline mb-6">
-            <span className="text-5xl font-bold">₹5</span>
+            <span className="text-5xl font-bold">₹0</span>
             <span className="text-gray-400">/month</span>
           </div>
-          <p className="text-gray-300 mb-8">
-            Take your productivity to the next level with advanced tools and
-            personalized support.
-          </p>
-
           <Button className="w-full font-black bg-purple-600 hover:bg-purple-700 py-5 rounded-xl mb-4 flex items-center justify-center">
-            Buy Now <FaArrowRight />
+            Free Access <FaArrowRight />
           </Button>
 
-          <p className="text-sm text-center text-gray-500 mb-8">
-            Billed in one annual payment.
-          </p>
-
-          <h3 className="font-medium mb-4">Standard plus:</h3>
+          <h3 className="font-medium mb-4">Featured :</h3>
           <ul className="space-y-3">
-            {[1, 2, 3, 4, 5].map((b) => (
-              <li key={b} className="flex items-center space-x-2">
-                <Check size={20} />
-                <span>Custom Task Categories</span>
+            {free.map((f) => (
+              <li key={f.id} className="flex items-center space-x-2">
+                <Check size={20} color="green" />
+                <span>{f.perks}</span>
+              </li>
+            ))}
+            {not_in_free.map((n) => (
+              <li key={n.id} className="flex items-center space-x-2">
+                <X size={20} color="red" />
+                <span>{n.perks}</span>
               </li>
             ))}
           </ul>
         </div>
         <div className="rounded-3xl p-8 border border-gray-800">
-          <h2 className="text-xl font-medium mb-4">Annual</h2>
+          <h2 className="text-xl font-medium mb-4">Pro</h2>
+          <p className="text-gray-300 mb-8">
+            For those who want to take their budgeting to the next level with
+            advanced tools and personal AI support. Upgrade to Pro plan
+          </p>
           <div className="flex items-baseline mb-6">
-            <span className="text-5xl font-bold">₹2</span>
+            <span className="text-5xl font-bold">₹199</span>
             <span className="text-gray-400">/month</span>
           </div>
-          <p className="text-gray-300 mb-8">
-            Take your productivity to the next level with advanced tools and
-            personalized support.
-          </p>
 
           <Button className="w-full font-black bg-purple-600 hover:bg-purple-700 py-5 rounded-xl mb-4 flex items-center justify-center">
-            Buy Now <FaArrowRight />
+            Get Started <FaArrowRight />
           </Button>
 
-          <p className="text-sm text-center text-gray-500 mb-8">
+          {/* <p className="text-sm text-center text-gray-500 mb-8">
             Billed in one annual payment.
-          </p>
+          </p> */}
 
-          <h3 className="font-medium mb-4">Standard plus:</h3>
+          <h3 className="font-medium mb-4">Featured :</h3>
           <ul className="space-y-3">
-            {[1, 2, 3, 4, 5].map((b) => (
-              <li key={b} className="flex items-center space-x-2">
-                <Check size={20} />
-                <span>Custom Task Categories</span>
+            {monthly.map((m) => (
+              <li key={m.id} className="flex items-center space-x-2">
+                <Check size={20} color="green" />
+                <span>{m.perks}</span>
               </li>
             ))}
           </ul>
@@ -276,7 +321,7 @@ const Footer = () => {
               <div className="w-10 h-10 bg-white rounded-md flex items-center justify-center">
                 <div className="w-6 h-6 bg-black rounded-sm"></div>
               </div>
-              <span className="text-lg font-medium">Senku</span>
+              <span className="text-lg font-medium">Bloomi</span>
             </div>
 
             <div className="space-y-4">
