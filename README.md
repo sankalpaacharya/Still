@@ -6,10 +6,10 @@
 
 <div align="center">
 
-![GitHub stars](https://img.shields.io/github/stars/sankalpaacharya/fixyourspend)
-![GitHub forks](https://img.shields.io/github/forks/sankalpaacharya/fixyourspend)
-![GitHub issues](https://img.shields.io/github/issues/sankalpaacharya/fixyourspend)
-![GitHub last commit](https://img.shields.io/github/last-commit/sankalpaacharya/fixyourspend)
+![GitHub stars](https://img.shields.io/github/stars/sankalpaacharya/Still)
+![GitHub forks](https://img.shields.io/github/forks/sankalpaacharya/Still)
+![GitHub issues](https://img.shields.io/github/issues/sankalpaacharya/Still)
+![GitHub last commit](https://img.shields.io/github/last-commit/sankalpaacharya/Still)
 ![Made with Love](https://img.shields.io/badge/Made%20with-Love-ff69b4)
 ![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-purple)
 ![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-blue.svg)
@@ -18,7 +18,7 @@
 
 ## Table of Contents
 
-- [About](#about-still)
+- [About](#about-Still)
     - [Features](#features)
 - [Preview](#preview)
 - [Technology Used](#technology-used)
@@ -31,7 +31,7 @@
 
 <div align="center">
 
-![still.png](https://i.postimg.cc/jj34t8Wf/still.png)
+![Still.png](https://i.postimg.cc/jj34t8Wf/Still.png)
 
 </div>
 
@@ -92,13 +92,13 @@ you need to have this in your local computer to run this project.
 Clone the project
 
 ```bash
-  git clone https://github.com/sankalpaacharya/fixyourspend.git
+  git clone https://github.com/sankalpaacharya/Still.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd fixyourspend
+  cd Still
 ```
 
 Install dependencies
@@ -118,8 +118,8 @@ Start the project
 
 ## Contributors
 
-<a href="https://github.com/sankalpaacharya/fixyourspend/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=sankalpaacharya/fixyourspend"/>
+<a href="https://github.com/sankalpaacharya/Still/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sankalpaacharya/Still"/>
 </a>
 
 ## Support
