@@ -33,6 +33,7 @@ export const TransactionCard = async () => {
             <TransactionItem
               userId={user?.id || ""}
               key={tx.id}
+              transactionId={tx.id}
               emoji={tx.icon}
               title={tx.description}
               category={tx.category}
