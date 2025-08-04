@@ -5,9 +5,14 @@ import { ChevronRight } from "lucide-react";
 import { getRecentTransactions } from "../actions";
 import { getCategoryEmoji } from "@/lib/utils";
 import { timeSince } from "@/lib/utils";
+import { createClient } from "@/utils/supabase/server";
 
 export const TransactionCard = async () => {
   const transactions = await getRecentTransactions();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   console.log("all transactions", transactions);
   return (
     <Card className="bg-card/50">
@@ -26,6 +31,7 @@ export const TransactionCard = async () => {
         {transactions.length > 0 ? (
           transactions.map((tx) => (
             <TransactionItem
+              userId={user?.id || ""}
               key={tx.id}
               emoji={tx.icon}
               title={tx.description}

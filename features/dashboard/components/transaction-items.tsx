@@ -1,6 +1,7 @@
 type TransactionType = "income" | "expense";
 
 interface TransactionItemProps {
+  userId: string;
   emoji: string;
   title: string;
   category: string;
