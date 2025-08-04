@@ -29,7 +29,7 @@ RETURN ONLY a JSON object with the follwing structure:
 - value will be an object with the following keys:
   - amount: Estimated price in INR (number)
   - category: Category name (string)
-  - categoryID: Specific category id from user's existing categories (uuid)
+  - category_id: Specific category id from user's existing categories (uuid)
   - user_id: user uuid specified in ${categories} (uuid)
 
 **Examples:**
@@ -38,13 +38,13 @@ RETURN ONLY a JSON object with the follwing structure:
   "nike shoes" : {
     amount: 5000,
     category: "Footwear",
-    categoryID: uuid,
+    category_id: uuid,
     user_id: uuid,
   },
   "nike socks": {
     amount: 2000,
     category: "Footwear",
-    categoryID: uuid,
+    category_id: uuid,
     user_id: uuid,
   }
 }
