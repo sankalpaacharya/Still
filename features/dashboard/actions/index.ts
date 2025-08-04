@@ -55,6 +55,7 @@ export async function NewAddExpenseAction(data: transactionItem) {
       })),
     )
     .select();
+  console.log("Inserted data:", insertedData);
   if (insertError) {
     return { error: true, message: insertError.message };
   }

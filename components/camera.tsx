@@ -33,7 +33,7 @@ type ExtractedItem = {
   name: string;
   amount: number;
   category: string;
-  categoryID: string;
+  category_id: string;
   user_id: string;
   date: string;
   isEditing?: boolean;
@@ -43,7 +43,7 @@ type ExtractedItem = {
 type details = {
   amount: number;
   category: string;
-  categoryID: string;
+  category_id: string;
   user_id: string;
   date: string;
 };
@@ -122,7 +122,7 @@ export default function SnapUpload() {
           name,
           amount: (details as details).amount || 0,
           category: (details as details).category || "",
-          categoryID: (details as details).categoryID || "",
+          category_id: (details as details).category_id || "",
           user_id: (details as details).user_id || "",
           date:
             (details as details).date || new Date().toISOString().split("T")[0],
@@ -193,7 +193,7 @@ export default function SnapUpload() {
           name,
           amount: (details as details).amount || 0,
           category: (details as details).category || "",
-          categoryID: (details as details).categoryID || "",
+          category_id: (details as details).category_id || "",
           user_id: (details as details).user_id || "",
           date:
             (details as details).date || new Date().toISOString().split("T")[0],
@@ -279,7 +279,7 @@ export default function SnapUpload() {
       extractedItems.forEach((item: ExtractedItem) => {
         transactionData[item.name] = {
           amount: item.amount,
-          category_id: item.categoryID,
+          category_id: item.category_id,
           user_id: item.user_id,
           category: item.category,
           date: item.date,
