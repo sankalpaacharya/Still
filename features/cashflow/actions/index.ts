@@ -2,6 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { Expense } from "../components/columns";
 import { revalidatePath } from "next/cache";
+import { getImageUrlForTransaction } from "@/features/dashboard/actions";
 
 export type GroupExpense = Record<string, Expense[]>;
 
@@ -34,10 +35,15 @@ export async function getExpenses(): Promise<GroupExpense | {}> {
   for (let expense of data) {
     const group = expense["category_id"];
     const categoryInfo = categoryMap.get(group);
+
+    const imageUrl = await getImageUrlForTransaction(expense.id, user.id);
+
     expense.category = categoryInfo?.name || "Uncategorized";
     expense.icon = categoryInfo?.icon || "default-icon";
     expense.budget = categoryInfo?.budget || 0;
     expense.type = categoryInfo?.type || "expense";
+    expense.imageUrl = imageUrl;
+
     if (expense.category in expenseData) {
       expenseData[expense.category].push(expense);
     } else {

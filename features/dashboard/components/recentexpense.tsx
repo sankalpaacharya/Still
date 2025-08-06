@@ -40,6 +40,7 @@ export const TransactionCard = async () => {
               timeAgo={timeSince(tx.date)}
               amount={tx.amount}
               type={tx.type}
+              imageUrl={tx.imageUrl}
             />
           ))
         ) : (
