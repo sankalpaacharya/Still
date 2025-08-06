@@ -13,9 +13,7 @@ interface TransactionItemProps {
 }
 
 export const TransactionItem = ({
-  // emoji,
-  userId,
-  transactionId,
+  emoji,
   title,
   category,
   timeAgo,
