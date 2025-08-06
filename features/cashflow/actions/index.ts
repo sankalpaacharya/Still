@@ -32,17 +32,20 @@ export async function getExpenses(): Promise<GroupExpense | {}> {
 
   const expenseData: any = {};
 
-  for (let expense of data) {
+  const imageUrls = await Promise.all(
+    data.map((expense) => getImageUrlForTransaction(expense.id, user.id)),
+  );
+
+  for (let i = 0; i < data.length; i++) {
+    const expense = data[i];
     const group = expense["category_id"];
     const categoryInfo = categoryMap.get(group);
-
-    const imageUrl = await getImageUrlForTransaction(expense.id, user.id);
 
     expense.category = categoryInfo?.name || "Uncategorized";
     expense.icon = categoryInfo?.icon || "default-icon";
     expense.budget = categoryInfo?.budget || 0;
     expense.type = categoryInfo?.type || "expense";
-    expense.imageUrl = imageUrl;
+    expense.imageUrl = imageUrls[i];
 
     if (expense.category in expenseData) {
       expenseData[expense.category].push(expense);
