@@ -30,7 +30,7 @@ export function EditWithAIButton({ expenses, onEdit }: EditWithAIButtonProps) {
         expenses.forEach((item: any) => {
           transactionData[item.name] = {
             amount: item.amount,
-            category_id: item.categoryID,
+            category_id: item.category_id,
             user_id: item.user_id,
             category: item.category,
             date: item.date,

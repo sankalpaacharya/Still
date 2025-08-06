@@ -34,19 +34,20 @@ expenses :
   "nike shoes" : {
     amount: 5000,
     category: "Footwear",
-    categoryID: uuid,
+    category_id: uuid,
     user_id: uuid,
   },
   "adidas socks": {
     amount: 599,
     category: "Footwear",
-    categoryID: uuid,
+    category_id: uuid,
     user_id: uuid,
   }
 }
 
 ## CRITICAL FORMATTING RULES:
 - Return ONLY the raw JSON object - no markdown code blocks no backticks, no "json" label
+- user_id and categoryID should be the same as the original expenses
 - Start your response directly with { and end with }
     
 ${expenses} : this is the extracted expenses data

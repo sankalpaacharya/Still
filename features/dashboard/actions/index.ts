@@ -55,6 +55,7 @@ export async function NewAddExpenseAction(data: transactionItem) {
       })),
     )
     .select();
+  console.log("Inserted data:", insertedData);
   if (insertError) {
     return { error: true, message: insertError.message };
   }
@@ -144,21 +145,18 @@ export async function addExpenseAction(data: Expense) {
   };
 }
 
-export async function mostSpentCategoryWithBudget() {
+export async function CategoryHelper(limit?: number) {
   const supabase = await createClient();
 
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-  if (!user || userError) return [];
+  if (!user || userError) return { top: [], supabase, now: new Date() };
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  const monthKey = `${now.getFullYear()}-${(now.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}-01`;
 
   const { data: transactions, error } = await supabase
     .from("transaction")
@@ -166,7 +164,7 @@ export async function mostSpentCategoryWithBudget() {
     .eq("user_id", user.id)
     .gte("created_at", startOfMonth.toISOString())
     .lte("created_at", endOfMonth.toISOString());
-  if (error || !transactions) return [];
+  if (error || !transactions) return { top: [], supabase, now };
 
   const { data: category } = await supabase
     .from("category")
@@ -175,7 +173,7 @@ export async function mostSpentCategoryWithBudget() {
       "id",
       transactions.map((tx) => tx.category_id),
     );
-  if (!category) return [];
+  if (!category) return { top: [], supabase, now };
 
   const grouped: Record<
     string,
@@ -195,11 +193,21 @@ export async function mostSpentCategoryWithBudget() {
     grouped[id].amount += tx.amount;
   }
 
-  const top5 = Object.values(grouped)
+  const top = Object.values(grouped)
     .sort((a, b) => b.amount - a.amount)
-    .slice(0, 5);
+    .slice(0, limit);
 
-  const categoryIds = top5.map((c) => c.category_id);
+  return { top, supabase, now };
+}
+
+export async function mostSpentCategoryWithBudget() {
+  const { top, supabase, now } = await CategoryHelper(5);
+
+  const monthKey = `${now.getFullYear()}-${(now.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-01`;
+
+  const categoryIds = top.map((c) => c.category_id);
   console.log("categoryIDS", categoryIds);
   const { data: monthsData } = await supabase
     .from("category")
@@ -213,15 +221,33 @@ export async function mostSpentCategoryWithBudget() {
     assignMap[item.id] = item.budget ?? 0;
   }
   console.log(
-    top5.map((item) => ({
+    top.map((item) => ({
       ...item,
       assigned: assignMap[item.category_id] || 0,
     })),
   );
-  return top5.map((item) => ({
+  return top.map((item) => ({
     ...item,
     assigned: assignMap[item.category_id] || 0,
   }));
+}
+
+export async function getTopCategories(): Promise<{
+  name: string;
+  category_id: string;
+  amount: number;
+  icon: string;
+}> {
+  const { top } = await CategoryHelper(1);
+
+  return (
+    top[0] || {
+      name: "No Expenses found",
+      category_id: "",
+      amount: 0,
+      icon: "default-icon",
+    }
+  );
 }
 
 // put limit here
@@ -250,18 +276,24 @@ export async function getRecentTransactions() {
 
   if (!category) return [];
 
-  const enrichedTransactions = data.map((transaction) => {
-    const categoryInfo = category.find(
-      (cat) => cat.id === transaction.category_id,
-    );
-    return {
-      ...transaction,
-      category: categoryInfo?.name || "Uncategorized",
-      icon: categoryInfo?.icon || "default-icon",
-      budget: categoryInfo?.budget || 0,
-      type: categoryInfo?.type || "expense",
-    };
-  });
+  const enrichedTransactions = await Promise.all(
+    data.map(async (transaction) => {
+      const categoryInfo = category.find(
+        (cat) => cat.id === transaction.category_id,
+      );
+
+      const imageUrl = await getImageUrlForTransaction(transaction.id, user.id);
+
+      return {
+        ...transaction,
+        category: categoryInfo?.name || "Uncategorized",
+        icon: categoryInfo?.icon || "default-icon",
+        budget: categoryInfo?.budget || 0,
+        type: categoryInfo?.type || "expense",
+        imageUrl,
+      };
+    }),
+  );
 
   return enrichedTransactions;
 }
@@ -362,18 +394,24 @@ export async function getTransactionsByDate(dateStr: string) {
 
   if (!categories) return transactions;
 
-  const enrichedTransactions = transactions.map((transaction) => {
-    const categoryInfo = categories.find(
-      (cat) => cat.id === transaction.category_id,
-    );
-    return {
-      ...transaction,
-      category: categoryInfo?.name || "Uncategorized",
-      icon: categoryInfo?.icon || "📝",
-      budget: categoryInfo?.budget || 0,
-      type: categoryInfo?.type || "expense",
-    };
-  });
+  const enrichedTransactions = await Promise.all(
+    transactions.map(async (transaction) => {
+      const categoryInfo = categories.find(
+        (cat) => cat.id === transaction.category_id,
+      );
+
+      const imageUrl = await getImageUrlForTransaction(transaction.id, user.id);
+
+      return {
+        ...transaction,
+        category: categoryInfo?.name || "Uncategorized",
+        icon: categoryInfo?.icon || "📝",
+        budget: categoryInfo?.budget || 0,
+        type: categoryInfo?.type || "expense",
+        imageUrl,
+      };
+    }),
+  );
 
   return enrichedTransactions;
 }
@@ -565,5 +603,35 @@ export async function editWithAIServerAction(expenses: any, query: string) {
     }));
   } else {
     throw new Error("Unexpected AI edit result");
+  }
+}
+
+export async function getImageUrlForTransaction(
+  transactionId: string,
+  userId: string,
+) {
+  const supabase = await createClient();
+
+  try {
+    const filePath = `${userId}/${transactionId}.png`;
+
+    const { data: fileData, error: listError } = await supabase.storage
+      .from("items-receipts")
+      .list(userId, {
+        search: `${transactionId}.png`,
+      });
+
+    if (listError || !fileData || fileData.length === 0) {
+      return null;
+    }
+
+    const { data } = supabase.storage
+      .from("items-receipts")
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
+  } catch (error) {
+    console.error("Error getting image URL:", error);
+    return null;
   }
 }
