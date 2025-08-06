@@ -33,7 +33,7 @@ export function CategoryGroupCombobox({
 }: props) {
   const [open, setOpen] = useState(false);
   const { groups } = useBudgetStore((state) => state);
-
+  //  this is shit
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
