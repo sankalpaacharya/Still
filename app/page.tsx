@@ -198,36 +198,29 @@ const Testimonials = () => {
 };
 
 const Pricing = () => {
-  const not_in_free = [
+  const features = [
     {
       id: 1,
-      perks: "Get access to Sanku, your personalised AI assistant",
+      name: "Dashboard to visualise your expenses",
+      includedIn: ["basic", "pro"],
     },
     {
       id: 2,
-      perks: "Access to photo tracking with snap",
-    },
-  ];
-  const free = [
-    {
-      id: 1,
-      perks: "Dashboard to visualise your expenses",
-    },
-  ];
-  const monthly = [
-    {
-      id: 1,
-      perks: "Dashboard to visualise your expenses",
-    },
-    {
-      id: 2,
-      perks: "Get access to Sanku, your personalised AI assistant",
+      name: "Get access to Sanku, your personalised AI assistant",
+      includedIn: ["pro"],
     },
     {
       id: 3,
-      perks: "Access to photo tracking with snap",
+      name: "Access to photo tracking with snap",
+      includedIn: ["pro"],
     },
   ];
+
+  const basicFeatures = features.filter((f) => f.includedIn.includes("basic"));
+  const proOnlyFeatures = features.filter(
+    (f) => f.includedIn.includes("pro") && !f.includedIn.includes("basic"),
+  );
+  const allProFeatures = features.filter((f) => f.includedIn.includes("pro"));
   return (
     <div className="wrapper flex flex-col justify-center items-center mt-20 md:mt-30 space-y-5 relative px-4 md:px-6">
       <span className="border shadow-xl border-gray-800 px-3 py-1 rounded-full">
@@ -249,7 +242,7 @@ const Pricing = () => {
         <div className="rounded-3xl p-8 border border-gray-800">
           <h2 className="text-xl font-medium mb-4">Basic</h2>
           <p className="text-gray-300 mb-8">
-            Perfect for individuals just getting started with budgeting, baisc
+            Perfect for individuals just getting started with budgeting, basic
             expense tracking and visualisation.
           </p>
           <div className="flex items-baseline mb-6">
@@ -262,16 +255,16 @@ const Pricing = () => {
 
           <h3 className="font-medium mb-4">Featured :</h3>
           <ul className="space-y-3">
-            {free.map((f) => (
+            {basicFeatures.map((f) => (
               <li key={f.id} className="flex items-center space-x-2">
                 <Check size={20} color="green" />
-                <span>{f.perks}</span>
+                <span>{f.name}</span>
               </li>
             ))}
-            {not_in_free.map((n) => (
+            {proOnlyFeatures.map((n) => (
               <li key={n.id} className="flex items-center space-x-2">
                 <X size={20} color="red" />
-                <span>{n.perks}</span>
+                <span>{n.name}</span>
               </li>
             ))}
           </ul>
@@ -297,10 +290,10 @@ const Pricing = () => {
 
           <h3 className="font-medium mb-4">Featured :</h3>
           <ul className="space-y-3">
-            {monthly.map((m) => (
+            {allProFeatures.map((m) => (
               <li key={m.id} className="flex items-center space-x-2">
                 <Check size={20} color="green" />
-                <span>{m.perks}</span>
+                <span>{m.name}</span>
               </li>
             ))}
           </ul>

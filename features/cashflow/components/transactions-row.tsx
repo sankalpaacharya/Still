@@ -13,6 +13,7 @@ export const ExpenseRow: React.FC<ExpenseRowProps> = ({ row }) => {
   const description = row.original.description;
   const date = new Date(row.original.created_at);
   const icon = row.original.icon;
+  const imageUrl = row.original.imageUrl;
   const formattedDate = date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -22,9 +23,17 @@ export const ExpenseRow: React.FC<ExpenseRowProps> = ({ row }) => {
     <div className="group flex items-center justify-between py-3 px-4 hover:bg-muted/50 transition-colors duration-150 border-b border-border/50 last:border-b-0">
       <div className="flex items-center space-x-3 flex-1 min-w-0">
         <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-          <span className="text-sm transition-transform duration-200 group-hover:scale-110">
-            {icon}
-          </span>
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={description}
+              className="w-8 h-8 rounded-lg object-cover border border-border/50"
+            />
+          ) : (
+            <span className="text-sm transition-transform duration-200 group-hover:scale-110">
+              {icon}
+            </span>
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="font-medium text-sm truncate mb-0.5">
