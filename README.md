@@ -18,7 +18,7 @@
 
 ## Table of Contents
 
-- [About](#about-Still)
+- [About](#about-still)
     - [Features](#features)
 - [Preview](#preview)
 - [Technology Used](#technology-used)

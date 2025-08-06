@@ -53,8 +53,13 @@ export default function HeatMapSheet({ children, date, amount }: HeatMapProps) {
   const totalSteps = 3;
   useEffect(() => {
     const fetchCategories = async () => {
-      const cats = await getAllCategories();
-      setCategories(cats);
+      try {
+        const cats = await getAllCategories();
+        setCategories(cats);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        toast.error("Failed to load categories");
+      }
     };
     fetchCategories();
   }, []);
@@ -130,8 +135,8 @@ export default function HeatMapSheet({ children, date, amount }: HeatMapProps) {
       setButtonDisabled(true);
       const dateToSave =
         editForm.date instanceof Date
-          ? editForm.date.toISOString().split("T")[0] + "T00:00:00.000+00"
-          : `${editForm.date}T00:00:00.000+00`;
+          ? editForm.date.toISOString().split("T")[0]
+          : editForm.date;
       const result = await updateTransactionAction({
         id: editingTransaction.id,
         description: editForm.description,
