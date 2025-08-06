@@ -339,18 +339,24 @@ export async function getRecentTransactions() {
 
   if (!category) return [];
 
-  const enrichedTransactions = data.map((transaction) => {
-    const categoryInfo = category.find(
-      (cat) => cat.id === transaction.category_id,
-    );
-    return {
-      ...transaction,
-      category: categoryInfo?.name || "Uncategorized",
-      icon: categoryInfo?.icon || "default-icon",
-      budget: categoryInfo?.budget || 0,
-      type: categoryInfo?.type || "expense",
-    };
-  });
+  const enrichedTransactions = await Promise.all(
+    data.map(async (transaction) => {
+      const categoryInfo = category.find(
+        (cat) => cat.id === transaction.category_id,
+      );
+
+      const imageUrl = await getImageUrlForTransaction(transaction.id, user.id);
+
+      return {
+        ...transaction,
+        category: categoryInfo?.name || "Uncategorized",
+        icon: categoryInfo?.icon || "default-icon",
+        budget: categoryInfo?.budget || 0,
+        type: categoryInfo?.type || "expense",
+        imageUrl,
+      };
+    }),
+  );
 
   return enrichedTransactions;
 }
@@ -451,18 +457,24 @@ export async function getTransactionsByDate(dateStr: string) {
 
   if (!categories) return transactions;
 
-  const enrichedTransactions = transactions.map((transaction) => {
-    const categoryInfo = categories.find(
-      (cat) => cat.id === transaction.category_id,
-    );
-    return {
-      ...transaction,
-      category: categoryInfo?.name || "Uncategorized",
-      icon: categoryInfo?.icon || "📝",
-      budget: categoryInfo?.budget || 0,
-      type: categoryInfo?.type || "expense",
-    };
-  });
+  const enrichedTransactions = await Promise.all(
+    transactions.map(async (transaction) => {
+      const categoryInfo = categories.find(
+        (cat) => cat.id === transaction.category_id,
+      );
+
+      const imageUrl = await getImageUrlForTransaction(transaction.id, user.id);
+
+      return {
+        ...transaction,
+        category: categoryInfo?.name || "Uncategorized",
+        icon: categoryInfo?.icon || "📝",
+        budget: categoryInfo?.budget || 0,
+        type: categoryInfo?.type || "expense",
+        imageUrl,
+      };
+    }),
+  );
 
   return enrichedTransactions;
 }
@@ -654,5 +666,35 @@ export async function editWithAIServerAction(expenses: any, query: string) {
     }));
   } else {
     throw new Error("Unexpected AI edit result");
+  }
+}
+
+export async function getImageUrlForTransaction(
+  transactionId: string,
+  userId: string,
+) {
+  const supabase = await createClient();
+
+  try {
+    const filePath = `${userId}/${transactionId}.png`;
+
+    const { data: fileData, error: listError } = await supabase.storage
+      .from("items-receipts")
+      .list(userId, {
+        search: `${transactionId}.png`,
+      });
+
+    if (listError || !fileData || fileData.length === 0) {
+      return null;
+    }
+
+    const { data } = supabase.storage
+      .from("items-receipts")
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
+  } catch (error) {
+    console.error("Error getting image URL:", error);
+    return null;
   }
 }

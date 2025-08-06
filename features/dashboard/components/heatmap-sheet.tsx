@@ -30,6 +30,7 @@ type Transaction = {
   category_id: string;
   account_id?: string;
   created_at: string;
+  imageUrl?: string | null;
 };
 type HeatMapProps = { children: React.ReactNode; date: string; amount: number };
 export default function HeatMapSheet({ children, date, amount }: HeatMapProps) {
@@ -425,7 +426,17 @@ export default function HeatMapSheet({ children, date, amount }: HeatMapProps) {
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="flex items-center gap-1.5 flex-1">
-                          <div className="text-lg">{transaction.icon}</div>
+                          <div className="w-8 h-8 flex items-center justify-center">
+                            {transaction.imageUrl ? (
+                              <img
+                                src={transaction.imageUrl}
+                                alt={transaction.description}
+                                className="w-8 h-8 rounded-md object-cover border border-border/50"
+                              />
+                            ) : (
+                              <div className="text-lg">{transaction.icon}</div>
+                            )}
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-medium text-xs truncate">
                               {transaction.description}
