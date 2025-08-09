@@ -17,7 +17,7 @@ type CategoryItem = {
 type Props = {
   data: CategoryItem[];
 };
-
+// use supabase types for query
 export default function MostExpenseContainer({ data }: Props) {
   return (
     <Card className="bg-card/50">
